@@ -1,0 +1,45 @@
+<p>create-meeting!</p>
+
+<div>
+  <div class="submit-form">
+    <div *ngIf="!submitted">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          required
+          [(ngModel)]="meeting.title"
+          name="title"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          class="form-control"
+          id="password"
+          required
+          [(ngModel)]="meeting.password1"
+          name="password"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password2">Password Confirmation</label>
+        <input
+          class="form-control"
+          id="password2"
+          required
+          [(ngModel)]="meeting.password2"
+          name="password2"
+        />
+      </div>
+
+      <button (click)="saveMeeting()" class="btn btn-success">Submit</button>
+      <a routerLink="../" class="btn btn-danger">X</a>
+
+    </div>
+  </div>
+</div>
