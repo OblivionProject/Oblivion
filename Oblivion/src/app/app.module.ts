@@ -21,12 +21,14 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { CreateMeetingComponent } from './create-meeting/create-meeting.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from "@angular/forms";
+import { MeetingComponent } from './meeting/meeting.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
-    CreateMeetingComponent
+    CreateMeetingComponent,
+    MeetingComponent
   ],
   imports: [
     BrowserModule,

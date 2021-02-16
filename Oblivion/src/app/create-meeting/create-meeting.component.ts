@@ -26,13 +26,17 @@ export class CreateMeetingComponent implements OnInit {
   // Create meeting
   saveMeeting(): void {
     console.log(this.meeting);
-    this.createMeetingService.connect();
     // create a connection to the server using the data service
-    this.createMeetingService.sendMessage(this.meeting);
+    this.createMeetingService.connect();
+    // send meeting info to the server using the data service
+    if (this.meeting.title === undefined && this.meeting.password1 === undefined && this.meeting.password2 === undefined){
+      // values are not defined
+    } else{
+      console.log(this.meeting.title);
+      this.createMeetingService.sendMessage(this.meeting);
+    }
+    // some way of triggering changing to the meeting component once we get a response back that this was succesfull
 
-
-
-    // send meeting info
   }
 
 }
