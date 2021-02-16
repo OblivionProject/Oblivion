@@ -14,6 +14,7 @@ export class CreateMeetingComponent implements OnInit {
     password2: '',
     title: ''
   };
+  hide = true;
 
   submitted = false;
 
@@ -21,8 +22,9 @@ export class CreateMeetingComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-
-  saveMeeting(): void {}
+  // Create meeting
+  saveMeeting(): void {
+    console.log(this.meeting);
+  }
 
 }
