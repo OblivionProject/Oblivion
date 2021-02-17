@@ -1,0 +1,49 @@
+<!--<p>create-meeting!</p>-->
+
+<section>
+<div class="form-component-row">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter Meeting Name</mat-label>
+    <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.title">
+  </mat-form-field>
+</div>
+</section>
+
+
+
+<section>
+<div class="form-component-row">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter Meeting Password</mat-label>
+    <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1">
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+</section>
+
+<section>
+
+  <div class="form-component-row">
+    <mat-form-field appearance="fill">
+      <mat-label>Enter Meeting Password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide" >
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</section>
+
+<section>
+  <div class="form-component-row">
+
+    <button (click)="saveMeeting()" routerLink="../meeting" mat-stroked-buttun color="primary">Create meeting!</button>
+    <button routerLink="../" mat-stroked-buttun color="primary">Cancel</button>
+
+  </div>
+</section>
+
