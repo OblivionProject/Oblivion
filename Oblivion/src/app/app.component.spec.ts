@@ -26,10 +26,11 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('Oblivion');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('Oblivion app is running!');
-  });
+  // TODO: Add title to Header in future when we implement a nav bar
+  // it('should render title', () => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   fixture.detectChanges();
+  //   const compiled = fixture.nativeElement;
+  //   expect(compiled.querySelector('.content span').textContent).toContain('Oblivion app is running!');
+  // });
 });
