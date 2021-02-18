@@ -22,7 +22,18 @@ wsServer.on('connection', function connection(ws,req) {
     });
 
     ws.on('message', function message(message){
-        console.log(message);
+        console.log(typeof message);
+        //pares the message string and keep track of current users
+        const object = JSON.parse(message);
+        //figure out what type of message
+        if(object.join){
+            //join meeting
+            console.log("Join Meeting Request");
+        } else {
+            //create meeting
+            console.log("Create Meeting Request");
+        }
+        console.log("Message"+message);
     });
 });
 

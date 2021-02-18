@@ -3,4 +3,5 @@ export class Meeting {
   password1?: string;
   password2?: string;
   title?: string;
+  join?: boolean;
 }
