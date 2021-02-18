@@ -5,11 +5,38 @@ const app = express();
 
 // Set up a headless websocket server that prints any
 // events that come in.
-const wsServer = new ws.Server({ noServer: true },console.log("server.js is now listening on port 8080"));
+const wsServer = new ws.Server({ noServer: true });
 
-wsServer.on('connection', socket => {
-    socket.on('message', message => console.log(message));
+wsServer.on('connection', function connection(ws,req) {
+
+    //someone connect to server
+    const ip = req.socket.remoteAddress;
+    //const ipXforward = req.headers['x-forwarded-for'].split(/\s*,\s*/)[0];;
+    console.log('Client Connected with IP : '+ ip);
+    console.log("There are now: "+wsServer.clients.size+" Active Connections");
+
+
+    //When client disconnects
+    ws.on('close',ws => {
+        console.log("There are now: "+wsServer.clients.size+" Active Connections");
+        console.log('Client Disconnected');
+    });
+
+    ws.on('message', function message(message){
+        console.log(message);
+    });
+
+
+
+
+
+
 });
+
+// const PORT = process.env.PORT || 8080;
+// app.listen(PORT,() => {
+//     console.log('Server is running on port '+PORT);
+// });
 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to fuck you application." });

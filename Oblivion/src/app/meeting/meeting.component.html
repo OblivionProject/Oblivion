@@ -1,1 +1,58 @@
-<p>meeting works!</p>
+<mat-sidenav-container class="sidenav-cont">
+  <mat-sidenav-container>
+    <mat-toolbar color="primary">
+      <span>{{tile.text}}</span>
+    </mat-toolbar>
+
+  </mat-sidenav-container>
+
+  <mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile
+      [colspan]="tile.cols"
+      [rowspan]="tile.rows"
+    >
+
+      <p class="video video-description">{{tile.name}}</p>
+      <video #local_video [autoplay]="true" [muted]="false"></video>
+    </mat-grid-tile>
+
+    // Remote videos
+    <mat-grid-tile>
+      <p class="video video-description">remote:</p> <!-- Replace remote with data from user -->
+      <video #remote_video [autoplay]="true" [muted]="true"></video>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+
+
+</mat-sidenav-container>
+
+
+<footer class="footer">
+  <mat-toolbar color="primary">
+    <span>Video Controls:
+
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="bold" (click)="muteLocalVideo()">Hide Video</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="getLocalVideo()">Show Video</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    </span>
+
+
+    <span> Audio Controls:
+
+      <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="bold">Mute Audio</mat-button-toggle>
+        <mat-button-toggle value="bold">Unmute Audio</mat-button-toggle>
+
+    </mat-button-toggle-group>
+
+    </span>
+
+    <button mat-stroked-button  routerLink="../welcome"> Leave Meeting</button>
+
+
+  </mat-toolbar>
+</footer>
+

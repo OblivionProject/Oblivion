@@ -40,3 +40,67 @@
   </div>
 </section>
 
+=======
+<!--<p>create-meeting!</p>-->
+<mat-sidenav-container class = "sidenav-cont">
+  <mat-sidenav-container>
+    <mat-toolbar color="primary">
+      <span>Create a Meeting!</span>
+    </mat-toolbar>
+
+  </mat-sidenav-container>
+
+
+  <section>
+    <div class="form-component-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Enter Meeting Name</mat-label>
+        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.title">
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <div class="form-component-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Enter Meeting Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+
+    <div class="form-component-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Enter Meeting Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide" >
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <div class="form-component-row">
+
+      <button mat-stroked-button color="primary" (click)="saveMeeting()" routerLink="../meeting">Create meeting!</button>
+      <button mat-stroked-button color="primary" routerLink="../" mat-stroked-buttun color="primary">Cancel</button>
+
+    </div>
+  </section>
+
+
+</mat-sidenav-container>
+
+<footer class ="footer">
+  <mat-toolbar color="primary">
+    <span>Footer</span>
+  </mat-toolbar>
+</footer>
