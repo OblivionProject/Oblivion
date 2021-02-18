@@ -12,6 +12,7 @@ export class MeetingComponent implements AfterViewInit {
 
 
   @ViewChild('local_video') localVideo!: ElementRef;
+  remoteStream!: Array<MediaStream>;
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
 
@@ -25,7 +26,8 @@ export class MeetingComponent implements AfterViewInit {
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();
-    // this.media Service.loadRemoteStreams();
+    this.mediaService.loadRemoteStreams();
+    this.remoteStream = this.mediaService.getRemoteStreams();
     // this.list.push({video: this.mediaService, text: 'Tile 1', cols: 2, rows: 1, border: '3px double purple', name: 'Joe'});
   }
 

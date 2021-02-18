@@ -12,14 +12,14 @@
       [rowspan]="tile.rows"
     >
 
-      <p class="video video-description">{{tile.name}}</p>
+      <p class="video video-description"></p>
       <video #local_video [autoplay]="true" [muted]="false"></video>
     </mat-grid-tile>
 
     // Remote videos
-    <mat-grid-tile>
-      <p class="video video-description">remote:</p> <!-- Replace remote with data from user -->
-      <video #remote_video [autoplay]="true" [muted]="true"></video>
+    <mat-grid-tile *ngFor="let vid of remoteStream">
+      <p class="video video-description">Other</p>
+      <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
     </mat-grid-tile>
 
   </mat-grid-list>

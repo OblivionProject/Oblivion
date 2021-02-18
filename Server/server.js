@@ -11,7 +11,6 @@ wsServer.on('connection', function connection(ws,req) {
 
     //someone connect to server
     const ip = req.socket.remoteAddress;
-    //const ipXforward = req.headers['x-forwarded-for'].split(/\s*,\s*/)[0];;
     console.log('Client Connected with IP : '+ ip);
     console.log("There are now: "+wsServer.clients.size+" Active Connections");
 
@@ -25,12 +24,6 @@ wsServer.on('connection', function connection(ws,req) {
     ws.on('message', function message(message){
         console.log(message);
     });
-
-
-
-
-
-
 });
 
 // const PORT = process.env.PORT || 8080;
