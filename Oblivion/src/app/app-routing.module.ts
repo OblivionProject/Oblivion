@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {WelcomeComponent} from './_Components/welcome/welcome.component';
-import {CreateMeetingComponent} from './_Components/create-meeting/create-meeting.component';
-import {MeetingComponent} from './_Components/meeting/meeting.component';
-import {JoinMeetingComponent} from './_Components/join-meeting/join-meeting.component';
+import {WelcomeComponent} from './components/welcome/welcome.component';
+import {CreateMeetingComponent} from './components/create-meeting/create-meeting.component';
+import {MeetingComponent} from './components/meeting/meeting.component';
+import {JoinMeetingComponent} from './components/join-meeting/join-meeting.component';
 
 const routes: Routes = [
 

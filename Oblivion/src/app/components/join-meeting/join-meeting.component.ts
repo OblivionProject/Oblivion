@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Meeting} from "../models/meeting.model";
-import {CreateMeetingService} from "../services/create-meeting.service";
+import {Meeting} from "../../models/meeting.model";
+import {CreateMeetingService} from "../../services/create-meeting.service";
 
 @Component({
   selector: 'app-join-meeting',

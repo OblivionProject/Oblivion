@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
-import {TitleModel} from '../models/title.model';
-import {MediaService} from '../services/media.service';
+import {TitleModel} from '../../models/title.model';
+import {MediaService} from '../../services/media.service';
 
 @Component({
   selector: 'app-meeting',

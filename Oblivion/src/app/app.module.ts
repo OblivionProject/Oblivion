@@ -12,12 +12,12 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { WelcomeComponent} from './_Components/welcome/welcome.component';
-import { CreateMeetingComponent} from './_Components/create-meeting/create-meeting.component';
+import { WelcomeComponent} from './components/welcome/welcome.component';
+import { CreateMeetingComponent} from './components/create-meeting/create-meeting.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
-import {MeetingComponent} from './_Components/meeting/meeting.component';
-import { JoinMeetingComponent } from './_Components/join-meeting/join-meeting.component';
+import {MeetingComponent} from './components/meeting/meeting.component';
+import { JoinMeetingComponent } from './components/join-meeting/join-meeting.component';
 
 
 @NgModule({
