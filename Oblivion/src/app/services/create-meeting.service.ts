@@ -32,6 +32,9 @@ export class CreateMeetingService {
     );
   }
 
+  public disconnect(): void{
+    this.socket$.unsubscribe();
+  }
 
   sendMessage(msg: Meeting): void {
     console.log('Sending Message:' + msg.title);

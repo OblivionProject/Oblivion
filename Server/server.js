@@ -5,11 +5,42 @@ const app = express();
 
 // Set up a headless websocket server that prints any
 // events that come in.
-const wsServer = new ws.Server({ noServer: true },console.log("server.js is now listening on port 8080"));
+const wsServer = new ws.Server({ noServer: true });
 
-wsServer.on('connection', socket => {
-    socket.on('message', message => console.log(message));
+wsServer.on('connection', function connection(ws,req) {
+
+    //someone connect to server
+    const ip = req.socket.remoteAddress;
+    console.log('Client Connected with IP : '+ ip);
+    console.log("There are now: "+wsServer.clients.size+" Active Connections");
+
+
+    //When client disconnects
+    ws.on('close',ws => {
+        console.log("There are now: "+wsServer.clients.size+" Active Connections");
+        console.log('Client Disconnected');
+    });
+
+    ws.on('message', function message(message){
+        console.log(typeof message);
+        //pares the message string and keep track of current users
+        const object = JSON.parse(message);
+        //figure out what type of message
+        if(object.join){
+            //join meeting
+            console.log("Join Meeting Request");
+        } else {
+            //create meeting
+            console.log("Create Meeting Request");
+        }
+        console.log("Message"+message);
+    });
 });
+
+// const PORT = process.env.PORT || 8080;
+// app.listen(PORT,() => {
+//     console.log('Server is running on port '+PORT);
+// });
 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to fuck you application." });
