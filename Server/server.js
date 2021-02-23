@@ -1,12 +1,21 @@
 const express = require('express');
 const ws = require('ws');
-
 const app = express();
 
 // Set up a headless websocket server that prints any
 // events that come in.
 const wsServer = new ws.Server({ noServer: true });
 
+
+// -----------------------------------------------------------------------------------
+// HTTP Server
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to Oblivion Web Conferencing." });
+});
+
+
+// -----------------------------------------------------------------------------------
+// Websocket Server
 wsServer.on('connection', function connection(ws,req) {
 
     //someone connect to server
@@ -35,15 +44,6 @@ wsServer.on('connection', function connection(ws,req) {
         }
         console.log("Message"+message);
     });
-});
-
-// const PORT = process.env.PORT || 8080;
-// app.listen(PORT,() => {
-//     console.log('Server is running on port '+PORT);
-// });
-
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to fuck you application." });
 });
 
 
