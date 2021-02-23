@@ -18,10 +18,15 @@ export class MediaService {
   }
 
   async loadLocalStream() {
-    this.localstream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    this.localstream.getTracks().forEach(track => {
-      track.enabled = true;
-    });
+    try {
+      this.localstream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+      this.localstream.getTracks().forEach(track => {
+        track.enabled = true;
+      });
+      // TODO: Improve error handling
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   loadRemoteStreams() {
