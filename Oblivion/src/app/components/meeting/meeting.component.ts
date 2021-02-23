@@ -17,7 +17,7 @@ export class MeetingComponent implements AfterViewInit {
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
 
-  constructor(private mediaService: MediaService, private meetingService: MeetingService) {
+  constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
   }
 
@@ -44,7 +44,7 @@ export class MeetingComponent implements AfterViewInit {
   // }
 
   ngOnInit(): void {
-    this.meetingService.connect();
+    // this.meetingService.connect();
   }
 
   ngAfterViewInit(): void {

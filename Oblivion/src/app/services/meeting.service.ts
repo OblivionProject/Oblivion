@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {WebSocketSubject} from 'rxjs/internal-compatibility';
 import {Meeting} from "../models/meeting.model";
-import {Subject} from 'rxjs';
+import {PartialObserver, Subject} from 'rxjs';
 import {webSocket} from 'rxjs/webSocket';
 
 export const WS_ENDPOINT = 'ws://localhost:8080'; // TODO: Config file for this
@@ -14,17 +14,50 @@ export class MeetingService {
   private messagesSubject = new Subject<Meeting>();
   public messsage$ = this.messagesSubject.asObservable();
 
+  private user_id!: number;
+
+  private peerConnection!: RTCPeerConnection;
+
+  // private serverConnection!: WebSocket;
+  private peerConnectionConfig = {
+    'iceServers': [
+      {'urls': 'stun:stun.stunprotocol.org:3478'},
+      {'urls': 'stun:stun.l.google.com:19302'},
+    ]
+  };
+
   constructor() { }
 
   public connect(): void{
     this.socket$ = this.getNewWebSocket();
 
+    // this.socket$.subscribe(this.receivedMessage());
+
     this.socket$.subscribe(
       msg => {
-        console.log('Received message of type:' + msg.title);
-        this.messagesSubject.next(msg);
+        // console.log('Received message of type:' + msg.title);
+        // this.messagesSubject.next(msg);
+        this.receivedMessage(msg);
       }
     );
+  }
+
+  private receivedMessage(message: Meeting): void {
+    // const signal = JSON.parse(message);
+    //
+    // if (signal.user_id == this.user_id) return;
+    //
+    // if(signal.sdp) {
+    //   this.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {
+    //     // Only create answers in response to offers
+    //     if(signal.sdp.type == 'offer') {
+    //       this.peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
+    //     }
+    //   }).catch(errorHandler);
+    // } else if(signal.ice) {
+    //   peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+    // }
+
   }
 
   public disconnect(): void{

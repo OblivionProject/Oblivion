@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {MeetingService} from "./meeting.service";
 
 const mediaConstraints = {
   audio: true,
@@ -13,7 +14,9 @@ export class MediaService {
   private localstream!: MediaStream;
   private remoteStreams!: Array<MediaStream>;
 
-  constructor() {
+  private remoteStream!: MediaService;
+
+  constructor(private meetingService: MeetingService) {
     this.remoteStreams = [];
   }
 
