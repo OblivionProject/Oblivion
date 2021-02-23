@@ -17,7 +17,9 @@ export class MeetingComponent implements AfterViewInit {
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
 
-  constructor(private mediaService: MediaService, private meetingService: MeetingService) { }
+  constructor(private mediaService: MediaService, private meetingService: MeetingService) {
+    MeetingComponent.appendWebRTCAdapterScript();
+  }
 
   // ngOnInit(): void {
   //   this.getLocalVideo();
@@ -49,6 +51,13 @@ export class MeetingComponent implements AfterViewInit {
     this.getLocalVideo();
   }
 
-
+  private static appendWebRTCAdapterScript(): void {
+    let node = document.createElement('script');
+    node.src = "https://webrtc.github.io/adapter/adapter-latest.js";
+    node.type = 'text/javascript';
+    node.async = false;
+    node.charset = 'utf-8';
+    document.getElementsByTagName('head')[0].appendChild(node);
+  }
 
 }
