@@ -30,21 +30,35 @@ wsServer.on('connection', function connection(ws,req) {
         console.log('Client Disconnected');
     });
 
-    ws.on('message', function message(message){
+    ws.on('message', (message) => {
         console.log(typeof message);
+        console.log("Received Message " + message);
+
         //pares the message string and keep track of current users
         const object = JSON.parse(message);
-        //figure out what type of message
-        if(object.join){
-            //join meeting
+
+        // Determine Message Type/Contents
+        // WebRTC Connection Message (SDP or ICE candidates)
+        if (object.sdp || object.ice) {
+            wsServer.broadcast(message);
+
+        // Client join meeting request
+        } else if(object.join) {
             console.log("Join Meeting Request");
+
+        // Client create meeting request
         } else {
-            //create meeting
             console.log("Create Meeting Request");
         }
-        console.log("Message"+message);
     });
 });
+
+wsServer.broadcast = function (message) {
+    // For each of the clients send the broadcast
+    this.clients.forEach(function (client) {
+        client.send(message);
+    });
+}
 
 
 // `server` is a vanilla Node.js HTTP server, so use

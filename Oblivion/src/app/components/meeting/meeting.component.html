@@ -16,7 +16,7 @@
       <video #local_video [autoplay]="true" [muted]="false"></video>
     </mat-grid-tile>
 
-    // Remote videos
+    <!-- Remote videos -->
     <mat-grid-tile *ngFor="let vid of remoteStream">
       <p class="video video-description">Other</p>
       <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
@@ -33,8 +33,9 @@
     <span>Video Controls:
 
     <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="bold" (click)="start(true)">Start</mat-button-toggle>
       <mat-button-toggle value="bold" (click)="muteLocalVideo()">Hide Video</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="getLocalVideo()">Show Video</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="unmuteLocalVideo()">Show Video</mat-button-toggle>
     </mat-button-toggle-group>
 
     </span>

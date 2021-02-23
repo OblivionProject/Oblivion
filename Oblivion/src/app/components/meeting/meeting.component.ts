@@ -29,13 +29,17 @@ export class MeetingComponent implements AfterViewInit {
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();
-    this.mediaService.loadRemoteStreams();
-    this.remoteStream = this.mediaService.getRemoteStreams();
+    // this.mediaService.loadRemoteStreams();
+    // this.remoteStream = this.mediaService.getRemoteStreams();
     // this.list.push({video: this.mediaService, text: 'Tile 1', cols: 2, rows: 1, border: '3px double purple', name: 'Joe'});
   }
 
-  muteLocalVideo(): void{
+  public muteLocalVideo(): void{
     this.mediaService.muteLocalVideo();
+  }
+
+  public unmuteLocalVideo(): void {
+    this.mediaService.unmuteLocalVideo();
   }
 
 
@@ -47,8 +51,14 @@ export class MeetingComponent implements AfterViewInit {
     // this.meetingService.connect();
   }
 
-  ngAfterViewInit(): void {
-    this.getLocalVideo();
+  async ngAfterViewInit() {
+    await this.getLocalVideo();
+    this.mediaService.setupWebRTC();
+    this.remoteStream = this.mediaService.getRemoteStreams();
+  }
+
+  public start(isCaller: boolean): void {
+    this.mediaService.start(isCaller);
   }
 
   private static appendWebRTCAdapterScript(): void {
@@ -59,5 +69,4 @@ export class MeetingComponent implements AfterViewInit {
     node.charset = 'utf-8';
     document.getElementsByTagName('head')[0].appendChild(node);
   }
-
 }
