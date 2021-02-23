@@ -1,22 +1,17 @@
 import { Injectable } from '@angular/core';
 import {WebSocketSubject} from 'rxjs/internal-compatibility';
-import {Meeting} from '../models/meeting.model';
+import {Meeting} from "../models/meeting.model";
 import {Subject} from 'rxjs';
 import {webSocket} from 'rxjs/webSocket';
 
-export const WS_ENDPOINT = 'ws://localhost:8080'; // TODO: Config file for this?
-
+export const WS_ENDPOINT = 'ws://localhost:8080'; // TODO: Config file for this
 @Injectable({
   providedIn: 'root'
 })
-
-
-export class CreateMeetingService {
+export class MeetingService {
 
   private socket$!: WebSocketSubject<Meeting>;
-
   private messagesSubject = new Subject<Meeting>();
-
   public messsage$ = this.messagesSubject.asObservable();
 
   constructor() { }
@@ -59,4 +54,3 @@ export class CreateMeetingService {
     });
   }
 }
-

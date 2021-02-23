@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
+import {MeetingService} from "../../services/meeting.service";
 
 @Component({
   selector: 'app-meeting',
@@ -16,7 +17,7 @@ export class MeetingComponent implements AfterViewInit {
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
 
-  constructor(private mediaService: MediaService) { }
+  constructor(private mediaService: MediaService, private meetingService: MeetingService) { }
 
   // ngOnInit(): void {
   //   this.getLocalVideo();
@@ -40,9 +41,9 @@ export class MeetingComponent implements AfterViewInit {
   //   this.getLocalVideo();
   // }
 
-  // ngOnInit(): void {
-  //   this.getLocalVideo();
-  // }
+  ngOnInit(): void {
+    this.meetingService.connect();
+  }
 
   ngAfterViewInit(): void {
     this.getLocalVideo();
