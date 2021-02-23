@@ -11,8 +11,8 @@
   <section>
     <div class="form-component-row">
       <mat-form-field appearance="fill">
-        <mat-label>Enter Meeting Name</mat-label>
-        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.title">
+        <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
+        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.title" id="meeting_name_input">
       </mat-form-field>
     </div>
   </section>
@@ -20,10 +20,10 @@
   <section>
     <div class="form-component-row">
       <mat-form-field appearance="fill">
-        <mat-label>Enter Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1">
+        <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1" id="meeting_password1_input">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide">
+                [attr.aria-pressed]="hide" id="meeting_password1_hide_button">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>
@@ -34,10 +34,10 @@
 
     <div class="form-component-row">
       <mat-form-field appearance="fill">
-        <mat-label>Enter Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2">
+        <mat-label id="meeting_password2_label">Confirm Meeting Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2" id="meeting_password2_input">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide" >
+                [attr.aria-pressed]="hide" id="meeting_password2_hide_button">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>
@@ -47,8 +47,8 @@
   <section>
     <div class="form-component-row">
 
-      <button mat-stroked-button color="primary" (click)="saveMeeting()" routerLink="../meeting">Create meeting!</button>
-      <button mat-stroked-button color="primary" routerLink="../" mat-stroked-buttun color="primary">Cancel</button>
+      <button mat-stroked-button color="primary" (click)="saveMeeting()" routerLink="../meeting" id="create_meeting_submit">Create meeting!</button>
+      <button mat-stroked-button color="primary" routerLink="../welcome" mat-stroked-buttun color="primary" id="create_meeting_exit">Cancel</button>
 
     </div>
   </section>
