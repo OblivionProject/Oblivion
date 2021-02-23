@@ -33,7 +33,7 @@ export class CreateMeetingComponent implements OnInit {
     this.createMeetingService.sendMessage(this.meeting);
     // some way of triggering changing to the meeting component once we get a response back that this was succesfull
 
-    // this.createMeetingService.disconnect();
+    this.createMeetingService.disconnect();
 
   }
 

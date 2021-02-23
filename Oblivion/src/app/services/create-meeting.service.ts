@@ -53,7 +53,7 @@ export class CreateMeetingService {
         next: () => {
           console.log('DataService: connection Closed');
           // this.socket$ = null;
-          this.connect(); // try to reconnect
+          //this.connect(); // try to reconnect TODO: Ask Joe why this is here
         }
       }
     });
