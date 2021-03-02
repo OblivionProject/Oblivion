@@ -13,7 +13,7 @@ export class MeetingComponent implements AfterViewInit {
 
 
   @ViewChild('local_video') localVideo!: ElementRef;
-  remoteStream!: Array<MediaStream>;
+  private remoteStreams: {[key: number]: MediaStream} = {};
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
 
@@ -21,17 +21,9 @@ export class MeetingComponent implements AfterViewInit {
     MeetingComponent.appendWebRTCAdapterScript();
   }
 
-  // ngOnInit(): void {
-  //   this.getLocalVideo();
-  // }
-
-
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();
-    // this.mediaService.loadRemoteStreams();
-    // this.remoteStream = this.mediaService.getRemoteStreams();
-    // this.list.push({video: this.mediaService, text: 'Tile 1', cols: 2, rows: 1, border: '3px double purple', name: 'Joe'});
   }
 
   public muteLocalVideo(): void{
@@ -42,24 +34,48 @@ export class MeetingComponent implements AfterViewInit {
     this.mediaService.unmuteLocalVideo();
   }
 
-
-  // ngAfterViewInit(): void {
-  //   this.getLocalVideo();
-  // }
-
-  ngOnInit(): void {
-    // this.meetingService.connect();
-  }
-
   async ngAfterViewInit() {
     await this.getLocalVideo();
     this.mediaService.setupWebRTC();
-    this.remoteStream = this.mediaService.getRemoteStreams();
+    // this.remoteStreams = {};
+    this.remoteStreams = this.mediaService.getRemoteStreams();
+
+    // Multiple proto
+    //this.mediaService.requestMeetingInformation();
   }
 
   public start(isCaller: boolean): void {
-    this.mediaService.start(isCaller);
+    //this.mediaService.start(isCaller);
+    this.mediaService.requestMeetingInformation();
+    // this.remoteStreams = this.mediaService.getRemoteStreams();
   }
+
+  public getRemoteStreams1() {
+    this.remoteStreams = this.mediaService.getRemoteStreams();
+    console.log(this.mediaService.getRemoteStreams());
+    (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
+        console.log(track);
+    });
+    console.log(this.localVideo.nativeElement.srcObject);
+  }
+
+  public getRemoteStreams() {
+    return Object.values(this.remoteStreams);
+  }
+
+  //-----------------------------------------------------------------------------
+  // The functions in this section are intended for development use only
+  public TEST() {
+    console.log(Object.keys(this.mediaService.getPeers()).length);
+    console.log(this.mediaService.getPeers());
+  }
+
+  public clearMeeting() {
+    this.remoteStreams = [];
+    this.mediaService.clearMeeting();
+  }
+  // End development functions
+  //-----------------------------------------------------------------------------
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');

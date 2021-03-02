@@ -4,7 +4,7 @@ import {Meeting} from '../models/meeting.model';
 import {Subject} from 'rxjs';
 import {webSocket} from 'rxjs/webSocket';
 
-export const WS_ENDPOINT = 'ws://localhost:8080'; // TODO: Config file for this?
+export const WS_ENDPOINT = 'ws://localhost:8080'; //'ws://172.28.204.8:8080';//'ws://localhost:8080'; // TODO: Config file for this?
 
 @Injectable({
   providedIn: 'root'
