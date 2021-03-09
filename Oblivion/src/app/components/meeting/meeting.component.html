@@ -16,8 +16,8 @@
       <video #local_video [autoplay]="true" [muted]="false"></video>
     </mat-grid-tile>
 
-    // Remote videos
-    <mat-grid-tile *ngFor="let vid of remoteStream">
+    <!-- Remote videos -->
+    <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
       <p class="video video-description">Other</p>
       <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
     </mat-grid-tile>
@@ -33,8 +33,12 @@
     <span>Video Controls:
 
     <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="bold" (click)="clearMeeting()">clrMeet</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="TEST()">getPeers</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="getRemoteStreams1()">rs</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="start(true)">Start</mat-button-toggle>
       <mat-button-toggle value="bold" (click)="muteLocalVideo()">Hide Video</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="getLocalVideo()">Show Video</mat-button-toggle>
+      <mat-button-toggle value="bold" (click)="unmuteLocalVideo()">Show Video</mat-button-toggle>
     </mat-button-toggle-group>
 
     </span>
