@@ -8,7 +8,7 @@ class Meeting {
         this.nextID = 0;
     }
 
-    // Create a response to the Request Meeting Information request
+    // Create a response to the Request Meeting Information request & add to meeting
     // Assign the user an ID and send the current user ids
     generateRMIResponse(ws) {
         const id = this.generateUserID();
@@ -32,27 +32,28 @@ class Meeting {
 
     addUser(ws, id) {
         this.clients.push(ws);
-        this.clientIDs.push(id); // TODO: Delete this later
+        this.clientIDs.push(id);
     }
 }
 
+
 const express = require('express');
-const ws = require('ws');
 const app = express();
+const https = require('https');
+const fs = require('fs');
 
-// Set up a headless websocket server that prints any
-// events that come in.
-// const wsServer = new ws.Server({ host: '172.28.204.8', noServer: true });
-const wsServer = new ws.Server({ noServer: true });
+const credentials = {
+    key: fs.readFileSync(''),
+    cert: fs.readFileSync(''),
+}
 
+console.log(credentials);
 
-// -----------------------------------------------------------------------------------
-// HTTP Server TODO: Can this be deleted?
-//
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Oblivion Web Conferencing." });
-});
+const httpsServer = https.createServer(credentials, app);
+httpsServer.listen(port=8080);
 
+const WebSocketServer = require('ws').Server;
+const wsServer = new WebSocketServer({server: httpsServer});
 
 // -----------------------------------------------------------------------------------
 // Websocket Server
@@ -112,68 +113,9 @@ function connection(ws, req) {
     });
 }
 
-/*
-wsServer.on('connection', (ws,req) => {
-
-    //someone connect to server  TODO: This can be removed?
-    const ip = req.socket.remoteAddress;
-    console.log('Client Connected with IP : '+ ip);
-    console.log("There are now: "+wsServer.clients.size+" Active Connections");
-
-
-    //When client disconnects
-    ws.on('close',ws => {
-        console.log("There are now: "+wsServer.clients.size+" Active Connections");
-        console.log('Client Disconnected');
-    });
-
-    ws.on('message', (message) => {
-        console.log(typeof message);
-        console.log("Received Message " + message);
-
-        //pares the message string and keep track of current users
-        const object = JSON.parse(message);
-
-        // Determine Message Type/Contents
-        // WebRTC Connection Message (SDP or ICE candidates)
-        if (object.sdp || object.ice) {
-            wsServer.broadcast(message);
-
-        // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (object.rmi) {
-            console.log('RMI request received');
-            const message = meeting.generateRMIResponse();
-            console.log('After generating message');
-            ws.send(message);
-            console.log('Response:\n' + message);
-
-        // Client join meeting request
-        } else if(object.join) {
-            console.log("Join Meeting Request");
-
-        // Client create meeting request
-        } else {
-            console.log("Create Meeting Request");
-            meeting = new Meeting('Test');
-        }
-    });
-});
- */
-
 wsServer.broadcast = function (message) {
     // For each of the clients send the broadcast
     this.clients.forEach(function (client) {
         client.send(message);
     });
 }
-
-
-// `server` is a vanilla Node.js HTTP server, so use
-// the same ws upgrade process described here:
-// https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
-const server = app.listen(8080);
-server.on('upgrade', (request, socket, head) => {
-    wsServer.handleUpgrade(request, socket, head, socket => {
-        wsServer.emit('connection', socket, request);
-    });
-});

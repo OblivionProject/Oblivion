@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import {MeetingService} from "./meeting.service";
-import {WebSocketSubject} from "rxjs/internal-compatibility";
-import {Meeting} from "../models/meeting.model";
-import {Subject} from "rxjs";
-import {webSocket} from "rxjs/webSocket";
-import {ignoreElements} from "rxjs/operators";
 
-export const WS_ENDPOINT = 'ws://localhost:8080';//'ws://172.28.204.8:8080';  // 'ws://localhost:8080';
+export const WS_ENDPOINT = 'wss://192.168.0.36:8087'; // 'ws://localhost:8080';//'ws://172.21.125.128:8080';
 
 const mediaConstraints = {
   audio: true,
@@ -18,11 +12,11 @@ const mediaConstraints = {
 })
 export class MediaService {
 
-  private server!: WebSocket;
-  private userId!: number;
-  private remoteStreams: {[key: number]: MediaStream};
-  private peers: {[key: number]: RTCPeerConnection};
-  private localstream!: MediaStream;
+  private server!: WebSocket; // Server connection to get connected to peers
+  private userId!: number;    // This users ID
+  private localstream!: MediaStream;  // Local video
+  private remoteStreams: {[key: number]: MediaStream};  // Remote videos
+  private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
   private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use
     'iceServers': [
       {'urls': 'stun:stun.stunprotocol.org:3478'},
@@ -36,9 +30,12 @@ export class MediaService {
   }
 
   // ----- WebRTC prototype functions -----
+  // TODO: Change this name (Doesn't setup webrtc)
   public setupWebRTC(): void {
     this.server = new WebSocket(WS_ENDPOINT);
     this.server.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.server.onerror = (event: Event) => console.log(event);
+    this.server.onclose = (event: CloseEvent) => console.log(event);
   }
 
   // This method is called on startup to join the current meeting
@@ -53,7 +50,7 @@ export class MediaService {
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
     this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
-      peer.addTrack(track);  // Add The local audio and video tracks to the peer conneciton
+      peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
     });
 
     // Add the new peer to the list
@@ -200,6 +197,6 @@ export class MediaService {
   public unmuteLocalVideo(): void {
     this.localstream.getTracks().forEach(track => {
       track.enabled = true;
-    })
+    });
   }
 }
