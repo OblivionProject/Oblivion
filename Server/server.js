@@ -38,7 +38,7 @@ class Meeting {
                 client.send(message);
             });
 
-        // Request Meeting Information (When a client joins assign them an id and send them contact list)
+            // Request Meeting Information (When a client joins assign them an id and send them contact list)
         } else if (data.rmi) {
             const message = this.generateRMIResponse(ws);
             ws.send(message);
@@ -127,7 +127,7 @@ function connection(ws, req) {
                         // TODO: Send incorrect password message to client
                     }
 
-                // Join if the meeting has no password
+                    // Join if the meeting has no password
                 } else {
                     ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
                 }
@@ -136,7 +136,7 @@ function connection(ws, req) {
                 // TODO: Send a meeting not found message to client
             }
 
-        // Client create meeting request
+            // Client create meeting request
         } else if (data.meetingType && data.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
 

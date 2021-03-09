@@ -1,62 +1,28 @@
-<mat-sidenav-container class="sidenav-cont">
-  <mat-sidenav-container>
-    <mat-toolbar color="primary">
-      <span>{{tile.text}}</span>
-    </mat-toolbar>
+<mat-sidenav-container class = "sidenav-cont-cont">
+  <mat-sidenav-container class="sidenav-cont">
+    <mat-grid-list cols="2" rowHeight="2:1">
+      <mat-grid-tile
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows">
+        <p class="video video-description"></p>
+        <video #local_video [autoplay]="true" [muted]="false"></video>
+      </mat-grid-tile>
 
+      <!-- Remote videos -->
+      <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
+        <p class="video video-description">Other</p>
+        <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
+      </mat-grid-tile>
+    </mat-grid-list>
   </mat-sidenav-container>
 
-  <mat-grid-list cols="2" rowHeight="2:1">
-    <mat-grid-tile
-      [colspan]="tile.cols"
-      [rowspan]="tile.rows"
-    >
+  <footer class="footer">
+    <mat-toolbar id = "footer">
 
-      <p class="video video-description"></p>
-      <video #local_video [autoplay]="true" [muted]="false"></video>
-    </mat-grid-tile>
+      <button mat-raised-button color="warn">Audio</button>
+      <button mat-raised-button color="warn">Video</button>
+      <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
 
-    <!-- Remote videos -->
-    <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
-      <p class="video video-description">Other</p>
-      <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
-    </mat-grid-tile>
-
-  </mat-grid-list>
-
-
+    </mat-toolbar>
+  </footer>
 </mat-sidenav-container>
-
-
-<footer class="footer">
-  <mat-toolbar color="primary">
-    <span>Video Controls:
-
-    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-      <mat-button-toggle value="bold" (click)="clearMeeting()">clrMeet</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="TEST()">getPeers</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="getRemoteStreams1()">rs</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="start(true)">Start</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="muteLocalVideo()">Hide Video</mat-button-toggle>
-      <mat-button-toggle value="bold" (click)="unmuteLocalVideo()">Show Video</mat-button-toggle>
-    </mat-button-toggle-group>
-
-    </span>
-
-
-    <span> Audio Controls:
-
-      <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-      <mat-button-toggle value="bold">Mute Audio</mat-button-toggle>
-        <mat-button-toggle value="bold">Unmute Audio</mat-button-toggle>
-
-    </mat-button-toggle-group>
-
-    </span>
-
-    <button mat-stroked-button  routerLink="../welcome"> Leave Meeting</button>
-
-
-  </mat-toolbar>
-</footer>
-

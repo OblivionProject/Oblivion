@@ -15,6 +15,28 @@ button {
 
 
 .sidenav-cont{
-  height: 93.4%;
+  height: 87.5%;
+}
+
+.sidenav-cont-cont{
+  height:93%;
+  width: 100%;
+  z-index: 2;
+}
+
+.footer{
+  bottom: 0;
+  position: absolute;
+  height: 8.5%;
+  width: 100%;
+}
+
+#footer{
+  height: 100%;
+  background: #50a3a2;
+  background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+  background: -moz-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+  background: -o-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+  background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
 }
 

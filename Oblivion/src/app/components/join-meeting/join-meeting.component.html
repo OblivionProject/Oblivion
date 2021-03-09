@@ -1,64 +1,30 @@
-<!--//<p>join-meeting works!</p>-->
-
-<mat-sidenav-container class = "sidenav-cont">
-  <mat-sidenav-container>
-    <mat-toolbar color="primary">
-      <span>Join a Meeting!</span>
-    </mat-toolbar>
-
+<mat-sidenav-container class = "sidenav-cont-cont">
+  <h1 class="mat-display-1" id="join_meeting_header">Join Meeting</h1>
+  <mat-sidenav-container class = "sidenav-cont">
+    <section>
+      <div class="form-component-row">
+        <mat-form-field appearance="fill" class="form-field" color="accent">
+          <mat-label>Enter Meeting ID</mat-label>
+          <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID">
+        </mat-form-field>
+      </div>
+    </section>
+    <section>
+      <div class="form-component-row">
+        <mat-form-field appearance="fill" class="form-field" color="accent">
+          <mat-label>Enter Meeting Password</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </section>
   </mat-sidenav-container>
-
-
-  <section>
-    <div class="form-component-row">
-      <mat-form-field appearance="fill">
-        <mat-label>Enter Meeting ID</mat-label>
-        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID">
-      </mat-form-field>
-    </div>
-  </section>
-
-  <section>
-    <div class="form-component-row">
-      <mat-form-field appearance="fill">
-        <mat-label>Enter Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide">
-          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-  </section>
-
-<!--  <section>-->
-
-<!--    <div class="form-component-row">-->
-<!--      <mat-form-field appearance="fill">-->
-<!--        <mat-label>reEnter Meeting Password</mat-label>-->
-<!--        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2">-->
-<!--        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"-->
-<!--                [attr.aria-pressed]="hide" >-->
-<!--          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>-->
-<!--        </button>-->
-<!--      </mat-form-field>-->
-<!--    </div>-->
-<!--  </section>-->
-
-  <section>
-    <div class="form-component-row">
-
-      <button mat-stroked-button color="primary" (click)="joinMeeting()" routerLink="../meeting">Join meeting!</button>
-      <button mat-stroked-button color="primary" routerLink="../" mat-stroked-buttun color="primary">Cancel</button>
-
-    </div>
-  </section>
-
-
+  <hr class="my-4">
+  <mat-sidenav-container class = "sidenav-button">
+    <button mat-raised-button color="primary" (click)="joinMeeting()" routerLink="../meeting" id="join_meeting_submit">Join</button>
+    <button mat-flat-button color="warn" id="join_meeting_cancel" routerLink="../">Cancel</button>
+  </mat-sidenav-container>
 </mat-sidenav-container>
-
-<footer class ="footer">
-  <mat-toolbar color="primary">
-    <span>Footer</span>
-  </mat-toolbar>
-</footer>

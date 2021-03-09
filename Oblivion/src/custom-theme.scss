@@ -1,0 +1,129 @@
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+@mixin html-theme($theme,$background,$background2, $text,$button_text,$button_background,$button_cancel) {
+  & {
+    background: $background;
+    background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
+    background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
+    background: -o-linear-gradient(top left, $background 0%, $background2 100%);
+    background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+    .mat-form-field-empty.mat-form-field-label {
+      color:$text;
+      opacity: 0.8;
+      font-family: "Times New Roman", Times, serif;
+    }
+    .mat-form-field-appearance-fill, .mat-form-field-outline-fill{
+      color: $text;
+      font-family: "Times New Roman", Times, serif;
+    }
+    .mat-raised-button{
+      background: $button_background;
+      color: $button_text;
+      opacity: 0.9;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 50px;
+      border-radius: 5px;
+      font-weight: lighter;
+    }
+    .mat-flat-button{
+      font-size: 30px;
+      font-family: "Times New Roman", Times, serif;
+      color: $button_cancel;
+    }
+    .mat-display-1{
+      color: $text;
+      font-family: "Times New Roman", Times, serif;
+    }
+  }
+}
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+// -------------- light theme -------------- //
+$light-app-primary: mat-palette($mat-grey, 50);
+$light-app-accent:  mat-palette($mat-blue-grey, 600, 500, 400);
+$light-app-warn:    mat-palette($mat-grey,A900);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as `color` or `typography`.
+$light-app-theme: mat-light-theme((
+  color: (
+    primary: $light-app-primary,
+    accent: $light-app-accent,
+    warn: $light-app-warn,
+  )
+));
+$light-app-theme-text: white;
+$light-app-theme-background: #50a3a2;
+$light-app-theme-background2: #53e3a6;
+$light-app-theme-button_text: #53e3a6;
+$light-app-theme-button_background: white;
+$light-app-theme-button_cancel: #50a3a2;
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+
+// -------------- light theme -------------- //
+
+
+
+// -------------- dark theme -------------- //
+
+$dark-app-primary: mat-palette($mat-blue-gray, 500);
+$dark-app-accent:  mat-palette($mat-cyan, 200);
+$dark-app-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as `color` or `typography`.
+$dark-app-theme: mat-light-theme((
+  color: (
+    primary: $dark-app-primary,
+    accent: $dark-app-accent,
+    warn: $dark-app-warn,
+  )
+));
+$dark-app-theme-text: #333333;
+$dark-app-theme-background: #50a3a2;
+$dark-app-theme-background2: #333333;
+$dark-app-theme-button_text: #50a3a2;
+$dark-app-theme-button_background: #333333;
+$dark-app-theme-button_cancel: #333333;
+
+
+.dark-theme-mode {
+  @include angular-material-theme($dark-app-theme);
+}
+
+@at-root .output.dark-theme-mode {
+  @include html-theme($dark-app-theme,$dark-app-theme-background,$dark-app-theme-background2,
+    $dark-app-theme-text,
+    $dark-app-theme-button_text,
+    $dark-app-theme-button_background,
+    $dark-app-theme-button_cancel);
+}
+
+
+
+.light-theme-mode{
+  @include angular-material-theme($light-app-theme);
+}
+
+@at-root .output.light-theme-mode {
+  @include html-theme($light-app-theme,
+    $light-app-theme-background,
+    $light-app-theme-background2,
+    $light-app-theme-text,
+    $light-app-theme-button_text,
+    $light-app-theme-button_background,
+    $light-app-theme-button_cancel
+  );
+}

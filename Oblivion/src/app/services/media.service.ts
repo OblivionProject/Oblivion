@@ -82,13 +82,13 @@ export class MediaService {
         })
         .catch(this.errorHandler);
 
-    // Handle the ICE server information
+      // Handle the ICE server information
     } else if (signal.ice && signal.userId != this.userId && signal.recipientID == this.userId) {
       const currentPeer: RTCPeerConnection = this.getPeerById(signal.userId);
       currentPeer.addIceCandidate(new RTCIceCandidate(signal.ice))
         .catch(this.errorHandler);
 
-    // Handle the RMI response
+      // Handle the RMI response
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
       // Create new peer connection offers for each of the peers currently in the meeting

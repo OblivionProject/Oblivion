@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {WelcomeComponent} from './components/welcome/welcome.component';
 import {CreateMeetingComponent} from './components/create-meeting/create-meeting.component';
@@ -17,6 +17,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  schemas: []
+
 })
 export class AppRoutingModule { }
