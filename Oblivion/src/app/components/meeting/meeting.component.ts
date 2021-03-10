@@ -24,6 +24,7 @@ export class MeetingComponent implements AfterViewInit {
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();
+    this.localVideo.nativeElement.muted = true;
   }
 
   public muteLocalVideo(): void{
