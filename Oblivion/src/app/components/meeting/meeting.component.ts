@@ -15,9 +15,13 @@ export class MeetingComponent implements AfterViewInit {
   private remoteStreams: {[key: number]: MediaStream} = {};
 
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
+  video: boolean;
+  audio:boolean;
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
+    this.video = false;
+    this.audio = false;
   }
 
   async getLocalVideo(): Promise<void> {

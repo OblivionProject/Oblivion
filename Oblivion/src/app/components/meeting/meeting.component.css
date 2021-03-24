@@ -15,6 +15,22 @@ button {
 
 
 .sidenav-cont{
-  height: 93.4%;
+  height: 87.5%;
 }
 
+.sidenav-cont-cont{
+  height:93%;
+  width: 100%;
+  z-index: 2;
+}
+
+.footer{
+  bottom: 0;
+  position: absolute;
+  height: 8.5%;
+  width: 100%;
+}
+
+#footer{
+  height: 100%;
+}

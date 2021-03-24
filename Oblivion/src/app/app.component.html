@@ -7,5 +7,29 @@
 <!-- * * * * * * * to get started with your project! * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
+<mat-sidenav-container class="output" [ngClass]="{'dark-theme-mode':globals.darkMode, 'light-theme-mode':!globals.darkMode}">
+  <mat-sidenav-container id="top">
+    <mat-toolbar id="header">
+      <span class="header"> &#9885; Oblivion</span>
+      <span style="flex:auto"></span>
+      <mat-slide-toggle id="toggle"
+        [checked]="globals.darkMode === true"
+        (change) = "setValue($event)">
+        Dark Mode</mat-slide-toggle>
+    </mat-toolbar>
+  </mat-sidenav-container>
 
-<router-outlet></router-outlet>
+  <router-outlet class="router"></router-outlet>
+  <ul class="bg-bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</mat-sidenav-container>

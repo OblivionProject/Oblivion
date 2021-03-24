@@ -83,7 +83,7 @@ describe('CreateMeetingComponent', () => {
     spyOn(component, 'saveMeeting');
 
     const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_submit');
-    expect(button.innerHTML).toEqual('Create meeting!');
+    expect(button.innerHTML).toEqual('Create');
 
     button.click();
     tick();
@@ -91,10 +91,10 @@ describe('CreateMeetingComponent', () => {
   }));
 
   it('should contain an exit meeting button that should redirect to welcome page', () => {
-    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_exit');
+    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_cancel');
     expect(button.innerHTML).toEqual('Cancel');
 
     const path = button.getAttribute('routerLink');
-    expect(path).toEqual('../welcome');
+    expect(path).toEqual('../');
   });
 });

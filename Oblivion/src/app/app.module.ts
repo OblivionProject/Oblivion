@@ -8,7 +8,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
-import { NgModule } from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,6 +18,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {MeetingComponent} from './components/meeting/meeting.component';
 import { JoinMeetingComponent } from './components/join-meeting/join-meeting.component';
+import {MatSlideToggleModule, MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {ReactiveFormsModule} from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { Globals } from './global';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 
 @NgModule({
@@ -43,8 +48,13 @@ import { JoinMeetingComponent } from './components/join-meeting/join-meeting.com
     MatSidenavModule,
     MatToolbarModule,
     MatGridListModule,
+    MatSlideToggleModule,
+    FormsModule,
+    MatCardModule,
+    OverlayModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [Globals],
+  bootstrap: [AppComponent],
+  // schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

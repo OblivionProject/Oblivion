@@ -25,5 +25,4 @@ export class CreateMeetingComponent {
     console.log(JSON.stringify(this.meeting));
     this.webSocket.send(JSON.stringify(this.meeting));
   }
-
 }
