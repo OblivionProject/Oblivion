@@ -13,7 +13,7 @@
     <div class="form-component-row">
       <mat-form-field appearance="fill">
         <mat-label>Enter Meeting ID</mat-label>
-        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.id">
+        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID">
       </mat-form-field>
     </div>
   </section>
@@ -22,7 +22,7 @@
     <div class="form-component-row">
       <mat-form-field appearance="fill">
         <mat-label>Enter Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1">
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>

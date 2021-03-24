@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export const WS_ENDPOINT = 'wss://192.168.0.36:8087'; // 'ws://localhost:8080';//'ws://172.21.125.128:8080';
+import {WebsocketService} from "./websocket.service";
 
 const mediaConstraints = {
   audio: true,
@@ -12,30 +11,25 @@ const mediaConstraints = {
 })
 export class MediaService {
 
-  private server!: WebSocket; // Server connection to get connected to peers
+  private webSocket: WebSocket; // Server connection to get connected to peers
   private userId!: number;    // This users ID
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
-  private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use
+  private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use, add turn servers?
     'iceServers': [
       {'urls': 'stun:stun.stunprotocol.org:3478'},
       {'urls': 'stun:stun.l.google.com:19302'},
     ]
   };
 
-  constructor() {
+  constructor(websocketService: WebsocketService) {
+    this.webSocket = websocketService.getWebSocket();
+    this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
+    this.webSocket.onerror = (event: Event) => console.log(event);
     this.remoteStreams = {};
     this.peers = {};
-  }
-
-  // ----- WebRTC prototype functions -----
-  // TODO: Change this name (Doesn't setup webrtc)
-  public setupWebRTC(): void {
-    this.server = new WebSocket(WS_ENDPOINT);
-    this.server.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
-    this.server.onerror = (event: Event) => console.log(event);
-    this.server.onclose = (event: CloseEvent) => console.log(event);
   }
 
   // This method is called on startup to join the current meeting
@@ -65,13 +59,14 @@ export class MediaService {
       .catch(this.errorHandler);
   }
 
-  private receivedRequestFromServer(message: MessageEvent) {
+  public receivedRequestFromServer(message: MessageEvent) {
 
     const signal = JSON.parse(message.data);
+    console.log(signal);
 
     // Debugging Statements TODO: Remove
-    // console.log('Request from Server:');
-    // console.log(message);
+    console.log('Request from Server:');
+    console.log(message);
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
@@ -134,18 +129,29 @@ export class MediaService {
   }
 
   private sendDescription(peer: RTCPeerConnection, recipientID: number): void {
-    const message = JSON.stringify({'sdp': peer.localDescription, 'userId': this.userId, 'recipientID': recipientID});
+    const message = JSON.stringify(
+      {
+        'sdp': peer.localDescription,
+        'userId': this.userId,
+        'recipientID': recipientID
+      });
     this.messageServer(message);
   }
 
   private messageServer(message: string) {
     // TODO: Does this need error handling?
-    return this.server.send(message);
+    return this.webSocket.send(message);
   }
 
   private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number) {
     if (event.candidate != null) {
-      this.server.send(JSON.stringify({'ice': event.candidate, 'userId': this.userId, 'recipientID': recipientID }));
+      this.webSocket.send(
+        JSON.stringify(
+          {
+            'ice': event.candidate,
+            'userId': this.userId,
+            'recipientID': recipientID
+          }));
     }
   }
 
@@ -184,7 +190,7 @@ export class MediaService {
     return this.localstream;
   }
 
-  public getRemoteStreams(): {[key: number]: MediaStream} {//Array<MediaStream> {
+  public getRemoteStreams(): {[key: number]: MediaStream} {
     return this.remoteStreams;
   }
 

@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
-import {MeetingService} from "../../services/meeting.service";
 
 @Component({
   selector: 'app-meeting',
@@ -37,12 +36,8 @@ export class MeetingComponent implements AfterViewInit {
 
   async ngAfterViewInit() {
     await this.getLocalVideo();
-    this.mediaService.setupWebRTC();
-    // this.remoteStreams = {};
+    this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
-
-    // Multiple proto
-    //this.mediaService.requestMeetingInformation();
   }
 
   public start(isCaller: boolean): void {

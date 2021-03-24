@@ -1,20 +1,49 @@
 // TODO: Convert this to a node module
 class Meeting {
 
-    constructor(name) {
+    constructor(name, meetingID) {
         this.name = name;     // Name of the meeting
         this.clients = [];    // List of WebSocket connections
         this.clientIDs = [];  // List of client ID's DELETE?
         this.nextID = 0;
+        this.hasPassword = false;
+        this.password = '';
+        this.meetingID = meetingID;
+    }
+
+    setPassword(password) {
+        if (!this.hasPassword) {
+            this.password = password;
+            this.hasPassword = true;
+        }
     }
 
     // Create a response to the Request Meeting Information request & add to meeting
     // Assign the user an ID and send the current user ids
     generateRMIResponse(ws) {
         const id = this.generateUserID();
-        const message = JSON.stringify({'rmi': true, 'clientIDs': meeting.getClientUserIDs(), 'userId': id});
+        const message = JSON.stringify({'rmi': true, 'clientIDs': this.getClientUserIDs(), 'userId': id});
         this.addUser(ws, id);
         return message;
+    }
+
+    onMessage(ws, message) {
+
+        console.log('In new onMessage');
+        const data = JSON.parse(message);
+
+        // Handle WebRTC Connection Message (SDP or ICE candidates)
+        if (data.sdp || data.ice) {
+            this.getClients().forEach(function(client) {
+                client.send(message);
+            });
+
+        // Request Meeting Information (When a client joins assign them an id and send them contact list)
+        } else if (data.rmi) {
+            const message = this.generateRMIResponse(ws);
+            ws.send(message);
+            console.log('Response:\n' + message);
+        }
     }
 
     generateUserID() {
@@ -50,7 +79,7 @@ const credentials = {
 console.log(credentials);
 
 const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(port=8080);
+httpsServer.listen(8080);
 
 const WebSocketServer = require('ws').Server;
 const wsServer = new WebSocketServer({server: httpsServer});
@@ -59,9 +88,7 @@ const wsServer = new WebSocketServer({server: httpsServer});
 // Websocket Server
 //
 
-// Stores all the current meetings
-// let meetings = [];
-let meeting = new Meeting('Test');
+let meetings = {};      // Stores all the current meetings
 
 wsServer.on('connection', connection);
 
@@ -71,51 +98,72 @@ function connection(ws, req) {
     console.log('Client Connected with IP : '+ ip);
     console.log("There are now: "+wsServer.clients.size+" Active Connections");
 
-    //When client disconnects
+    // When a client disconnects TODO: Remove the client from the current meeting?
     ws.on('close',ws => {
         console.log("There are now: "+wsServer.clients.size+" Active Connections");
         console.log('Client Disconnected');
     });
 
     ws.on('message', (message) => {
-        console.log(typeof message);
+
         console.log("Received Message " + message);
 
-        //pares the message string and keep track of current users
-        const object = JSON.parse(message);
-
-        // Determine Message Type/Contents
-        // WebRTC Connection Message (SDP or ICE candidates)
-        if (object.sdp || object.ice) {
-            wsServer.broadcast(message);
-
-        // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (object.rmi) {
-            console.log('RMI request received');
-            //meeting.addUser(ws)
-            const message = meeting.generateRMIResponse(ws);
-            ws.send(message);
-            console.log('Response:\n' + message);
-
-        // Clears the meeting TESTING
-        } else if (object.res) {
-           meeting = new Meeting('Test');
+        // Parse the message
+        const data = JSON.parse(message);
 
         // Client join meeting request
-        } else if(object.join) {
+        if (data.meetingType && data.meetingType === 'JOIN') {
+
             console.log("Join Meeting Request");
 
-            // Client create meeting request
-        } else {
+            const meetingID = data.meetingID;
+            if (meetingID in meetings) {
+                const meetingToJoin = meetings[meetingID];
+                if (meetingToJoin.hasPassword) {
+                    if (data.password === meetingToJoin.password) {
+                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+
+                    } else {
+                        // TODO: Send incorrect password message to client
+                    }
+
+                // Join if the meeting has no password
+                } else {
+                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                }
+
+            } else {
+                // TODO: Send a meeting not found message to client
+            }
+
+        // Client create meeting request
+        } else if (data.meetingType && data.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
-            //meeting = new Meeting('Test');
+
+            const newMeetingID = generateUniqueMeetingID();
+            const newMeeting = new Meeting('New Meeting', newMeetingID); // TODO: Change 'New Meeting' to meeting name
+
+            // Check if the meeting should have a password
+            if (data.password !== '') {
+                newMeeting.setPassword(data.password);
+            }
+
+            // Update the on message function to be specific to the meeting
+            ws.on('message', (message) => newMeeting.onMessage(ws, message));
+
+            newMeeting.generateRMIResponse(ws); // Generate RMI response is needed to create the new user
+            meetings[newMeetingID] = newMeeting; // Add the meeting to the meetings array
+            console.log('Meeting ID: ' + newMeetingID);
         }
     });
 }
 
-wsServer.broadcast = function (message) {
-    // For each of the clients send the broadcast
-    this.clients.forEach(function (client) {
-        client.send(message);
-    });
+// Generates a random unique 5 digit meeting code
+// This is guaranteed unique by checking the existing codes
+function generateUniqueMeetingID() {
+    let id = Math.floor(Math.random()*90000) + 10000;
+    while (id in meetings) {
+        id = Math.floor(Math.random()*90000) + 10000;
+    }
+    return id;
 }
