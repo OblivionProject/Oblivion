@@ -11,7 +11,7 @@ export class Meeting {
   public password2?: string;
   public title?: string;
   //join?: boolean;
-  //id?: any;
+  id?: any;
 
   constructor(meetingType: MEETING_TYPE) {
     this.meetingType = meetingType;
