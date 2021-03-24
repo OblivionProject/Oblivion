@@ -1,11 +1,20 @@
 // TODO: Convert this to a node module
 class Meeting {
 
-    constructor(name) {
+    constructor(name, meetingID) {
         this.name = name;     // Name of the meeting
         this.clients = [];    // List of WebSocket connections
         this.clientIDs = [];  // List of client ID's DELETE?
         this.nextID = 0;
+        this.hasPassword = false;
+        this.password = '';
+        this.meetingID = meetingID;
+    }
+
+    setPassword(password) {
+        if (!this.hasPassword) {
+            this.password = password;
+        }
     }
 
     // Create a response to the Request Meeting Information request & add to meeting
@@ -60,7 +69,7 @@ const wsServer = new WebSocketServer({server: httpsServer});
 //
 
 // Stores all the current meetings
-// let meetings = [];
+let meetings = {};
 let meeting = new Meeting('Test');
 
 wsServer.on('connection', connection);
@@ -101,14 +110,33 @@ function connection(ws, req) {
         } else if (object.res) {
            meeting = new Meeting('Test');
 
+
         // Client join meeting request
-        } else if(object.join) {
+        } else if (object.meetingType && object.meetingType === 'JOIN') {  // Change to ==?
+
             console.log("Join Meeting Request");
+            const meetingID = object.meetingID;
+            if (meetingID in meetings) {
+                const meetingToJoin = meetings[object.meetingID];
+                const message = meetingToJoin.generateRMIResponse(ws);
+                ws.send(message);
+                console.log('Join RMI response\n' + message);
+
+
+            } else {
+                // TODO: Send a meeting not found message to client
+            }
 
             // Client create meeting request
-        } else {
+        } else if (object.meetingType && object.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
-            //meeting = new Meeting('Test');
+
+            const newMeetingID = generateUniqueMeetingID();
+            const newMeeting = new Meeting('New Meeting', newMeetingID);
+            if (object.password) {
+                newMeeting.setPassword(object.password);
+            }
+            meetings[newMeetingID] = newMeeting;
         }
     });
 }
@@ -118,4 +146,14 @@ wsServer.broadcast = function (message) {
     this.clients.forEach(function (client) {
         client.send(message);
     });
+}
+
+// Generates a random unique 5 digit meeting code
+// This is guaranteed unique by checking the existing codes
+function generateUniqueMeetingID() {
+    let id = Math.floor(Math.random()*90000) + 10000;
+    while (id in meetings) {
+        id = Math.floor(Math.random()*90000) + 10000;
+    }
+    return id;
 }
