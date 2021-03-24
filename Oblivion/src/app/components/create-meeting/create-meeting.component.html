@@ -12,7 +12,7 @@
     <div class="form-component-row">
       <mat-form-field appearance="fill">
         <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
-        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.title" id="meeting_name_input">
+        <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.name" id="meeting_name_input">
       </mat-form-field>
     </div>
   </section>
@@ -21,7 +21,7 @@
     <div class="form-component-row">
       <mat-form-field appearance="fill">
         <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password1" id="meeting_password1_input">
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" id="meeting_password1_input">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide" id="meeting_password1_hide_button">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -35,7 +35,7 @@
     <div class="form-component-row">
       <mat-form-field appearance="fill">
         <mat-label id="meeting_password2_label">Confirm Meeting Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password2" id="meeting_password2_input">
+        <input matInput [type]="hide ? 'password' : 'text'" id="meeting_password2_input">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide" id="meeting_password2_hide_button">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
