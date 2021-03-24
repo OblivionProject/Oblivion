@@ -66,27 +66,12 @@ class Meeting {
 }
 
 
-const express = require('express');
-const app = express();
-const https = require('https');
-const fs = require('fs');
-
-const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
-}
-
-console.log(credentials);
-
-const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(8080);
-
-const WebSocketServer = require('ws').Server;
-const wsServer = new WebSocketServer({server: httpsServer});
-
 // -----------------------------------------------------------------------------------
 // Websocket Server
 //
+
+const WebSocketServer = require('ws').Server;
+const wsServer = new WebSocketServer({port: 8080});
 
 let meetings = {};      // Stores all the current meetings
 
