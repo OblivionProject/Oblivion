@@ -1,40 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import {Meeting} from '../../models/meeting.model';
-import {CreateMeetingService} from '../../services/create-meeting.service';
+import {Component} from '@angular/core';
+import {Meeting, MEETING_TYPE} from '../../models/meeting.model';
+import {WebsocketService} from "../../services/websocket.service";
 
 @Component({
   selector: 'app-create-meeting',
   templateUrl: './create-meeting.component.html',
   styleUrls: ['./create-meeting.component.css']
 })
-export class CreateMeetingComponent implements OnInit {
+export class CreateMeetingComponent {
 
-  meeting: Meeting = {
-    id: '',
-    password1: '',
-    password2: '',
-    title: '',
-    join: false
-  };
-  hide = true;
+  public meeting: Meeting;  // Stores the meeting creation information
+  public hide: Boolean;     // Indicates whether the password fields should be hidden
+  private webSocket: WebSocket;  // WebSocket connection to server
 
-  submitted = false;
-
-  constructor(private createMeetingService: CreateMeetingService) { }
-
-  ngOnInit(): void {
+  // Initializes the WebSocket from the WebsocketService and creates the meeting
+  constructor(websocketService: WebsocketService) {
+    this.webSocket = websocketService.getWebSocket();
+    this.meeting = new Meeting(MEETING_TYPE.CREATE);
+    this.hide = true;
   }
-  // Create meeting
-  saveMeeting(): void {
-    console.log(this.meeting);
-    // create a connection to the server using the data service
-    this.createMeetingService.connect();
-    // send meeting info to the server using the data service
-    this.createMeetingService.sendMessage(this.meeting);
-    // some way of triggering changing to the meeting component once we get a response back that this was succesfull
 
-    this.createMeetingService.disconnect();
-
+  // Sends the create meeting info to the server
+  public createMeeting(): void {
+    console.log(JSON.stringify(this.meeting));
+    this.webSocket.send(JSON.stringify(this.meeting));
   }
 
 }
