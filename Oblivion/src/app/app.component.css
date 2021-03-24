@@ -30,6 +30,10 @@
   }
 }
 
+.header:focus{
+  outline: 0;
+}
+
 .header{
   font-size: 45px;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);

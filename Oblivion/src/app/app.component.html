@@ -10,7 +10,7 @@
 <mat-sidenav-container class="output" [ngClass]="{'dark-theme-mode':globals.darkMode, 'light-theme-mode':!globals.darkMode}">
   <mat-sidenav-container id="top">
     <mat-toolbar id="header">
-      <span class="header"> &#9885; Oblivion</span>
+      <span class="header" routerLink="/welcome"> &#9885; Oblivion</span>
       <span style="flex:auto"></span>
       <mat-slide-toggle id="toggle"
         [checked]="globals.darkMode === true"
