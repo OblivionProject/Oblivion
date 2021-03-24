@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 
-export const WS_ENDPOINT = 'wss://192.168.0.36:8087'; // 'ws://localhost:8080';//'ws://172.21.125.128:8080';
-
 const mediaConstraints = {
   audio: true,
   video: true
@@ -13,7 +11,6 @@ const mediaConstraints = {
 })
 export class MediaService {
 
-  // private websocketService: WebsocketService;
   private webSocket: WebSocket; // Server connection to get connected to peers
   private userId!: number;    // This users ID
   private localstream!: MediaStream;  // Local video
@@ -27,8 +24,6 @@ export class MediaService {
   };
 
   constructor(websocketService: WebsocketService) {
-    // this.websocketService = websocketService;
-    // this.websocketService.webSocket.onmessage = this.receivedRequestFromServer;
     this.webSocket = websocketService.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
@@ -36,15 +31,6 @@ export class MediaService {
     this.remoteStreams = {};
     this.peers = {};
   }
-
-  // ----- WebRTC prototype functions -----
-  // TODO: Change this name (Doesn't setup webrtc)
-  // public setupWebRTC(): void {
-  //   this.server = new WebSocket(WS_ENDPOINT);
-  //   this.server.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
-  //   this.server.onerror = (event: Event) => console.log(event);
-  //   this.server.onclose = (event: CloseEvent) => console.log(event);
-  // }
 
   // This method is called on startup to join the current meeting
   public requestMeetingInformation() {
@@ -79,8 +65,8 @@ export class MediaService {
     console.log(signal);
 
     // Debugging Statements TODO: Remove
-    // console.log('Request from Server:');
-    // console.log(message);
+    console.log('Request from Server:');
+    console.log(message);
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
@@ -143,7 +129,12 @@ export class MediaService {
   }
 
   private sendDescription(peer: RTCPeerConnection, recipientID: number): void {
-    const message = JSON.stringify({'sdp': peer.localDescription, 'userId': this.userId, 'recipientID': recipientID});
+    const message = JSON.stringify(
+      {
+        'sdp': peer.localDescription,
+        'userId': this.userId,
+        'recipientID': recipientID
+      });
     this.messageServer(message);
   }
 
@@ -199,7 +190,7 @@ export class MediaService {
     return this.localstream;
   }
 
-  public getRemoteStreams(): {[key: number]: MediaStream} {//Array<MediaStream> {
+  public getRemoteStreams(): {[key: number]: MediaStream} {
     return this.remoteStreams;
   }
 
