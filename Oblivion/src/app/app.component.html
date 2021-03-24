@@ -15,7 +15,12 @@
       <mat-slide-toggle id="toggle"
         [checked]="globals.darkMode === true"
         (change) = "setValue($event)">
-        Dark Mode</mat-slide-toggle>
+        Dark Mode
+      </mat-slide-toggle>
+      <mat-slide-toggle id="toggle_short"
+        [checked]="globals.darkMode === true"
+        (change) = "setValue($event)">
+      </mat-slide-toggle>
     </mat-toolbar>
   </mat-sidenav-container>
 
