@@ -1,5 +1,5 @@
 // TODO: Convert this to a node module
-class Meeting {
+export class Meeting {
 
     constructor(name, meetingID) {
         this.name = name;     // Name of the meeting
@@ -59,7 +59,7 @@ const credentials = {
 console.log(credentials);
 
 const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(port=8080);
+httpsServer.listen(8080);
 
 const WebSocketServer = require('ws').Server;
 const wsServer = new WebSocketServer({server: httpsServer});
@@ -69,7 +69,7 @@ const wsServer = new WebSocketServer({server: httpsServer});
 //
 
 let meetings = {};      // Stores all the current meetings
-let wsConnections = {}; // Used to quickly find which meeting the ws connection is in {WebSocket: Meeting}
+// let wsConnections = {}; // Used to quickly find which meeting the ws connection is in {WebSocket: Meeting}
 
 // let meeting = new Meeting('Test');
 
@@ -100,11 +100,11 @@ function connection(ws, req) {
             //wsServer.broadcast(message);
             // Send the connection messages to users currently in the meeting
             // TODO: Can be improved on by only sending to the desired clients
-            if (ws in wsConnections) {
-                const meeting = wsConnections[ws];
+            if (object.meetingID in meetings) {
+                const meeting = meetings[object.meetingID];
                 meeting.getClients().forEach(function(client) {
                     client.send(message);
-                })
+                });
 
             } else {
                 // TODO: Add handling if a ws is making a call w/o being in a registered connection
@@ -113,8 +113,8 @@ function connection(ws, req) {
         // Request Meeting Information (When a client joins assign them an id and send them contact list)
         } else if (object.rmi) {
             console.log('RMI request received');
-            if (ws in wsConnections) {
-                const meeting = wsConnections[ws];
+            if (object.meetingID in meetings) {
+                const meeting = meetings[object.meetingID];
                 const message = meeting.generateRMIResponse(ws);
                 ws.send(message);
                 console.log('Response:\n' + message);
@@ -136,7 +136,7 @@ function connection(ws, req) {
                 const meetingToJoin = meetings[object.meetingID];
                 // const message = meetingToJoin.generateRMIResponse(ws);
                 // ws.send(message);
-                wsConnections[ws] = meetingToJoin;
+                // wsConnections[ws] = meetingToJoin;
                 // console.log('Join RMI response\n' + message);
 
 
@@ -155,7 +155,7 @@ function connection(ws, req) {
             }
             newMeeting.generateRMIResponse(ws);
             meetings[newMeetingID] = newMeeting;
-            wsConnections[ws] = newMeeting;
+            // wsConnections[ws] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
         }
     });
