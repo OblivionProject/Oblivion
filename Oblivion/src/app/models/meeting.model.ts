@@ -10,8 +10,8 @@ export class Meeting {
   public password1?: string;
   public password2?: string;
   public title?: string;
-  //join?: boolean;
-  id?: any;
+  //public join?: boolean;
+  public id?: any;
 
   constructor(meetingType: MEETING_TYPE) {
     this.meetingType = meetingType;
