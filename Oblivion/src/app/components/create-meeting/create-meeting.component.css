@@ -1,12 +1,12 @@
 .sidenav-cont-cont{
   background-color: inherit;
   position: relative;
-  width: 35%;
-  left:32.5%;
+  /*width: 40vh;*/
+  /*left:50%;*/
   margin-top: 5%;
   border-radius: 25px;
   flex-direction: column;
-  height: 65%;
+  /*height: 80vh;*/
   text-align:center;
   z-index: 2;
 }

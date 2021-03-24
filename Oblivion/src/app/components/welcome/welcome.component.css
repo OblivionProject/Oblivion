@@ -1,49 +1,40 @@
 .sidenav-cont-cont{
   background-color: inherit;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 60%;
-  left:17.5%;
   margin-top: 5%;
-  flex-direction: column;
-  height: 65%;
   z-index: 2;
 }
 
 .sidenav-cont{
   background-color: inherit;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-  width: 90%;
-  height: 50%;
-  left:5%;
-  top: 30%;
+  width: 60%;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-#create_meeting_header{
-  vertical-align:middle;
-  font-size: 250%;
-  margin-bottom: 2.5%;
-}
-
-#create_meeting{
-  width: 45%;
-  margin-right: 2.5%;
+.welcome_button_short {
+  display: none;
   height: 80px;
   font-size: 50px;
+  float: left;
 }
 
-#join_meeting{
+.welcome_button{
   width: 45%;
   height: 80px;
   margin-left: 2.5%;
   font-size: 50px;
   opacity: 0.9;
+}
+
+@media (max-width: 1200px) {
+  #create_meeting_short,#join_meeting_short {
+    display: inline-block;
+    width: 80%;
+    margin-top: 20px;}
+  .sidenav-cont{
+    left: 55%;
+  }
+  .welcome_button { display: none; }
 }
