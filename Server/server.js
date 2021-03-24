@@ -14,6 +14,7 @@ class Meeting {
     setPassword(password) {
         if (!this.hasPassword) {
             this.password = password;
+            this.hasPassword = true;
         }
     }
 
@@ -29,16 +30,16 @@ class Meeting {
     onMessage(ws, message) {
 
         console.log('In new onMessage');
-        const object = JSON.parse(message);
+        const data = JSON.parse(message);
 
         // Handle WebRTC Connection Message (SDP or ICE candidates)
-        if (object.sdp || object.ice) {
+        if (data.sdp || data.ice) {
             this.getClients().forEach(function(client) {
                 client.send(message);
             });
 
         // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (object.rmi) {
+        } else if (data.rmi) {
             const message = this.generateRMIResponse(ws);
             ws.send(message);
             console.log('Response:\n' + message);
@@ -88,15 +89,11 @@ const wsServer = new WebSocketServer({server: httpsServer});
 //
 
 let meetings = {};      // Stores all the current meetings
-// let wsConnections = {}; // Used to quickly find which meeting the ws connection is in {WebSocket: Meeting}
-
-// let meeting = new Meeting('Test');
 
 wsServer.on('connection', connection);
 
 function connection(ws, req) {
     //someone connect to server  TODO: This can be removed?
-    console.log(req);
     const ip = req.socket.remoteAddress;
     console.log('Client Connected with IP : '+ ip);
     console.log("There are now: "+wsServer.clients.size+" Active Connections");
@@ -108,89 +105,58 @@ function connection(ws, req) {
     });
 
     ws.on('message', (message) => {
-        console.log(typeof message);
+
         console.log("Received Message " + message);
 
-        //pares the message string and keep track of current users
-        const object = JSON.parse(message);
-
-        // Determine Message Type/Contents
-        // WebRTC Connection Message (SDP or ICE candidates)
-        if (object.sdp || object.ice) {
-            console.log('IN BAD SDP/ICE');
-            //wsServer.broadcast(message);
-            // Send the connection messages to users currently in the meeting
-            // TODO: Can be improved on by only sending to the desired clients
-            // if (object.meetingID in meetings) {
-            //     const meeting = meetings[object.meetingID];
-            //     meeting.getClients().forEach(function(client) {
-            //         client.send(message);
-            //     });
-            //
-            // } else {
-            //     // TODO: Add handling if a ws is making a call w/o being in a registered connection
-            // }
-
-        // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (object.rmi) {
-            console.log('IN BAD RMI request received');
-            // if (object.meetingID in meetings) {
-            //     const meeting = meetings[object.meetingID];
-            //     const message = meeting.generateRMIResponse(ws);
-            //     ws.send(message);
-            //     console.log('Response:\n' + message);
-            // } else {
-            //     // TODO: Add error handling?
-            // }
-
-        // Clears the meeting TESTING
-        } else if (object.res) {
-           //meeting = new Meeting('Test');
-
+        // Parse the message
+        const data = JSON.parse(message);
 
         // Client join meeting request
-        } else if (object.meetingType && object.meetingType === 'JOIN') {  // Change to ==?
+        if (data.meetingType && data.meetingType === 'JOIN') {
 
             console.log("Join Meeting Request");
-            // TODO: Add password checking
-            const meetingID = object.meetingID;
-            if (meetingID in meetings) {
-                const meetingToJoin = meetings[object.meetingID];
-                ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-                // const message = meetingToJoin.generateRMIResponse(ws);
-                // ws.send(message);
-                // wsConnections[ws] = meetingToJoin;
-                // console.log('Join RMI response\n' + message);
 
+            const meetingID = data.meetingID;
+            if (meetingID in meetings) {
+                const meetingToJoin = meetings[meetingID];
+                if (meetingToJoin.hasPassword) {
+                    if (data.password === meetingToJoin.password) {
+                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+
+                    } else {
+                        // TODO: Send incorrect password message to client
+                    }
+
+                // Join if the meeting has no password
+                } else {
+                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                }
 
             } else {
                 // TODO: Send a meeting not found message to client
             }
 
-            // Client create meeting request
-        } else if (object.meetingType && object.meetingType === 'CREATE') {
+        // Client create meeting request
+        } else if (data.meetingType && data.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
 
             const newMeetingID = generateUniqueMeetingID();
-            const newMeeting = new Meeting('New Meeting', newMeetingID);
-            if (object.password) {
-                newMeeting.setPassword(object.password);
+            const newMeeting = new Meeting('New Meeting', newMeetingID); // TODO: Change 'New Meeting' to meeting name
+
+            // Check if the meeting should have a password
+            if (data.password !== '') {
+                newMeeting.setPassword(data.password);
             }
+
+            // Update the on message function to be specific to the meeting
             ws.on('message', (message) => newMeeting.onMessage(ws, message));
-            newMeeting.generateRMIResponse(ws);
-            meetings[newMeetingID] = newMeeting;
-            // wsConnections[ws] = newMeeting;
+
+            newMeeting.generateRMIResponse(ws); // Generate RMI response is needed to create the new user
+            meetings[newMeetingID] = newMeeting; // Add the meeting to the meetings array
             console.log('Meeting ID: ' + newMeetingID);
         }
     });
 }
-
-// wsServer.broadcast = function (message) {
-//     // For each of the clients send the broadcast
-//     this.clients.forEach(function (client) {
-//         client.send(message);
-//     });
-// }
 
 // Generates a random unique 5 digit meeting code
 // This is guaranteed unique by checking the existing codes
