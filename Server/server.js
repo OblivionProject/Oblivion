@@ -133,6 +133,7 @@ function connection(ws, req) {
                 const meetingToJoin = meetings[object.meetingID];
                 const message = meetingToJoin.generateRMIResponse(ws);
                 ws.send(message);
+                wsConnections[ws] = meetingToJoin;
                 console.log('Join RMI response\n' + message);
 
 
