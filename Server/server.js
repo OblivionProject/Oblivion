@@ -111,16 +111,19 @@ function connection(ws, req) {
             }
 
         // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } //else if (object.rmi) {
-            // console.log('RMI request received');
-            // //meeting.addUser(ws)
-            // const message = meeting.generateRMIResponse(ws);
-            // ws.send(message);
-            // console.log('Response:\n' + message);
+        } else if (object.rmi) {
+            console.log('RMI request received');
+            if (ws in wsConnections) {
+                const meeting = wsConnections[ws];
+                const message = meeting.generateRMIResponse(ws);
+                ws.send(message);
+                console.log('Response:\n' + message);
+            } else {
+                // TODO: Add error handling?
+            }
 
         // Clears the meeting TESTING
-        // }
-        else if (object.res) {
+        } else if (object.res) {
            //meeting = new Meeting('Test');
 
 
@@ -131,10 +134,10 @@ function connection(ws, req) {
             const meetingID = object.meetingID;
             if (meetingID in meetings) {
                 const meetingToJoin = meetings[object.meetingID];
-                const message = meetingToJoin.generateRMIResponse(ws);
-                ws.send(message);
+                // const message = meetingToJoin.generateRMIResponse(ws);
+                // ws.send(message);
                 wsConnections[ws] = meetingToJoin;
-                console.log('Join RMI response\n' + message);
+                // console.log('Join RMI response\n' + message);
 
 
             } else {
@@ -150,6 +153,7 @@ function connection(ws, req) {
             if (object.password) {
                 newMeeting.setPassword(object.password);
             }
+            newMeeting.generateRMIResponse(ws);
             meetings[newMeetingID] = newMeeting;
             wsConnections[ws] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
