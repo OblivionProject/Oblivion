@@ -21,7 +21,7 @@ class Meeting {
     // Assign the user an ID and send the current user ids
     generateRMIResponse(ws) {
         const id = this.generateUserID();
-        const message = JSON.stringify({'rmi': true, 'clientIDs': meeting.getClientUserIDs(), 'userId': id});
+        const message = JSON.stringify({'rmi': true, 'clientIDs': this.getClientUserIDs(), 'userId': id});
         this.addUser(ws, id);
         return message;
     }
@@ -68,9 +68,10 @@ const wsServer = new WebSocketServer({server: httpsServer});
 // Websocket Server
 //
 
-// Stores all the current meetings
-let meetings = {};
-let meeting = new Meeting('Test');
+let meetings = {};      // Stores all the current meetings
+let wsConnections = {}; // Used to quickly find which meeting the ws connection is in {WebSocket: Meeting}
+
+// let meeting = new Meeting('Test');
 
 wsServer.on('connection', connection);
 
@@ -80,7 +81,7 @@ function connection(ws, req) {
     console.log('Client Connected with IP : '+ ip);
     console.log("There are now: "+wsServer.clients.size+" Active Connections");
 
-    //When client disconnects
+    // When a client disconnects TODO: Remove the client from the current meeting?
     ws.on('close',ws => {
         console.log("There are now: "+wsServer.clients.size+" Active Connections");
         console.log('Client Disconnected');
@@ -96,19 +97,31 @@ function connection(ws, req) {
         // Determine Message Type/Contents
         // WebRTC Connection Message (SDP or ICE candidates)
         if (object.sdp || object.ice) {
-            wsServer.broadcast(message);
+            //wsServer.broadcast(message);
+            // Send the connection messages to users currently in the meeting
+            // TODO: Can be improved on by only sending to the desired clients
+            if (ws in wsConnections) {
+                const meeting = wsConnections[ws];
+                meeting.getClients().forEach(function(client) {
+                    client.send(message);
+                })
+
+            } else {
+                // TODO: Add handling if a ws is making a call w/o being in a registered connection
+            }
 
         // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (object.rmi) {
-            console.log('RMI request received');
-            //meeting.addUser(ws)
-            const message = meeting.generateRMIResponse(ws);
-            ws.send(message);
-            console.log('Response:\n' + message);
+        } //else if (object.rmi) {
+            // console.log('RMI request received');
+            // //meeting.addUser(ws)
+            // const message = meeting.generateRMIResponse(ws);
+            // ws.send(message);
+            // console.log('Response:\n' + message);
 
         // Clears the meeting TESTING
-        } else if (object.res) {
-           meeting = new Meeting('Test');
+        // }
+        else if (object.res) {
+           //meeting = new Meeting('Test');
 
 
         // Client join meeting request
@@ -137,16 +150,18 @@ function connection(ws, req) {
                 newMeeting.setPassword(object.password);
             }
             meetings[newMeetingID] = newMeeting;
+            wsConnections[ws] = newMeeting;
+            console.log('Meeting ID: ' + newMeetingID);
         }
     });
 }
 
-wsServer.broadcast = function (message) {
-    // For each of the clients send the broadcast
-    this.clients.forEach(function (client) {
-        client.send(message);
-    });
-}
+// wsServer.broadcast = function (message) {
+//     // For each of the clients send the broadcast
+//     this.clients.forEach(function (client) {
+//         client.send(message);
+//     });
+// }
 
 // Generates a random unique 5 digit meeting code
 // This is guaranteed unique by checking the existing codes
