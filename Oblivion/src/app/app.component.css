@@ -52,7 +52,7 @@
   height: 40px;
   background-color: white;
   bottom: -160px;
-  opacity: 0.3;
+  opacity: 0.2;
 
   -webkit-animation: square 25s infinite;
   animation:         square 25s infinite;

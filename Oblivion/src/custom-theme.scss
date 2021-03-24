@@ -13,9 +13,16 @@
     background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
     background: -o-linear-gradient(top left, $background 0%, $background2 100%);
     background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+
+    #footer{
+      background: $background;
+      background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
+      background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
+      background: -o-linear-gradient(top left, $background 0%, $background2 100%);
+      background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+    }
     .mat-form-field-empty.mat-form-field-label {
       color:$text;
-      opacity: 0.8;
       font-family: "Times New Roman", Times, serif;
     }
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill{
@@ -80,7 +87,7 @@ $light-app-theme-button_cancel: #50a3a2;
 
 $dark-app-primary: mat-palette($mat-blue-gray, 500);
 $dark-app-accent:  mat-palette($mat-cyan, 200);
-$dark-app-warn: mat-palette($mat-red);
+$dark-app-warn: mat-palette($mat-red,900);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
