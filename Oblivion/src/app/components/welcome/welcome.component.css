@@ -29,7 +29,7 @@
 }
 
 @media (max-width: 1200px) {
-  #create_meeting_short,#join_meeting_short {
+  .welcome_button_short {
     display: inline-block;
     width: 80%;
     margin-top: 20px;}
