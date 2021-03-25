@@ -19,8 +19,8 @@ export class MeetingComponent implements AfterViewInit {
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
-    this.video = false;
-    this.audio = false;
+    this.video = true;
+    this.audio = true;
     this.remoteStreams = {};
   }
 
