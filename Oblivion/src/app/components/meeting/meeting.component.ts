@@ -14,9 +14,9 @@ export class MeetingComponent implements AfterViewInit {
   @ViewChild('local_video') localVideo!: ElementRef;
   private remoteStreams: {[key: number]: MediaStream} = {};
 
-  tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
-  video: boolean;
-  audio:boolean;
+  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
+  public video: boolean;
+  public audio:boolean;
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
@@ -30,12 +30,25 @@ export class MeetingComponent implements AfterViewInit {
     this.localVideo.nativeElement.muted = true;
   }
 
-  public muteLocalVideo(): void{
-    this.mediaService.muteLocalVideo();
+  // Toggles the video between off and on
+  public toggleVideo(): void {
+    this.video = !this.video;
+    if (this.video) {
+      this.mediaService.unmuteLocalVideo();
+    } else {
+      this.mediaService.muteLocalVideo();
+    }
   }
 
-  public unmuteLocalVideo(): void {
-    this.mediaService.unmuteLocalVideo();
+  // Toggles the audio between off and on
+  public toggleAudio(): void {
+    console.log('In audio');
+    this.audio = !this.audio;
+    if (this.audio) {
+      this.mediaService.unmuteLocalAudio();
+    } else {
+      this.mediaService.muteLocalAudio();
+    }
   }
 
   async ngAfterViewInit() {
@@ -59,10 +72,12 @@ export class MeetingComponent implements AfterViewInit {
     console.log(this.localVideo.nativeElement.srcObject);
   }
 
-  public getRemoteStreams() {
+  // Returns an array of the remote MediaStreams
+  public getRemoteStreams(): MediaStream[] {
     return Object.values(this.remoteStreams);
   }
 
+  // Returns the meeting ID
   public getMeetingID(): number {
     return this.mediaService.getMeetingID();
   }

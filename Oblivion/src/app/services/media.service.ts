@@ -197,14 +197,26 @@ export class MediaService {
   }
 
   public muteLocalVideo(): void {
-    this.localstream.getTracks().forEach(track => {
-      track.enabled = false;
+    this.localstream.getVideoTracks().forEach(videoTrack => {
+      videoTrack.enabled = false;
     });
   }
 
   public unmuteLocalVideo(): void {
-    this.localstream.getTracks().forEach(track => {
-      track.enabled = true;
+    this.localstream.getVideoTracks().forEach(videoTrack => {
+      videoTrack.enabled = true;
+    });
+  }
+
+  public muteLocalAudio(): void {
+    this.localstream.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = false;
+    });
+  }
+
+  public unmuteLocalAudio(): void {
+    this.localstream.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = true;
     });
   }
 

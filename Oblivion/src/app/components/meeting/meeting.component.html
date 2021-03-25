@@ -20,10 +20,10 @@
     <mat-toolbar id = "footer">
       <mat-label>Meeting ID: {{getMeetingID()}}</mat-label>
 <!--      <button class = mat-flat-button (click)="start(true)">Start</button>-->
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="audio = !audio">
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()">
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="video = !video">
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
       <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
