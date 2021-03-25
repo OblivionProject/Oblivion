@@ -18,7 +18,8 @@
 
   <footer class="footer">
     <mat-toolbar id = "footer">
-      <button class = mat-flat-button (click)="start(true)">Start</button>
+      <mat-label>Meeting ID: {{getMeetingID()}}</mat-label>
+<!--      <button class = mat-flat-button (click)="start(true)">Start</button>-->
       <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="audio = !audio">
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
       </button>

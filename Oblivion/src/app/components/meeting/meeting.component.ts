@@ -63,6 +63,10 @@ export class MeetingComponent implements AfterViewInit {
     return Object.values(this.remoteStreams);
   }
 
+  public getMeetingID(): number {
+    return this.mediaService.getMeetingID();
+  }
+
   //-----------------------------------------------------------------------------
   // The functions in this section are intended for development use only
   public TEST() {

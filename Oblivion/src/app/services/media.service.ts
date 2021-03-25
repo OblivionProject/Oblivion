@@ -12,7 +12,8 @@ const mediaConstraints = {
 export class MediaService {
 
   private webSocket: WebSocket; // Server connection to get connected to peers
-  private userId!: number;    // This users ID
+  private userId!: number; // This users ID
+  private meetingID!: number; // Meeting ID
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
@@ -91,6 +92,7 @@ export class MediaService {
       // Handle the RMI response
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
+      this.meetingID = signal.meetingID;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
@@ -204,5 +206,9 @@ export class MediaService {
     this.localstream.getTracks().forEach(track => {
       track.enabled = true;
     });
+  }
+
+  public getMeetingID(): number {
+    return this.meetingID;
   }
 }
