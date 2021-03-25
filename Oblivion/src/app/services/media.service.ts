@@ -44,6 +44,7 @@ export class MediaService {
     let peer = new RTCPeerConnection(this.peerConnectionConfig);
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
+    peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
     this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
       peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
     });
@@ -171,6 +172,26 @@ export class MediaService {
     });
   }
 
+
+  private handlePeerConnectionStateChange(event: Event, userID: number): void {
+    console.log('in handle state change');
+    console.log('UserID: '+userID);
+    console.log(event);
+
+    const peer = this.peers[userID];
+    if (peer) {
+      switch (peer.connectionState) {
+        // Removes the peer and stream from their respective objects if the connection fails
+        case "disconnected":
+        case "failed":
+        case "closed":
+          delete this.peers[userID];
+          delete this.remoteStreams[userID];
+          break;
+      }
+    }
+  }
+
   private errorHandler(error: Error) {
     console.log(error);
   }
@@ -222,5 +243,12 @@ export class MediaService {
 
   public getMeetingID(): number {
     return this.meetingID;
+  }
+
+  public terminate(): void {
+    this.webSocket.close();
+    Object.values(this.peers).forEach(peer => {
+      peer.close();
+    });
   }
 }

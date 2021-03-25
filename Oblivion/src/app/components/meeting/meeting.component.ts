@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 
@@ -11,17 +11,23 @@ import {MediaService} from '../../services/media.service';
 export class MeetingComponent implements AfterViewInit {
 
 
-  @ViewChild('local_video') localVideo!: ElementRef;
-  private remoteStreams: {[key: number]: MediaStream} = {};
-
+  @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
+  private remoteStreams: {[key: number]: MediaStream};
   public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
-  public video: boolean;
-  public audio:boolean;
+  public video: boolean; // Flag for if video is on or off
+  public audio: boolean; // Flag for if audio is on or off
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = false;
     this.audio = false;
+    this.remoteStreams = {};
+  }
+
+  async ngAfterViewInit() {
+    await this.getLocalVideo();
+    this.mediaService.requestMeetingInformation();
+    this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
   async getLocalVideo(): Promise<void> {
@@ -49,12 +55,6 @@ export class MeetingComponent implements AfterViewInit {
     } else {
       this.mediaService.muteLocalAudio();
     }
-  }
-
-  async ngAfterViewInit() {
-    await this.getLocalVideo();
-    this.mediaService.requestMeetingInformation();
-    this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
   public start(isCaller: boolean): void {
@@ -95,6 +95,12 @@ export class MeetingComponent implements AfterViewInit {
   }
   // End development functions
   //-----------------------------------------------------------------------------
+
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(): void {
+    this.mediaService.terminate();
+  }
+
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');
