@@ -31,6 +31,8 @@ class Meeting {
 
         console.log('In new onMessage');
         const data = JSON.parse(message);
+        console.log(data)
+
 
         // Handle WebRTC Connection Message (SDP or ICE candidates)
         if (data.sdp || data.ice) {
@@ -45,6 +47,7 @@ class Meeting {
             console.log('Response:\n' + message);
         }
     }
+
 
     generateUserID() {
         this.nextID = this.nextID + 1;
@@ -71,9 +74,20 @@ const app = express();
 const https = require('https');
 const fs = require('fs');
 
+
+const nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'oblivionchatmeeting@gmail.com',
+        pass: 'OBLIVION'
+    }
+});
+
+
 const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
+    key: fs.readFileSync('/home/joseph/WebstormProjects/server.key'),
+    cert: fs.readFileSync('/home/joseph/WebstormProjects/server.cert'),
 }
 
 console.log(credentials);
@@ -83,6 +97,42 @@ httpsServer.listen(8080);
 
 const WebSocketServer = require('ws').Server;
 const wsServer = new WebSocketServer({server: httpsServer});
+
+
+function sendEmails(emails,meetingId, password) {
+    const data = emails;
+    var x1 = "Hello, You have been invited to a meeting on oblivionchat.com"
+    var x2 = "Details for your meeting are:"
+    var x3 = "Meeting Id: " + meetingId
+    if(password !== '') {
+        var x4 = "password: " + password
+    }
+    var message = String(x1) + '\n' +
+        String(x2) + '\n' +
+        String(x3) + '\n' +
+        String(x4) + '\n' ;
+    var subject = "Details for your private meeting";
+    var i;
+    for( i=0;i<data.length;i++){
+        var email = mailOptions(data[i],subject,message);
+        transporter.sendMail(email, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }
+}
+
+function mailOptions(to,subject,text){
+    return {
+        from: 'olivionchatmeeting@gmail.com',
+        to: to,
+        subject: subject,
+        text: text
+    };
+}
 
 // -----------------------------------------------------------------------------------
 // Websocket Server
@@ -147,6 +197,12 @@ function connection(ws, req) {
             if (data.password !== '') {
                 newMeeting.setPassword(data.password);
             }
+            if(data.emails.length !== 0){
+                sendEmails(data.emails,newMeetingID,data.password);
+                //console.log(data.emails);
+            }
+
+
 
             // Update the on message function to be specific to the meeting
             ws.on('message', (message) => newMeeting.onMessage(ws, message));

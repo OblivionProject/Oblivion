@@ -1,3 +1,5 @@
+import {Email} from "../components/create-meeting/create-meeting.component";
+
 export enum MEETING_TYPE {
   CREATE = 'CREATE',
   JOIN = 'JOIN'
@@ -10,6 +12,7 @@ export class Meeting {
   public password?: string;
   public name?: string;
   public meetingID?: any;
+  public emails?: Array<string>;
   // public password1?: string;
   // public password2?: string;
 
