@@ -12,7 +12,8 @@ const mediaConstraints = {
 export class MediaService {
 
   private webSocket: WebSocket; // Server connection to get connected to peers
-  private userId!: number;    // This users ID
+  private userId!: number; // This users ID
+  private meetingID!: number; // Meeting ID
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
@@ -43,6 +44,7 @@ export class MediaService {
     let peer = new RTCPeerConnection(this.peerConnectionConfig);
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
+    peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
     this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
       peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
     });
@@ -91,6 +93,7 @@ export class MediaService {
       // Handle the RMI response
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
+      this.meetingID = signal.meetingID;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
@@ -169,6 +172,26 @@ export class MediaService {
     });
   }
 
+
+  private handlePeerConnectionStateChange(event: Event, userID: number): void {
+    console.log('in handle state change');
+    console.log('UserID: '+userID);
+    console.log(event);
+
+    const peer = this.peers[userID];
+    if (peer) {
+      switch (peer.connectionState) {
+        // Removes the peer and stream from their respective objects if the connection fails
+        case "disconnected":
+        case "failed":
+        case "closed":
+          delete this.peers[userID];
+          delete this.remoteStreams[userID];
+          break;
+      }
+    }
+  }
+
   private errorHandler(error: Error) {
     console.log(error);
   }
@@ -195,14 +218,37 @@ export class MediaService {
   }
 
   public muteLocalVideo(): void {
-    this.localstream.getTracks().forEach(track => {
-      track.enabled = false;
+    this.localstream.getVideoTracks().forEach(videoTrack => {
+      videoTrack.enabled = false;
     });
   }
 
   public unmuteLocalVideo(): void {
-    this.localstream.getTracks().forEach(track => {
-      track.enabled = true;
+    this.localstream.getVideoTracks().forEach(videoTrack => {
+      videoTrack.enabled = true;
+    });
+  }
+
+  public muteLocalAudio(): void {
+    this.localstream.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = false;
+    });
+  }
+
+  public unmuteLocalAudio(): void {
+    this.localstream.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = true;
+    });
+  }
+
+  public getMeetingID(): number {
+    return this.meetingID;
+  }
+
+  public terminate(): void {
+    this.webSocket.close();
+    Object.values(this.peers).forEach(peer => {
+      peer.close();
     });
   }
 }

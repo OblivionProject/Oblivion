@@ -22,7 +22,12 @@ class Meeting {
     // Assign the user an ID and send the current user ids
     generateRMIResponse(ws) {
         const id = this.generateUserID();
-        const message = JSON.stringify({'rmi': true, 'clientIDs': this.getClientUserIDs(), 'userId': id});
+        const message = JSON.stringify({
+                'rmi': true,
+                'clientIDs': this.getClientUserIDs(),
+                'userId': id,
+                'meetingID': this.meetingID
+        });
         this.addUser(ws, id);
         return message;
     }
@@ -114,8 +119,6 @@ function connection(ws, req) {
         // Client join meeting request
         if (data.meetingType && data.meetingType === 'JOIN') {
 
-            console.log("Join Meeting Request");
-
             const meetingID = data.meetingID;
             if (meetingID in meetings) {
                 const meetingToJoin = meetings[meetingID];
@@ -127,7 +130,7 @@ function connection(ws, req) {
                         // TODO: Send incorrect password message to client
                     }
 
-                    // Join if the meeting has no password
+                // Join if the meeting has no password
                 } else {
                     ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
                 }

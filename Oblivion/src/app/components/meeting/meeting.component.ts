@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 
@@ -11,17 +11,23 @@ import {MediaService} from '../../services/media.service';
 export class MeetingComponent implements AfterViewInit {
 
 
-  @ViewChild('local_video') localVideo!: ElementRef;
-  private remoteStreams: {[key: number]: MediaStream} = {};
-
-  tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
-  video: boolean;
-  audio:boolean;
+  @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
+  private remoteStreams: {[key: number]: MediaStream};
+  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
+  public video: boolean; // Flag for if video is on or off
+  public audio: boolean; // Flag for if audio is on or off
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
-    this.video = false;
-    this.audio = false;
+    this.video = true;
+    this.audio = true;
+    this.remoteStreams = {};
+  }
+
+  async ngAfterViewInit() {
+    await this.getLocalVideo();
+    this.mediaService.requestMeetingInformation();
+    this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
   async getLocalVideo(): Promise<void> {
@@ -30,18 +36,25 @@ export class MeetingComponent implements AfterViewInit {
     this.localVideo.nativeElement.muted = true;
   }
 
-  public muteLocalVideo(): void{
-    this.mediaService.muteLocalVideo();
+  // Toggles the video between off and on
+  public toggleVideo(): void {
+    this.video = !this.video;
+    if (this.video) {
+      this.mediaService.unmuteLocalVideo();
+    } else {
+      this.mediaService.muteLocalVideo();
+    }
   }
 
-  public unmuteLocalVideo(): void {
-    this.mediaService.unmuteLocalVideo();
-  }
-
-  async ngAfterViewInit() {
-    await this.getLocalVideo();
-    this.mediaService.requestMeetingInformation();
-    this.remoteStreams = this.mediaService.getRemoteStreams();
+  // Toggles the audio between off and on
+  public toggleAudio(): void {
+    console.log('In audio');
+    this.audio = !this.audio;
+    if (this.audio) {
+      this.mediaService.unmuteLocalAudio();
+    } else {
+      this.mediaService.muteLocalAudio();
+    }
   }
 
   public start(isCaller: boolean): void {
@@ -59,8 +72,14 @@ export class MeetingComponent implements AfterViewInit {
     console.log(this.localVideo.nativeElement.srcObject);
   }
 
-  public getRemoteStreams() {
+  // Returns an array of the remote MediaStreams
+  public getRemoteStreams(): MediaStream[] {
     return Object.values(this.remoteStreams);
+  }
+
+  // Returns the meeting ID
+  public getMeetingID(): number {
+    return this.mediaService.getMeetingID();
   }
 
   //-----------------------------------------------------------------------------
@@ -76,6 +95,12 @@ export class MeetingComponent implements AfterViewInit {
   }
   // End development functions
   //-----------------------------------------------------------------------------
+
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(): void {
+    this.mediaService.terminate();
+  }
+
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');
