@@ -1,7 +1,45 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
-<!--  <h1 id="create_meeting_header">Welcome</h1>-->
+  <!--  <h1 id="create_meeting_header">Welcome</h1>-->
+  <mat-sidenav-container class ="sidenav-cont-title">
+
+    <h3 class="an-1">Welcome To Oblivion Chat...</h3>
+  </mat-sidenav-container>
+
   <mat-sidenav-container class = "sidenav-cont">
     <button mat-raised-button color="primary" routerLink="../create-meeting" id ="create_meeting">Create Meeting</button>
     <button mat-raised-button color="primary" routerLink="../join-meeting" id ="join_meeting">Join Meeting</button>
   </mat-sidenav-container>
 </mat-sidenav-container>
+
+
+
+<!--<<<<<<< HEAD-->
+<!--<mat-sidenav-container class = "sidenav-cont-cont">-->
+<!--&lt;!&ndash;  <h1 id="create_meeting_header">Welcome</h1>&ndash;&gt;-->
+<!--  <mat-sidenav-container class = "sidenav-cont">-->
+<!--    <button mat-raised-button color="primary" routerLink="../create-meeting" id ="create_meeting">Create Meeting</button>-->
+<!--    <button mat-raised-button color="primary" routerLink="../join-meeting" id ="join_meeting">Join Meeting</button>-->
+<!--=======-->
+<!--<mat-sidenav-container class = "sidenav-cont" [ngClass]="{'dark-theme-mode':isDark, 'light-theme-mode':!isDark}">-->
+<!--  <mat-sidenav-container>-->
+<!--    <mat-toolbar color="primary">-->
+<!--      <span>Test Meeting</span>-->
+<!--      <span style="flex:auto"></span>-->
+<!--     <mat-slide-toggle-->
+<!--     [checked]="isDark === true"-->
+<!--     (change) = "setValue($event)">-->
+<!--       Dark Mode</mat-slide-toggle>-->
+<!--    </mat-toolbar>-->
+
+<!--&gt;>>>>>> added custom theme which can be configured based on our chosen color scheme-->
+<!--  </mat-sidenav-container>-->
+<!--</mat-sidenav-container>-->
+<!--<<<<<<< HEAD-->
+<!--=======-->
+
+<!--<footer class ="footer" [ngClass]="{'dark-theme-mode':isDark, 'light-theme-mode':!isDark}">-->
+<!--  <mat-toolbar color="primary">-->
+<!--    <span>Footer</span>-->
+<!--  </mat-toolbar>-->
+<!--</footer>-->
+<!--&gt;>>>>>> added custom theme which can be configured based on our chosen color scheme-->
