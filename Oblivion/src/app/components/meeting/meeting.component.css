@@ -9,28 +9,58 @@ p.video-description{
   left: 10px;
 }
 
-button {
+.mat-fab {
   margin: 1em;
 }
 
 
 .sidenav-cont{
-  height: 87.5%;
+  height: 90%;
+  width: 100%;
 }
 
 .sidenav-cont-cont{
-  height:93%;
+  height:90%;
   width: 100%;
   z-index: 2;
 }
 
 .footer{
-  bottom: 0;
-  position: absolute;
-  height: 8.5%;
+  position:fixed;
+  height: 10%;
   width: 100%;
 }
 
 #footer{
   height: 100%;
+  width: 100%;
 }
+#leave{
+  display: block;
+  position: absolute;
+  right:0;
+  margin-right: 4px;
+}
+#leave_short{
+  display: none;
+  position: absolute;
+  right:0;
+  margin-right: 4px;
+}
+
+@media (max-width: 1200px) {
+  .sidenav-cont {
+    width: 60%;
+  }
+  .mat-fab{
+    margin: 0;
+    float: left;
+  }
+  #leave_short{
+    display: block;
+  }
+  #leave{
+    display: none;
+  }
+}
+
