@@ -7,11 +7,14 @@ import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject} f
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
 
-export interface DialogData {
-  animal: 'panda' | 'unicorn' | 'lion';
+//TODO: Move to its own model class
+export interface MeetingInfoData {
+  meeting_id: string;
+  user_type: string;
+  password: string;
 }
 
 
@@ -147,7 +150,9 @@ export class MeetingComponent implements AfterViewInit {
   openDialog() {
     this.dialog.open(MeetingInfoDialogComponent, {
       data: {
-        animal: 'panda'
+        meeting_id: 'panda',
+        user_type: 'panda',
+        password: ''
       }
     });
   }
