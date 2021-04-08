@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {DialogData} from "../meeting/meeting.component";
+import {MeetingInfoData} from "../meeting/meeting.component";
 
 @Component({
   selector: 'app-meeting-info-dialog',
@@ -9,7 +9,7 @@ import {DialogData} from "../meeting/meeting.component";
 })
 export class MeetingInfoDialogComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: MeetingInfoData) {}
 
   ngOnInit(): void {
   }
