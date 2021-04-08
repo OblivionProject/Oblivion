@@ -1,17 +1,11 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
-
-//TODO: Move to its own model class
-export interface MeetingInfoData {
-  meeting_id: string;
-  user_type: string;
-  password: string;
-}
-
+import {Meeting, MEETING_TYPE} from "../../models/meeting.model";
+import {MeetingInfo} from "../../models/meeting-info";
 
 @Component({
   selector: 'app-meeting',
@@ -27,6 +21,7 @@ export class MeetingComponent implements AfterViewInit {
   public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
+  public meetingInfo: MeetingInfo;
 
 <<<<<<< 4d659dc6746522d8a54b42cf21f72c94c4bb6350
   public chat: boolean;  // Flag for if the chat box is open
@@ -40,6 +35,7 @@ export class MeetingComponent implements AfterViewInit {
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
+    this.meetingInfo = new MeetingInfo();
   }
 
   async ngAfterViewInit() {
@@ -93,7 +89,7 @@ export class MeetingComponent implements AfterViewInit {
     this.remoteStreams = this.mediaService.getRemoteStreams();
     console.log(this.mediaService.getRemoteStreams());
     (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
-      console.log(track);
+        console.log(track);
     });
     console.log(this.localVideo.nativeElement.srcObject);
   }
@@ -101,11 +97,6 @@ export class MeetingComponent implements AfterViewInit {
   // Returns an array of the remote MediaStreams
   public getRemoteStreams(): MediaStream[] {
     return Object.values(this.remoteStreams);
-  }
-
-  // Returns the meeting ID
-  public getMeetingInfo() {
-    return this.mediaService.getMeetingInfo();
   }
 
   //-----------------------------------------------------------------------------
@@ -137,21 +128,24 @@ export class MeetingComponent implements AfterViewInit {
     document.getElementsByTagName('head')[0].appendChild(node);
   }
 
-  canDeactivate(): Observable<boolean> | boolean {
+  public canDeactivate(): Observable<boolean> | boolean {
       const result = window.confirm('Are you sure you would like to leave the meeting?');
       return of(result);
   }
 
-  openDialog() {
-    const meetingData = this.getMeetingInfo();
+  public openDialog() {
+    if (!this.meetingInfo.user_type){
+      this.meetingInfo.setData(this.mediaService.getMeetingInfo());
+    }
     this.dialog.open(MeetingInfoDialogComponent, {
 
       data: {
-        meeting_id: meetingData['meetingID'],
-        user_type: meetingData['userRole'],
-        password: meetingData['password']
+        meeting_id: this.meetingInfo.meeting_id,
+        user_type: this.meetingInfo.user_type,
+        password: this.meetingInfo.password
       }
     });
   }
 
 }
+
