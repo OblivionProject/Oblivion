@@ -28,7 +28,7 @@ class Meeting {
             'userId': id,
             'userRole': role,
             'meetingID': this.meetingID,
-            'password': this.password
+            'password': this.getPassword(role)
         });
         this.addUser(ws, id);
         return message;
@@ -73,6 +73,15 @@ class Meeting {
 
     getClients() {
         return this.clients;
+    }
+
+    getPassword(role){
+        if(role == 'Admin'){
+            return this.password;
+        }
+        else{
+            return '';
+        }
     }
 
     addUser(ws, id) {
