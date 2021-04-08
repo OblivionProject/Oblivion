@@ -2,6 +2,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-meeting',
@@ -121,5 +122,10 @@ export class MeetingComponent implements AfterViewInit {
     node.async = false;
     node.charset = 'utf-8';
     document.getElementsByTagName('head')[0].appendChild(node);
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+      const result = window.confirm('Are you sure you would like to leave the meeting?');
+      return of(result);
   }
 }
