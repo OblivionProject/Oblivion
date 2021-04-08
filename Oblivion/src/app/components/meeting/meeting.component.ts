@@ -1,8 +1,19 @@
+<<<<<<< 3a22e46bb15e3309fb360c9830f582e1b74381d8
 
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+=======
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject} from '@angular/core';
+>>>>>>> Create meeting dialog function
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
+
+export interface DialogData {
+  animal: 'panda' | 'unicorn' | 'lion';
+}
+
 
 @Component({
   selector: 'app-meeting',
@@ -19,9 +30,13 @@ export class MeetingComponent implements AfterViewInit {
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
 
+<<<<<<< 4d659dc6746522d8a54b42cf21f72c94c4bb6350
   public chat: boolean;  // Flag for if the chat box is open
 
   constructor(private mediaService: MediaService) {
+=======
+  constructor(private mediaService: MediaService, public dialog: MatDialog) {
+>>>>>>> Create meeting dialog function
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
@@ -128,4 +143,13 @@ export class MeetingComponent implements AfterViewInit {
       const result = window.confirm('Are you sure you would like to leave the meeting?');
       return of(result);
   }
+
+  openDialog() {
+    this.dialog.open(MeetingInfoDialogComponent, {
+      data: {
+        animal: 'panda'
+      }
+    });
+  }
+
 }
