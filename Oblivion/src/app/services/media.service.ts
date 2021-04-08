@@ -14,6 +14,8 @@ export class MediaService {
   private webSocket: WebSocket; // Server connection to get connected to peers
   private userId!: number; // This users ID
   private meetingID!: number; // Meeting ID
+  private password!: string;
+  private userRole!: string;
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
@@ -177,6 +179,7 @@ export class MediaService {
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
       this.meetingID = signal.meetingID;
+      this.password = signal.password;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
@@ -333,6 +336,10 @@ export class MediaService {
 
   public getMeetingID(): number {
     return this.meetingID;
+  }
+
+  public getMeetingPassword(): string {
+    return this.password;
   }
 
   public terminate(): void {

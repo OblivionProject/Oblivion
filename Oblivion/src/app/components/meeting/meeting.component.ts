@@ -1,9 +1,4 @@
-<<<<<<< 3a22e46bb15e3309fb360c9830f582e1b74381d8
-
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
-=======
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject} from '@angular/core';
->>>>>>> Create meeting dialog function
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
@@ -113,6 +108,10 @@ export class MeetingComponent implements AfterViewInit {
     return this.mediaService.getMeetingID();
   }
 
+  public getMeetingPassword(): string {
+    return this.mediaService.getMeetingPassword();
+  }
+
   //-----------------------------------------------------------------------------
   // The functions in this section are intended for development use only
   public TEST() {
@@ -150,9 +149,9 @@ export class MeetingComponent implements AfterViewInit {
   openDialog() {
     this.dialog.open(MeetingInfoDialogComponent, {
       data: {
-        meeting_id: 'panda',
+        meeting_id: this.getMeetingID(),
         user_type: 'panda',
-        password: ''
+        password: this.getMeetingPassword()
       }
     });
   }

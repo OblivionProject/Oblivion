@@ -4,6 +4,7 @@ import {MediaService} from "./media.service";
 
 export const WS_ENDPOINT = 'wss://localhost:8080';//'wss://128.255.71.168:8080'; wss://localhost:8080 wss://oblivionchat.com/websocket/
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +14,7 @@ export class WebsocketService {
 
   constructor() {
     this.webSocket = new WebSocket(WS_ENDPOINT);
-    // this.webSocket.onclose   = this.onClose;
+    //this.webSocket.onclose   = this.onClose;
     // this.webSocket.onerror   = this.onError;
   }
 
