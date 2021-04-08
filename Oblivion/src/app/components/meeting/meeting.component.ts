@@ -104,12 +104,8 @@ export class MeetingComponent implements AfterViewInit {
   }
 
   // Returns the meeting ID
-  public getMeetingID(): number {
-    return this.mediaService.getMeetingID();
-  }
-
-  public getMeetingPassword(): string {
-    return this.mediaService.getMeetingPassword();
+  public getMeetingInfo() {
+    return this.mediaService.getMeetingInfo();
   }
 
   //-----------------------------------------------------------------------------
@@ -147,11 +143,13 @@ export class MeetingComponent implements AfterViewInit {
   }
 
   openDialog() {
+    const meetingData = this.getMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {
+
       data: {
-        meeting_id: this.getMeetingID(),
-        user_type: 'panda',
-        password: this.getMeetingPassword()
+        meeting_id: meetingData['meetingID'],
+        user_type: meetingData['userRole'],
+        password: meetingData['password']
       }
     });
   }

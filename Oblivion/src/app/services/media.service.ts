@@ -180,6 +180,7 @@ export class MediaService {
       this.userId = signal.userId;
       this.meetingID = signal.meetingID;
       this.password = signal.password;
+      this.userRole = signal.userRole;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
@@ -334,12 +335,12 @@ export class MediaService {
     });
   }
 
-  public getMeetingID(): number {
-    return this.meetingID;
-  }
-
-  public getMeetingPassword(): string {
-    return this.password;
+  public getMeetingInfo() {
+    return {
+      'userRole': this.userRole,
+      'meetingID': this.meetingID,
+      'password': this.password
+    }
   }
 
   public terminate(): void {

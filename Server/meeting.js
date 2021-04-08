@@ -21,10 +21,12 @@ class Meeting {
     // Assign the user an ID and send the current user ids
     generateRMIResponse(ws) {
         const id = this.generateUserID();
+        const role = this.generateUserRole(id);
         const message = JSON.stringify({
             'rmi': true,
             'clientIDs': this.getClientUserIDs(),
             'userId': id,
+            'userRole': role,
             'meetingID': this.meetingID,
             'password': this.password
         });
@@ -54,6 +56,15 @@ class Meeting {
     generateUserID() {
         this.nextID = this.nextID + 1;
         return this.nextID;
+    }
+
+    generateUserRole(id){
+        if(id === 2){
+            return 'Admin';
+        }
+        else{
+            return 'Guest'
+        }
     }
 
     getClientUserIDs() {
