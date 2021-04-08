@@ -25,7 +25,8 @@ import { Globals } from './global';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import {MatChipsModule} from '@angular/material/chips';
-
+import { MeetingInfoDialogComponent } from './components/meeting-info-dialog/meeting-info-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MeetingComponent,
     CreateMeetingComponent,
     JoinMeetingComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    MeetingInfoDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MatCardModule,
     OverlayModule,
     ReactiveFormsModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule
   ],
   providers: [Globals],
   bootstrap: [AppComponent],
