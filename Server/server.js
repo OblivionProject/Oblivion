@@ -26,7 +26,8 @@ class Meeting {
                 'rmi': true,
                 'clientIDs': this.getClientUserIDs(),
                 'userId': id,
-                'meetingID': this.meetingID
+                'meetingID': this.meetingID,
+                'password': this.password
         });
         this.addUser(ws, id);
         return message;
@@ -77,8 +78,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
+    key: fs.readFileSync('/home/mseng/server.key'),
+    cert: fs.readFileSync('/home/mseng/server.cert'),
 }
 
 console.log(credentials);
