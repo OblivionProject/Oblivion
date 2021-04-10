@@ -5,8 +5,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync('/home/mseng/server.key'),
-    cert: fs.readFileSync('/home/mseng/server.cert'),
+    key: fs.readFileSync(''),
+    cert: fs.readFileSync(''),
 }
 
 console.log(credentials);
