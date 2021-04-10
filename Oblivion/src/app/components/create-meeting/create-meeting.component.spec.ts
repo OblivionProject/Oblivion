@@ -1,5 +1,6 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { CreateMeetingComponent } from './create-meeting.component';
+import {MEETING_TYPE} from "../../models/meeting.model";
 
 describe('CreateMeetingComponent', () => {
   let component: CreateMeetingComponent;
@@ -53,10 +54,9 @@ describe('CreateMeetingComponent', () => {
   });
 
   it('should contain an empty Meeting model', () => {
-    expect(component.meeting.title).toEqual('');
-    expect(component.meeting.id).toEqual('');
-    expect(component.meeting.password1).toEqual('');
-    expect(component.meeting.password2).toEqual('');
+    expect(component.meeting.name).toEqual(undefined);
+    expect(component.meeting.password).toEqual(undefined);
+    expect(component.meeting.meetingType).toEqual(MEETING_TYPE.CREATE);
   });
 
   it('should have passwords initially hidden', () => {
@@ -79,22 +79,14 @@ describe('CreateMeetingComponent', () => {
     expect(component.hide).toEqual(true);
   });
 
-  it('should contain a create meeting button that calls saveMeeting', fakeAsync(() => {
-    spyOn(component, 'saveMeeting');
+  it('should contain a create meeting button that calls createMeeting', fakeAsync(() => {
+    spyOn(component, 'createMeeting');
 
     const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_submit');
     expect(button.innerHTML).toEqual('Create');
 
     button.click();
     tick();
-    expect(component.saveMeeting).toHaveBeenCalled();
+    expect(component.createMeeting).toHaveBeenCalled();
   }));
-
-  it('should contain an exit meeting button that should redirect to welcome page', () => {
-    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_cancel');
-    expect(button.innerHTML).toEqual('Cancel');
-
-    const path = button.getAttribute('routerLink');
-    expect(path).toEqual('../');
-  });
 });
