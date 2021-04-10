@@ -13,12 +13,10 @@
       <span class="header" routerLink="/welcome"> &#9885; Oblivion</span>
       <span style="flex:auto"></span>
       <mat-slide-toggle id="toggle"
-        [checked]="globals.darkMode === true"
         (change) = "setValue($event)">
         Dark Mode
       </mat-slide-toggle>
       <mat-slide-toggle id="toggle_short"
-        [checked]="globals.darkMode === true"
         (change) = "setValue($event)">
       </mat-slide-toggle>
     </mat-toolbar>
