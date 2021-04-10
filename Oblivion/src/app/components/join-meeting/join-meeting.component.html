@@ -5,18 +5,19 @@
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="accent">
-          <mat-label>Enter Meeting ID</mat-label>
-          <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID">
+          <mat-label id="join_meeting_meeting_id_label">Enter Meeting ID</mat-label>
+          <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID" id="join_meeting_meeting_id_input">
         </mat-form-field>
       </div>
     </section>
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="accent">
-          <mat-label>Enter Meeting Password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password">
+          <mat-label id="join_meeting_meeting_password_label">Enter Meeting Password</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" id="join_meeting_meeting_password_input">
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                  [attr.aria-pressed]="hide">
+                  [attr.aria-pressed]="hide"
+                  id="join_meeting_meeting_password_hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
         </mat-form-field>
