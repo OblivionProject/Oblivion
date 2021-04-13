@@ -5,8 +5,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync('/home/mseng/server.key'),
-    cert: fs.readFileSync('/home/mseng/server.cert'),
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert'),
 }
 
 console.log(credentials);
@@ -111,3 +111,5 @@ function generateUniqueMeetingID() {
     }
     return id;
 }
+
+module.exports = httpsServer;
