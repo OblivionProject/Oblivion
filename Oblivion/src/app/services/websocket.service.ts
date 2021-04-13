@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Message} from "@angular/compiler/src/i18n/i18n_ast";
 import {MediaService} from "./media.service";
 
-export const WS_ENDPOINT = 'wss://oblivionchat.com/websocket/';//'wss://128.255.71.168:8080'; wss://localhost:8080
+export const WS_ENDPOINT = 'wss://localhost:8080' //'wss://oblivionchat.com/websocket/';//'wss://128.255.71.168:8080'; wss://localhost:8080
 
 @Injectable({
   providedIn: 'root'
