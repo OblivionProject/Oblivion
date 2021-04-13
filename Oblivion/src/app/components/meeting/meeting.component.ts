@@ -4,7 +4,6 @@ import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
-import {Meeting, MEETING_TYPE} from "../../models/meeting.model";
 import {MeetingInfo} from "../../models/meeting-info";
 
 @Component({
@@ -138,7 +137,8 @@ export class MeetingComponent implements AfterViewInit {
       this.meetingInfo.setData(this.mediaService.getMeetingInfo());
     }
     this.dialog.open(MeetingInfoDialogComponent, {
-
+      width: '50%',
+      height: '50%',
       data: {
         meeting_id: this.meetingInfo.meeting_id,
         user_type: this.meetingInfo.user_type,
@@ -148,4 +148,4 @@ export class MeetingComponent implements AfterViewInit {
   }
 
 }
-
+>>>>>>> Remove unused imports
