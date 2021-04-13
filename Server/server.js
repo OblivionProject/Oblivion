@@ -77,8 +77,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync('/home/joseph/SeniorDesign/certs/key-rsa.pem'),
-    cert: fs.readFileSync('/home/joseph/SeniorDesign/certs/cert.pem'),
+    key: fs.readFileSync(''),
+    cert: fs.readFileSync(''),
 }
 
 console.log(credentials);
