@@ -1,3 +1,4 @@
+
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
@@ -67,7 +68,7 @@ export class MeetingComponent implements AfterViewInit {
     this.remoteStreams = this.mediaService.getRemoteStreams();
     console.log(this.mediaService.getRemoteStreams());
     (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
-        console.log(track);
+      console.log(track);
     });
     console.log(this.localVideo.nativeElement.srcObject);
   }

@@ -1,11 +1,13 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <h1 class="mat-display-1" id="create_meeting_header">Create Meeting</h1>
   <mat-sidenav-container class = "sidenav-cont">
+    <form [formGroup]="createMeetingForm">
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
           <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
-          <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.name" id="meeting_name_input">
+          <input matInput placeholder="Meeting Name" (keyup)="test($event)" [(ngModel)]="meeting.name" [errorStateMatcher]="matcher" formControlName="meetingName"  id="meeting_name_input">
+          <mat-error *ngIf="createMeetingForm.controls['meetingName'].invalid">{{getMeetingNameErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
     </section>
@@ -13,7 +15,10 @@
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
           <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" id="meeting_password1_input">
+          <input matInput [type]="hide ? 'password' : 'text'" (keyup)="test($event)" [(ngModel)]="meeting.password" [errorStateMatcher]="matcher" formControlName="password"  id="meeting_password1_input">
+          <mat-error align="start" *ngIf="createMeetingForm.controls['password'].invalid">
+            {{getPasswordErrorMessage()}}
+          </mat-error>
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                   [attr.aria-pressed]="hide" id="meeting_password1_hide_button">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -25,7 +30,8 @@
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
           <mat-label id="meeting_password2_label" >Confirm Meeting Password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" id="meeting_password2_input">
+          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.passwordConfirm" formControlName="confirmPassword" id="meeting_password2_input">
+          <mat-error *ngIf="createMeetingForm.controls['confirmPassword'].invalid">{{getPasswordMatchErrorMessage()}}</mat-error>
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                   [attr.aria-pressed]="hide" id="meeting_password2_hide_button">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -33,10 +39,33 @@
         </mat-form-field>
       </div>
     </section>
+    <section>
+    <mat-form-field appearance="fill" class="form-field" color="primary">
+      <mat-label>Add Emails</mat-label>
+      <mat-chip-list #chipList aria-label="Email selection">
+        <mat-chip *ngFor="let email of emails" [selectable]="selectable"
+                  [removable]="removable" (removed)="remove(email)">
+          {{email.name}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input placeholder="New email..."
+               formControlName="email"
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matChipInputAddOnBlur]="addOnBlur"
+               (matChipInputTokenEnd)="addEmail($event)">
+        <mat-error *ngIf="createMeetingForm.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
+      </mat-chip-list>
+    </mat-form-field>
+    </section>
+    </form>
     <hr class="my-4">
   </mat-sidenav-container>
+
   <mat-sidenav-container class = "sidenav-button">
-    <button mat-raised-button (click)="createMeeting()" color="primary" routerLink="../meeting" id="create_meeting_submit">Create</button>
+    <button mat-raised-button (click)="createMeeting()" [disabled]="createMeetingForm.controls['meetingName'].invalid" color="primary" routerLink="../meeting" id="create_meeting_submit">Create</button>
+    <button mat-flat-button color="warn" routerLink="../" id="create_meeting_cancel">Cancel</button>
   </mat-sidenav-container>
+
 </mat-sidenav-container>
 

@@ -23,15 +23,18 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { Globals } from './global';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
-    CreateMeetingComponent,
     MeetingComponent,
-    JoinMeetingComponent
+    CreateMeetingComponent,
+    JoinMeetingComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,9 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatSlideToggleModule,
     FormsModule,
     MatCardModule,
-    OverlayModule
+    OverlayModule,
+    ReactiveFormsModule,
+    MatChipsModule
   ],
   providers: [Globals],
   bootstrap: [AppComponent],

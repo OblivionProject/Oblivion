@@ -164,9 +164,9 @@ function connection(ws, req) {
 // Generates a random unique 5 digit meeting code
 // This is guaranteed unique by checking the existing codes
 function generateUniqueMeetingID() {
-    let id = Math.floor(Math.random()*90000) + 10000;
+    let id = Math.floor(Math.random() * 90000) + 10000;
     while (id in meetings) {
-        id = Math.floor(Math.random()*90000) + 10000;
+        id = Math.floor(Math.random() * 90000) + 10000;
     }
     return id;
 }

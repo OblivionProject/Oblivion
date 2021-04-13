@@ -10,7 +10,7 @@ import {WebsocketService} from "../../services/websocket.service";
 export class JoinMeetingComponent {
 
   public meeting: Meeting;  // Stores the meeting creation information
-  public hide: Boolean;     // Indicates whether the password fields should be hidden
+  public hide: boolean;     // Indicates whether the password fields should be hidden
   private webSocket: WebSocket;  // WebSocket connection to server
 
   // Initializes the WebSocket from the WebsocketService and joins the meeting
@@ -27,3 +27,4 @@ export class JoinMeetingComponent {
   }
 
 }
+  // setValue($event: MatSlideToggleChange): void {this.isDark = $event.checked; }
