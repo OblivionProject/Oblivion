@@ -49,6 +49,10 @@
   float: left;
 }
 
+.icons{
+  margin-right: 5px;
+}
+
 @media (max-width: 1200px) {
   #join_meeting_header {
     margin-top: 2.5%;

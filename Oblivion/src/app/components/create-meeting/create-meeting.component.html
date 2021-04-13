@@ -5,6 +5,7 @@
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
+          <mat-icon matPrefix class="icons">fingerprint</mat-icon>
           <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
           <input matInput placeholder="Meeting Name" (keyup)="test($event)" [(ngModel)]="meeting.name" [errorStateMatcher]="matcher" formControlName="meetingName"  id="meeting_name_input">
           <mat-error *ngIf="createMeetingForm.controls['meetingName'].invalid">{{getMeetingNameErrorMessage()}}</mat-error>
@@ -14,6 +15,7 @@
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
+          <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" (keyup)="test($event)" [(ngModel)]="meeting.password" [errorStateMatcher]="matcher" formControlName="password"  id="meeting_password1_input">
           <mat-error align="start" *ngIf="createMeetingForm.controls['password'].invalid">
@@ -29,6 +31,7 @@
     <section>
       <div class="form-component-row">
         <mat-form-field appearance="fill" class="form-field" color="primary">
+          <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password2_label" >Confirm Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.passwordConfirm" formControlName="confirmPassword" id="meeting_password2_input">
           <mat-error *ngIf="createMeetingForm.controls['confirmPassword'].invalid">{{getPasswordMatchErrorMessage()}}</mat-error>
@@ -41,6 +44,7 @@
     </section>
     <section>
     <mat-form-field appearance="fill" class="form-field" color="primary">
+      <mat-icon matPrefix class="icons">email</mat-icon>
       <mat-label>Add Emails</mat-label>
       <mat-chip-list #chipList aria-label="Email selection">
         <mat-chip *ngFor="let email of emails" [selectable]="selectable"

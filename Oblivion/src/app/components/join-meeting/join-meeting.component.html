@@ -4,7 +4,8 @@
     <form [formGroup]="joinMeetingForm">
       <section>
         <div class="form-component-row">
-          <mat-form-field appearance="fill" class="form-field" color="accent">
+          <mat-form-field appearance="fill" class="form-field" color="primary">
+            <mat-icon matPrefix class="icons">fingerprint</mat-icon>
             <mat-label id="join_meeting_meeting_id_label">Enter Meeting ID</mat-label>
             <input matInput placeholder="Meeting Name" [(ngModel)]="meeting.meetingID" (keyup)="test($event)" [errorStateMatcher]="matcher" formControlName="meetingID" id="join_meeting_meeting_id_input">
             <mat-error *ngIf="joinMeetingForm.controls['meetingID'].invalid">{{getMeetingIDErrorMessage()}}</mat-error>
@@ -13,7 +14,8 @@
       </section>
       <section>
         <div class="form-component-row">
-          <mat-form-field appearance="fill" class="form-field" color="accent">
+          <mat-form-field appearance="fill" class="form-field" color="primary">
+            <mat-icon matPrefix class="icons">lock</mat-icon>
             <mat-label id="join_meeting_meeting_password_label">Enter Meeting Password</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" formControlName="password" id="join_meeting_meeting_password_input">
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"

@@ -27,6 +27,10 @@
   left: 30%;
 }
 
+.icons{
+  margin-right: 5px;
+}
+
 #create_meeting_submit{
   width: 100%;
   height: 55px;
