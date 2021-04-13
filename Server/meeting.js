@@ -77,7 +77,7 @@ class Meeting {
     }
 
     getPassword(role){
-        if(role == 'Admin'){
+        if(role === 'Admin'){
             return this.password;
         }
         else{
