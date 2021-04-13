@@ -88,6 +88,27 @@ class Meeting {
         this.clients.push(ws);
         this.clientIDs.push(id);
     }
+
+    static incorrectMeetingInfo(ws, message) {
+        if (message === 'Invalid ID'){
+            ws.send(JSON.stringify({
+                'error': true,
+                'message': 'Invalid ID'
+            }));
+        }
+        else if (message === 'Invalid Password'){
+            ws.send(JSON.stringify({
+                'error': true,
+                'message': 'Invalid Password'
+            }));
+        }
+    }
+
+    static correctMeetingInfo(ws) {
+        ws.send(JSON.stringify({
+            'valid': true
+        }));
+    }
 }
 
 module.exports.Meeting = Meeting;
