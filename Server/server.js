@@ -5,8 +5,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
+    key: fs.readFileSync('/home/mseng/server.key'),
+    cert: fs.readFileSync('/home/mseng/server.cert'),
 }
 
 console.log(credentials);
@@ -52,19 +52,32 @@ function connection(ws, req) {
                 const meetingToJoin = meetings[meetingID];
                 if (meetingToJoin.hasPassword) {
                     if (data.password === meetingToJoin.password) {
-                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
 
-                    } else {
-                        // TODO: Send incorrect password message to client
+                        if(data.check){
+                            m.Meeting.correctMeetingInfo(ws);
+                        }
+                        else{
+                            console.log("MATT");
+                            ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                        }
+                    }
+                    else {
+                        m.Meeting.incorrectMeetingInfo(ws, 'Invalid Password');
                     }
 
                 // Join if the meeting has no password
                 } else {
-                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                    if(data.check){
+                        m.Meeting.correctMeetingInfo(ws);
+                    }
+                    else{
+                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                    }
                 }
 
-            } else {
-                // TODO: Send a meeting not found message to client
+            }
+            else {
+                m.Meeting.incorrectMeetingInfo(ws, 'Invalid ID');
             }
 
             // Client create meeting request
