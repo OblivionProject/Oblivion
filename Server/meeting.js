@@ -28,7 +28,8 @@ class Meeting {
             'userId': id,
             'userRole': role,
             'meetingID': this.meetingID,
-            'password': this.getPassword(role)
+            'password': this.getPassword(role),
+            'name': this.name
         });
         this.addUser(ws, id);
         return message;

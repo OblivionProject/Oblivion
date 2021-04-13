@@ -142,7 +142,8 @@ export class MeetingComponent implements AfterViewInit {
       data: {
         meeting_id: this.meetingInfo.meeting_id,
         user_type: this.meetingInfo.user_type,
-        password: this.meetingInfo.password
+        password: this.meetingInfo.password,
+        name: this.meetingInfo.name
       }
     });
   }

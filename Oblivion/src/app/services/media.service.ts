@@ -16,6 +16,7 @@ export class MediaService {
   private meetingID!: number; // Meeting ID
   private password!: string;
   private userRole!: string;
+  private name!: string;
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
@@ -181,6 +182,7 @@ export class MediaService {
       this.meetingID = signal.meetingID;
       this.password = signal.password;
       this.userRole = signal.userRole;
+      this.name = signal.name;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
@@ -339,7 +341,8 @@ export class MediaService {
     return {
       'userRole': this.userRole,
       'meetingID': this.meetingID,
-      'password': this.password
+      'password': this.password,
+      'name': this.name
     }
   }
 

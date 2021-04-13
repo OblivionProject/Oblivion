@@ -85,7 +85,7 @@ function connection(ws, req) {
             console.log("Create Meeting Request");
 
             const newMeetingID = generateUniqueMeetingID();
-            const newMeeting = new m.Meeting('New Meeting', newMeetingID); // TODO: Change 'New Meeting' to meeting name
+            const newMeeting = new m.Meeting(data.name, newMeetingID); // TODO: Change 'New Meeting' to meeting name
 
             // Check if the meeting should have a password
             if (data.password !== '') {

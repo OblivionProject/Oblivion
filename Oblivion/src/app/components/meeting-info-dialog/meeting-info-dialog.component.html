@@ -2,6 +2,9 @@
   Meeting Info:
   <ul>
     <li *ngIf="data.user_type">
+      <span>Name: </span><span [innerHTML]='data.name'></span>
+    </li>
+    <li *ngIf="data.user_type">
       <span>User Type: </span><span [innerHTML]='data.user_type'></span>
     </li>
     <li *ngIf="data.meeting_id">
