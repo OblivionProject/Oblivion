@@ -95,4 +95,3 @@ export class JoinMeetingComponent {
   }
 
 }
-  // setValue($event: MatSlideToggleChange): void {this.isDark = $event.checked; }
