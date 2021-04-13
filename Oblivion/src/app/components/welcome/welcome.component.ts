@@ -1,23 +1,16 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 
 declare var anime: any;
+
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements AfterViewInit {
-  // isDark = false;
+
   constructor() {
   }
-
-//   ngOnInit(): void {
-//
-//
-// }
-
 
   ngAfterViewInit(): void {
     // Wrap every letter in a span

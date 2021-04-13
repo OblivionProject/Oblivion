@@ -1,7 +1,8 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-
 import { JoinMeetingComponent } from './join-meeting.component';
 import {MEETING_TYPE} from "../../models/meeting.model";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('JoinMeetingComponent', () => {
   let component: JoinMeetingComponent;
@@ -9,6 +10,11 @@ describe('JoinMeetingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([])
+      ],
       declarations: [ JoinMeetingComponent ]
     })
     .compileComponents();
