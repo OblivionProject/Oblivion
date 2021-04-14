@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 
 const mediaConstraints = {
@@ -6,10 +6,8 @@ const mediaConstraints = {
   video: true
 };
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MediaService {
+@Injectable()
+export class MediaService implements OnDestroy{
 
   private webSocket: WebSocket; // Server connection to get connected to peers
   private userId!: number; // This users ID
@@ -346,10 +344,17 @@ export class MediaService {
     }
   }
 
-  public terminate(): void {
-    this.webSocket.close();
+  ngOnDestroy() {
+    console.log('Destroy Media Service');
+    //Close Peer Connections
     Object.values(this.peers).forEach(peer => {
       peer.close();
     });
+    //Close local tracks
+    this.localstream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+    //Clear remote streams
+    this.remoteStreams= {};
   }
 }

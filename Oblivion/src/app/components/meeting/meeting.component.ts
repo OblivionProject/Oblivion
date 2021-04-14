@@ -9,7 +9,8 @@ import {MeetingInfo} from "../../models/meeting-info";
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
-  styleUrls: ['./meeting.component.css']
+  styleUrls: ['./meeting.component.css'],
+  providers: [ MediaService ]
 })
 
 export class MeetingComponent implements AfterViewInit {
@@ -111,12 +112,6 @@ export class MeetingComponent implements AfterViewInit {
   }
   // End development functions
   //-----------------------------------------------------------------------------
-
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(): void {
-    this.mediaService.terminate();
-  }
-
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');
