@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject, OnDestroy} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';
@@ -13,7 +13,7 @@ import {MeetingInfo} from "../../models/meeting-info";
   providers: [ MediaService ]
 })
 
-export class MeetingComponent implements AfterViewInit {
+export class MeetingComponent implements AfterViewInit, OnDestroy {
 
 
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
@@ -106,7 +106,8 @@ export class MeetingComponent implements AfterViewInit {
     console.log(this.mediaService.getPeers());
   }
 
-  public clearMeeting() {
+  ngOnDestroy() {
+    console.log('Destroy Meeting Component');
     this.remoteStreams = [];
     this.mediaService.clearMeeting();
   }
@@ -127,9 +128,16 @@ export class MeetingComponent implements AfterViewInit {
       return of(result);
   }
 
-  public openDialog() {
+  public setMeetingInfo(){
     if (!this.meetingInfo.user_type){
       this.meetingInfo.setData(this.mediaService.getMeetingInfo());
+    }
+    return this.meetingInfo;
+  }
+
+  public openDialog() {
+    if (!this.meetingInfo.user_type){
+      this.setMeetingInfo();
     }
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '50%',
