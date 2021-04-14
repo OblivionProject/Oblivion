@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, Inject, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import { Observable, of } from 'rxjs';

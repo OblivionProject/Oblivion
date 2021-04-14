@@ -20,22 +20,13 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
     const subject = new Subject<boolean>();
 
 
-    if (component.interval) {
-      this.confirmDlg = this.dialog.open(ConfirmEndMeetingComponent, { disableClose: true });
-      this.confirmDlg.componentInstance.subject = subject;
-      this.confirmDlg.afterClosed()
-        .subscribe(async response => {
-          if (response) {
-            // component.cancelTimeLoop();
-            component.navigateAwayFromPageAsync();
-          } else {
-            // when response is NO
-            console.log('You decided to stay on Page!');
-          }
-        });
-
-      return subject.asObservable();
-    }
-    return true;
+    this.confirmDlg = this.dialog.open(ConfirmEndMeetingComponent, { disableClose: true });
+    this.confirmDlg.componentInstance.subject = subject;
+    this.confirmDlg.afterClosed()
+      .subscribe(async response => {
+        // when response is NO
+        console.log('You decided to stay on Page!');
+      });
+    return subject.asObservable();
   }
 }
