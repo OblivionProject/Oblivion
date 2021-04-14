@@ -25,9 +25,13 @@
       color:$text;
       font-family: "Times New Roman", Times, serif;
     }
-    .mat-form-field-appearance-fill, .mat-form-field-outline-fill{
+    .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
       color: $text;
       font-family: "Times New Roman", Times, serif;
+    }
+
+    .mat-form-field-ripple{
+      border-bottom: 2px solid $text !important;
     }
 
     .mat-raised-button{
