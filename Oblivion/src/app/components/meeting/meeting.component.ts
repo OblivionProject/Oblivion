@@ -3,21 +3,40 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 
+
+export interface Tile{
+  number: number;
+}
+
+
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css']
 })
 
+
+
 export class MeetingComponent implements AfterViewInit {
 
 
   @ViewChild('local_video') localVideo!: ElementRef;
   private remoteStreams: {[key: number]: MediaStream} = {};
-
+  public testTiles: Tile[] = [
+    {number: 1},
+    {number: 2},
+    {number: 3},
+    {number: 4},
+    {number: 5},
+    {number: 6},
+    {number: 7},
+    // {number: 8},
+    // {number: 9}
+    ];
   tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
   video: boolean;
-  audio:boolean;
+  audio: boolean;
+  pageNumber = 0;
 
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
@@ -31,6 +50,16 @@ export class MeetingComponent implements AfterViewInit {
     this.localVideo.nativeElement.muted = true;
   }
 
+  public getTileTest(): Tile[] {
+    return this.testTiles.slice(this.pageNumber * 4, this.pageNumber * 4 + 4);
+  }
+
+  public nextPage(): void{
+    if (!(this.pageNumber >=  this.testTiles.length / 4 - 1 )){this.pageNumber += 1; }
+  }
+  public prevPage(): void{
+    if (this.pageNumber !== 0) {this.pageNumber -= 1; }
+  }
   public muteLocalVideo(): void{
     this.mediaService.muteLocalVideo();
   }
@@ -39,19 +68,19 @@ export class MeetingComponent implements AfterViewInit {
     this.mediaService.unmuteLocalVideo();
   }
 
-  async ngAfterViewInit() {
+  async ngAfterViewInit(): Promise<any> {
     await this.getLocalVideo();
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
   public start(isCaller: boolean): void {
-    //this.mediaService.start(isCaller);
+    // this.mediaService.start(isCaller);
     this.mediaService.requestMeetingInformation();
     // this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
-  public getRemoteStreams1() {
+  public getRemoteStreams1(): void {
     this.remoteStreams = this.mediaService.getRemoteStreams();
     console.log(this.mediaService.getRemoteStreams());
     (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
@@ -66,17 +95,17 @@ export class MeetingComponent implements AfterViewInit {
 
   //-----------------------------------------------------------------------------
   // The functions in this section are intended for development use only
-  public TEST() {
+  public TEST(): void {
     console.log(Object.keys(this.mediaService.getPeers()).length);
     console.log(this.mediaService.getPeers());
   }
 
-  public clearMeeting() {
+  public clearMeeting(): void {
     this.remoteStreams = [];
     this.mediaService.clearMeeting();
   }
   // End development functions
-  //-----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');

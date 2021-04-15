@@ -34,3 +34,12 @@ button {
 #footer{
   height: 100%;
 }
+mat-grid-tile {
+  background: lightblue;
+}
+.test{
+  opacity: 0.3;
+}
+.test:hover{
+  opacity: 1;
+}

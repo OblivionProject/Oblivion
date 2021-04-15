@@ -1,18 +1,20 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
     <mat-grid-list cols="2" rowHeight="fit" style="height: 820px">
-      <mat-grid-tile
-        [colspan]="tile.cols"
-        [rowspan]="tile.rows">
-        <p class="video video-description"></p>
-        <video #local_video [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
+<!--      <mat-grid-tile-->
+<!--        [colspan]="tile.cols"-->
+<!--        [rowspan]="tile.rows">-->
+<!--        <p class="video video-description"></p>-->
+<!--        <video #local_video [autoplay]="true" [muted]="false"></video>-->
+<!--      </mat-grid-tile>-->
 
       <!-- Remote videos -->
-      <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
-        <p class="video video-description">Other</p>
-        <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
+<!--      <mat-grid-tile *ngFor="let vid of getRemoteStreams()">-->
+<!--        <p class="video video-description">Other</p>-->
+<!--        <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>-->
+<!--      </mat-grid-tile>-->
+<!--    </mat-grid-list>-->
+      <mat-grid-tile *ngFor="let tile of getTileTest()">{{tile.number}}</mat-grid-tile>
     </mat-grid-list>
   </mat-sidenav-container>
 
@@ -26,6 +28,8 @@
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
       <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
+      <button class="test" mat-flat-button color="warn" (click)="prevPage()">Prev Page</button> <!-- [disabled]="pageNumber==0"-->
+      <button class="test"mat-flat-button color="warn" (click)="nextPage()" >Next Page</button> <!-- [disabled]="pageNumber>=testTiles.length/4 -1" -->
 
     </mat-toolbar>
   </footer>
