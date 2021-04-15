@@ -35,6 +35,20 @@ class Meeting {
         return message;
     }
 
+    generateEndMeetingResponse(ws) {
+        return JSON.stringify({
+            'res': true
+        });
+    }
+    generateLeaveMeetingResponse(ws, id) {
+        return JSON.stringify({
+            'res': true,
+            'left': true,
+            'userID': id
+        });
+    }
+
+
     onMessage(ws, message) {
 
         console.log('In new onMessage');
@@ -50,6 +64,27 @@ class Meeting {
         } else if (data.rmi) {
             const message = this.generateRMIResponse(ws);
             ws.send(message);
+            console.log('Response:\n' + message);
+        }
+        else if (data.res) {
+            if(data.end || this.getClients().length === 2){
+                const message = this.generateEndMeetingResponse(ws);
+                this.getClients().forEach(function(client) {
+                    client.send(message);
+                });
+            }
+            else{
+                const client = this.getClients()[data.userID-1];
+                const messageForPersonLeaving = this.generateEndMeetingResponse(ws);
+                client.send(messageForPersonLeaving);
+                if (client > -1) {
+                    this.getClients().splice(client, 1);
+                }
+                const messageForPeopleInMeeting = this.generateLeaveMeetingResponse(ws,data.userID);
+                this.getClients().forEach(function(client) {
+                    client.send(messageForPeopleInMeeting);
+                });
+            }
             console.log('Response:\n' + message);
         }
     }

@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
+
+export enum END_MEETING_TYPE {
+  END = 'END',
+  LEAVE = 'LEAVE',
+  CANCEL= 'CANCEL'
+}
 
 @Component({
   selector: 'app-confirmation',
@@ -10,21 +16,36 @@ import { Subject } from 'rxjs';
 export class ConfirmEndMeetingComponent implements OnInit {
 
   public subject: Subject<boolean> | undefined;
+  public type: END_MEETING_TYPE;
 
-  constructor(private dialogRef: MatDialogRef<ConfirmEndMeetingComponent>) { }
+  constructor(private dialogRef: MatDialogRef<ConfirmEndMeetingComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any) {
+    console.log('data', this.data);
+    this.type = END_MEETING_TYPE.CANCEL;
+  }
 
   ngOnInit() {
   }
 
-  public onYesResponse() {
+  public endMeetingResponse() {
     if (this.subject) {
+      this.type = END_MEETING_TYPE.END;
       this.subject.next(true);
       this.subject.complete();
     }
     this.dialogRef.close(true);
   }
 
-  public onNoResponse() {
+  public leaveMeetingResponse() {
+    if (this.subject) {
+      this.type = END_MEETING_TYPE.LEAVE;
+      this.subject.next(true);
+      this.subject.complete();
+    }
+    this.dialogRef.close(true);
+  }
+
+  public cancelResponse() {
     if (this.subject) {
       this.subject.next(false);
       this.subject.complete();

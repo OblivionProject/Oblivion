@@ -1,0 +1,57 @@
+#confirm_end_meeting{
+  z-index: 3;
+  background-color: white;
+  box-shadow: 0 0 10px #50a3a2;
+  border-radius: 16px;
+  margin-bottom: 4px;
+}
+
+#headerdialog{
+  text-align: center;
+  color: #333333;
+}
+
+#content{
+  margin-top: 20px !important;
+  color: #c62828;
+}
+
+.dialog{
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+.mat-divider{
+  color: grey;
+}
+
+#confirm_leave_button{
+  background: #c62828;
+  color: #333333;
+  font-weight: bold;
+}
+
+#confirm_leave_button_admin{
+  background: #333333;
+  color: #c62828;
+  font-weight: bold;
+}
+
+#confirm_end_button{
+  background: #c62828;
+  color: #333333;
+  font-weight: bold;
+}
+
+#confirm_cancel_button{
+  color: #50a3a2;
+  font-size: 24px;
+  font-weight: lighter;
+}
+
+.end_button{
+  opacity: 0.9;
+  font-family: "Times New Roman", Times, serif;
+  border-radius: 5px;
+  font-size: 16px;
+}

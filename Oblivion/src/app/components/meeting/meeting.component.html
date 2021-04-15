@@ -1,3 +1,4 @@
+<<<<<<< 345be0682a741dde81baaa90368a3a5fae15d8c9
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
     <mat-grid-list cols="2" rowHeight="fit" style="height: 820px">
@@ -46,8 +47,8 @@
       <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()">
         <mat-icon>info</mat-icon>
       </button>
-      <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
-      <button mat-flat-button color="warn" routerLink="../welcome" id="leave_short">Leave</button>
+      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>
+      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short">Leave</button>
     </mat-toolbar>
   </footer>
 </mat-sidenav-container>

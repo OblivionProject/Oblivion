@@ -72,6 +72,7 @@ export class JoinMeetingComponent {
 
   public receivedValidationFromServer(message: MessageEvent) {
     const signal = JSON.parse(message.data);
+    console.log("MATTTTTT");
     console.log(signal);
     if (signal.error){
       if(signal.message == 'Invalid ID'){

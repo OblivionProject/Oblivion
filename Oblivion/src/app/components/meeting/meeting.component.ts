@@ -1,19 +1,20 @@
-import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
-import { Observable, of } from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
 import {MeetingInfo} from "../../models/meeting-info";
+import {Router} from "@angular/router";
+
 
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css'],
-  providers: [ MediaService ]
+  providers: [MediaService]
 })
 
-export class MeetingComponent implements AfterViewInit, OnDestroy {
+export class MeetingComponent implements AfterViewInit, OnInit, OnDestroy  {
 
 
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
@@ -22,20 +23,31 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo: MeetingInfo;
-
-<<<<<<< 4d659dc6746522d8a54b42cf21f72c94c4bb6350
+  public overrideGuard: boolean = false;
   public chat: boolean;  // Flag for if the chat box is open
 
-  constructor(private mediaService: MediaService) {
-=======
-  constructor(private mediaService: MediaService, public dialog: MatDialog) {
->>>>>>> Create meeting dialog function
+
+  constructor(private mediaService: MediaService, public dialog: MatDialog, private router: Router) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
     this.meetingInfo = new MeetingInfo();
+  }
+
+  ngOnInit() {
+    this.mediaService.mySubject.subscribe((data) => {
+      if(data==true){
+        this.overrideGuard = true;
+        console.log("MATT the subscribe is fucking working");
+        this.endMeeting();
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.mediaService.terminate();
   }
 
   async ngAfterViewInit() {
@@ -106,11 +118,6 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
     console.log(this.mediaService.getPeers());
   }
 
-  ngOnDestroy() {
-    console.log('Destroy Meeting Component');
-    this.remoteStreams = [];
-    this.mediaService.clearMeeting();
-  }
   // End development functions
   //-----------------------------------------------------------------------------
 
@@ -121,11 +128,6 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
     node.async = false;
     node.charset = 'utf-8';
     document.getElementsByTagName('head')[0].appendChild(node);
-  }
-
-  public canDeactivate(): Observable<boolean> | boolean {
-      const result = window.confirm('Are you sure you would like to leave the meeting?');
-      return of(result);
   }
 
   public setMeetingInfo(){
@@ -149,6 +151,21 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
         name: this.meetingInfo.name
       }
     });
+  }
+
+  public endMeeting(){
+    if (!this.meetingInfo.user_type){
+      this.setMeetingInfo();
+    }
+    this.router.navigate(['welcome']);
+  }
+
+  public endMeetingForAll(){
+    this.mediaService.endMeetingForAll();
+  }
+
+  public leaveMeeting(){
+    this.mediaService.leaveMeeting();
   }
 
 }

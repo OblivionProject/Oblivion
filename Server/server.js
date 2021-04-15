@@ -5,8 +5,8 @@ const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert'),
+    key: fs.readFileSync('/home/mseng/server.key'),
+    cert: fs.readFileSync('/home/mseng/server.cert'),
 }
 
 console.log(credentials);
@@ -40,7 +40,7 @@ function connection(ws, req) {
     ws.on('message', (message) => {
 
         console.log("Received Message " + message);
-
+        console.log(meetings);
         // Parse the message
         const data = JSON.parse(message);
 
@@ -85,7 +85,7 @@ function connection(ws, req) {
             console.log("Create Meeting Request");
 
             const newMeetingID = generateUniqueMeetingID();
-            const newMeeting = new m.Meeting(data.name, newMeetingID); // TODO: Change 'New Meeting' to meeting name
+            const newMeeting = new m.Meeting(data.name, newMeetingID);
 
             // Check if the meeting should have a password
             if (data.password !== '') {
@@ -98,6 +98,35 @@ function connection(ws, req) {
             newMeeting.generateRMIResponse(ws); // Generate RMI response is needed to create the new user
             meetings[newMeetingID] = newMeeting; // Add the meeting to the meetings array
             console.log('Meeting ID: ' + newMeetingID);
+        }
+        else if (data.res) {
+            const meetingID = data.meetingID;
+            console.log(meetingID);
+            if(meetingID in meetings){
+                if(data.end){
+                    const meetingToEnd = meetings[data.meetingID];
+                    ws.on('message', (message) => meetingToEnd.onMessage(ws, message));
+                    delete meetings[meetingID];
+                    console.log(meetings);
+                    console.log("There are now: "+wsServer.clients.size+" Active Connections");
+                }
+                else{
+                    const meetingToLeave = meetings[data.meetingID];
+                    console.log(meetingToLeave.getClients().length);
+                    if(meetingToLeave.getClients().length === 2){
+                        console.log("MATT");
+                        ws.on('message', (message) => meetingToLeave.onMessage(ws, message));
+                        delete meetings[meetingID];
+                    }
+                    else{
+                        console.log("MATTTTTTT");
+                        console.log(data);
+                        ws.on('message', (message) => meetingToLeave.onMessage(ws, message));
+                    }
+                    console.log(meetings);
+                    console.log("There are now: "+wsServer.clients.size+" Active Connections");
+                }
+            }
         }
     });
 }

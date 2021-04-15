@@ -1,5 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
+import {Observable, Subject} from "rxjs";
 
 const mediaConstraints = {
   audio: true,
@@ -7,9 +8,11 @@ const mediaConstraints = {
 };
 
 @Injectable()
-export class MediaService implements OnDestroy{
+export class MediaService{
 
-  private webSocket: WebSocket; // Server connection to get connected to peers
+  mySubject : Subject<any> = new Subject<any>();
+  destroy : boolean = false ;
+  //private webSocket: WebSocket; // Server connection to get connected to peers
   private userId!: number; // This users ID
   private meetingID!: number; // Meeting ID
   private password!: string;
@@ -28,11 +31,10 @@ export class MediaService implements OnDestroy{
   private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
   private messageLog: JSON[];  // TODO: Make a message object?
 
-  constructor(websocketService: WebsocketService) {
-    this.webSocket = websocketService.getWebSocket();
-    this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
-    this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
-    this.webSocket.onerror = (event: Event) => console.log(event);
+  constructor(private websocketService: WebsocketService) {
+    this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
+    this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
     this.remoteStreams = {};
     this.peers = {};
 
@@ -150,6 +152,8 @@ export class MediaService implements OnDestroy{
     const signal = JSON.parse(message.data);
     //console.log(signal);
 
+    console.log("MATHEW IT IS SENDING TIWC");
+
     // Debugging Statements TODO: Remove
     //console.log('Request from Server:');
     //console.log(message);
@@ -175,9 +179,12 @@ export class MediaService implements OnDestroy{
         .catch(this.errorHandler);
 
       // Handle the RMI response
-    } else if (signal.rmi && this.userId == undefined) {
+    } else if (signal.rmi && (this.userId < 0 || this.userId == undefined)) {
+      console.log("BITCH");
       this.userId = signal.userId;
+      console.log(this.userId);
       this.meetingID = signal.meetingID;
+      console.log(this.meetingID);
       this.password = signal.password;
       this.userRole = signal.userRole;
       this.name = signal.name;
@@ -188,6 +195,20 @@ export class MediaService implements OnDestroy{
           this.createPeerOffer(currentPeer, id);
         }
       });
+    }
+    else if (signal.res) {
+      if(signal.left){
+        console.log("MATT HE LEFT THE MEETING");
+
+        this.peers[signal.userID].close();
+        delete this.peers[signal.userID];
+        delete this.remoteStreams[signal.userID];
+      }
+      else{
+        console.log("MATT");
+        this.destroy = true;
+        this.mySubject.next(this.destroy);
+      }
     }
   }
 
@@ -214,6 +235,7 @@ export class MediaService implements OnDestroy{
   }
 
   public clearMeeting() {
+    console.log("MATT");
     this.messageServer(JSON.stringify({'res': true}));
     this.peers = {};
   }
@@ -237,12 +259,12 @@ export class MediaService implements OnDestroy{
 
   private messageServer(message: string) {
     // TODO: Does this need error handling?
-    return this.webSocket.send(message);
+    return this.websocketService.getWebSocket().send(message);
   }
 
   private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number) {
     if (event.candidate != null) {
-      this.webSocket.send(
+      this.websocketService.getWebSocket().send(
         JSON.stringify(
           {
             'ice': event.candidate,
@@ -279,8 +301,13 @@ export class MediaService implements OnDestroy{
         case "disconnected":
         case "failed":
         case "closed":
+          console.log(this.peers);
+          console.log(this.remoteStreams);
+          this.peers[userID].close();
           delete this.peers[userID];
           delete this.remoteStreams[userID];
+          console.log(this.peers);
+          console.log(this.remoteStreams);
           break;
       }
     }
@@ -335,6 +362,14 @@ export class MediaService implements OnDestroy{
     });
   }
 
+  public endMeetingForAll(): void{
+    this.messageServer(JSON.stringify({'res': true, 'end': true, 'meetingID': this.meetingID}));
+  }
+
+  public leaveMeeting(): void{
+    this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID, 'userID': this.userId}));
+  }
+
   public getMeetingInfo() {
     return {
       'userRole': this.userRole,
@@ -344,7 +379,7 @@ export class MediaService implements OnDestroy{
     }
   }
 
-  ngOnDestroy() {
+  terminate() {
     console.log('Destroy Media Service');
     //Close Peer Connections
     Object.values(this.peers).forEach(peer => {
@@ -356,5 +391,6 @@ export class MediaService implements OnDestroy{
     });
     //Clear remote streams
     this.remoteStreams= {};
+    this.userId = -1;
   }
 }

@@ -1,13 +1,15 @@
-<section>
-  <h2>Confirm</h2>
-  <mat-divider></mat-divider>
-  <mat-dialog-content>
+<section id = confirm_end_meeting>
+  <h1 mat-dialog-title id = "headerdialog">Are You Sure?</h1>
+  <mat-divider class="dialog"></mat-divider>
+  <mat-dialog-content id = "content">
     <div>
-      <p style="text-align: center;">Are you sure?</p>
+      <p style="text-align: center;">This action cannot be undone!</p>
     </div>
   </mat-dialog-content>
-  <mat-dialog-actions fxLayoutAlign="center none">
-    <button mat-raised-button color="primary" (click)="onYesResponse()">Yes</button>
-    <button mat-raised-button color="warn" (click)="onNoResponse()">No</button>
+  <mat-dialog-actions class="dialog" align="center">
+    <button *ngIf="data.userRole == 'Admin'" mat-raised-button (click)="endMeetingResponse()" id="confirm_end_button" class="end_button">End Meeting</button>
+    <button *ngIf="data.userRole != 'Admin'" mat-raised-button (click)="leaveMeetingResponse()" id="confirm_leave_button" class="end_button">Leave Meeting</button>
+    <button *ngIf="data.userRole == 'Admin'" mat-raised-button (click)="leaveMeetingResponse()" id="confirm_leave_button_admin" class="end_button">Leave Meeting</button>
+    <button mat-raised-button (click)="cancelResponse()" class="end_button" id="confirm_cancel_button">Cancel</button>
   </mat-dialog-actions>
 </section>

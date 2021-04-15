@@ -26,7 +26,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import {MatChipsModule} from '@angular/material/chips';
 import { MeetingInfoDialogComponent } from './components/meeting-info-dialog/meeting-info-dialog.component';
-import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/confirm-end-meeting.component';
 
 @NgModule({

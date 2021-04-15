@@ -29,7 +29,7 @@ export class CreateMeetingComponent {
 
   public meeting: Meeting;  // Stores the meeting creation information
   public hide: boolean;     // Indicates whether the password fields should be hidden
-  private webSocket: WebSocket;  // WebSocket connection to server
+  //private webSocket: WebSocket;  // WebSocket connection to server
   meetingName = new FormControl('', [Validators.required, Validators.email]);
   meetingEmail = new FormControl('', [Validators.email]);
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -45,19 +45,18 @@ export class CreateMeetingComponent {
   passwordError = true;
 
   // Initializes the WebSocket from the WebsocketService and creates the meeting
-  constructor(websocketService: WebsocketService, private fb: FormBuilder) {
-    this.webSocket = websocketService.getWebSocket();
+  constructor(private websocketService: WebsocketService, private fb: FormBuilder) {
+    //this.webSocket = websocketService.getWebSocket();
     this.meeting = new Meeting(MEETING_TYPE.CREATE);
     this.hide = true;
     this.createMeetingForm = this.createSignupForm(fb);
-
   }
 
   // Sends the create meeting info to the server
   public createMeeting(): void {
     // Add Simple verification step here to block if values not correct or a call back to server
     console.log(JSON.stringify(this.meeting));
-    this.webSocket.send(JSON.stringify(this.meeting));
+    this.websocketService.getWebSocket().send(JSON.stringify(this.meeting));
   }
 
 
