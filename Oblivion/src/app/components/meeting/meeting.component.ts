@@ -31,6 +31,11 @@ export class MeetingComponent implements AfterViewInit {
     this.remoteStreams = this.mediaService.getRemoteStreams();
   }
 
+  // TODO: Add recipient ID option
+  public sendChat(): void {
+    this.mediaService.sendChat();
+  }
+
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();

@@ -24,6 +24,9 @@ export class MediaService {
     ]
   };
 
+  // TODO: Refactor Datachannel stuff
+  private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
+
   constructor(websocketService: WebsocketService) {
     this.webSocket = websocketService.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
@@ -31,6 +34,8 @@ export class MediaService {
     this.webSocket.onerror = (event: Event) => console.log(event);
     this.remoteStreams = {};
     this.peers = {};
+
+    this.dataChannels = {};
   }
 
   // This method is called on startup to join the current meeting
@@ -40,7 +45,7 @@ export class MediaService {
   }
 
   // Create a new RTCPeerConnection, add it to the list and return it
-  private addNewRTCPeerConnection(userID: number): RTCPeerConnection {
+  private addNewRTCPeerConnection(userID: number, initSeq: boolean): RTCPeerConnection {
     let peer = new RTCPeerConnection(this.peerConnectionConfig);
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
@@ -52,8 +57,63 @@ export class MediaService {
     // Add the new peer to the list
     this.peers[userID] = peer;
 
+    // Only create the data channel if we are initalizing it.
+    if (initSeq) {
+      const dataChannelLabel = this.userId + "-" + userID;
+      let dataChannel = peer.createDataChannel(dataChannelLabel);
+      dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+      dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+      dataChannel.onmessage = (event: MessageEvent) => console.log(event);
+
+      this.dataChannels[userID] = dataChannel;
+
+    } else {
+      peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
+    }
+
     return peer;
   }
+
+  // START Datachannel functions
+  private handleDataChannelStatusChange(event: Event, userId: number): void {
+    console.log('In handle data channel status change:');
+    console.log(event);
+    console.log('Ready State: ' + this.dataChannels[userId].readyState);
+    if (this.dataChannels[userId]) {
+      const state = this.dataChannels[userId].readyState;
+
+      if (state === 'open') {
+        // TODO: Unblock the sending of messages
+      }
+    }
+  }
+
+  private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
+    console.log('In receive channel callback');
+    console.log(event);
+    console.log(event.channel);
+    console.log(this);
+    const dataChannel = event.channel;
+    dataChannel.onmessage = (event: MessageEvent) => console.log(event);
+    dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+    dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+
+    this.dataChannels[userId] = dataChannel;
+  }
+
+  public sendChat(recipientId?: number): void {
+    Object.keys(this.dataChannels).forEach((key: string) => {
+      const id = Number(key);
+      console.log(this.dataChannels);
+      console.log(this.dataChannels[id]);
+      console.log(this.dataChannels[id].readyState);
+      if (!this.dataChannels[id].label.includes("1")) {  // TODO: This has to do with the phantom connection w/ userId 1 and should be removed when fixed @MATT -Bailey
+        this.dataChannels[id].send("Test");
+      }
+    })
+  }
+
+  // END DataChannel Functions
 
   private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
     peer.createOffer()
@@ -64,11 +124,11 @@ export class MediaService {
   public receivedRequestFromServer(message: MessageEvent) {
 
     const signal = JSON.parse(message.data);
-    console.log(signal);
+    //console.log(signal);
 
     // Debugging Statements TODO: Remove
-    console.log('Request from Server:');
-    console.log(message);
+    //console.log('Request from Server:');
+    //console.log(message);
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
@@ -97,7 +157,7 @@ export class MediaService {
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
-          const currentPeer: RTCPeerConnection = this.getPeerById(id);
+          const currentPeer: RTCPeerConnection = this.getPeerById2(id, true);
           this.createPeerOffer(currentPeer, id);
         }
       });
@@ -106,11 +166,18 @@ export class MediaService {
 
   // Tries to retrieve peer by id
   // If no such peer exists create it and return
-  private getPeerById(id: number) {
+  private getPeerById(id: number): RTCPeerConnection {
     if (id in this.peers) {
       return this.peers[id];
     }
-    return this.addNewRTCPeerConnection(id);
+    return this.addNewRTCPeerConnection(id, false);
+  }
+
+  private getPeerById2(id: number, initSeq: boolean): RTCPeerConnection {
+    if (id in this.peers) {
+      return this.peers[id];
+    }
+    return this.addNewRTCPeerConnection(id, initSeq);
   }
 
   //-----------------------------------------------------------------------------
@@ -168,15 +235,15 @@ export class MediaService {
     this.remoteStreams[peerId].addTrack(event.track);
     this.remoteStreams[peerId].getTracks().forEach(track => {
       track.enabled = true;
-      console.log(track);
+      //console.log(track);
     });
   }
 
 
   private handlePeerConnectionStateChange(event: Event, userID: number): void {
-    console.log('in handle state change');
-    console.log('UserID: '+userID);
-    console.log(event);
+    //console.log('in handle state change');
+    //console.log('UserID: '+userID);
+    //console.log(event);
 
     const peer = this.peers[userID];
     if (peer) {
