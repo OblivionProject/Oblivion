@@ -24,8 +24,8 @@ export class MediaService {
     ]
   };
 
-  // TODO: Refactor Datachannel stuff
   private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
+  private messageLog: JSON[];  // TODO: Make a message object?
 
   constructor(websocketService: WebsocketService) {
     this.webSocket = websocketService.getWebSocket();
@@ -36,6 +36,7 @@ export class MediaService {
     this.peers = {};
 
     this.dataChannels = {};
+    this.messageLog = new Array<JSON>();
   }
 
   // This method is called on startup to join the current meeting
@@ -57,13 +58,13 @@ export class MediaService {
     // Add the new peer to the list
     this.peers[userID] = peer;
 
-    // Only create the data channel if we are initalizing it.
+    // Only create the data channel if we are initializing it.
     if (initSeq) {
       const dataChannelLabel = this.userId + "-" + userID;
       let dataChannel = peer.createDataChannel(dataChannelLabel);
       dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
       dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
-      dataChannel.onmessage = (event: MessageEvent) => console.log(event);
+      dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
 
       this.dataChannels[userID] = dataChannel;
 
@@ -74,11 +75,7 @@ export class MediaService {
     return peer;
   }
 
-  // START Datachannel functions
   private handleDataChannelStatusChange(event: Event, userId: number): void {
-    console.log('In handle data channel status change:');
-    console.log(event);
-    console.log('Ready State: ' + this.dataChannels[userId].readyState);
     if (this.dataChannels[userId]) {
       const state = this.dataChannels[userId].readyState;
 
@@ -89,31 +86,57 @@ export class MediaService {
   }
 
   private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
-    console.log('In receive channel callback');
-    console.log(event);
-    console.log(event.channel);
-    console.log(this);
     const dataChannel = event.channel;
-    dataChannel.onmessage = (event: MessageEvent) => console.log(event);
+    dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
     dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
     dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
 
     this.dataChannels[userId] = dataChannel;
   }
 
-  public sendChat(recipientId?: number): void {
-    Object.keys(this.dataChannels).forEach((key: string) => {
-      const id = Number(key);
-      console.log(this.dataChannels);
-      console.log(this.dataChannels[id]);
-      console.log(this.dataChannels[id].readyState);
-      if (!this.dataChannels[id].label.includes("1")) {  // TODO: This has to do with the phantom connection w/ userId 1 and should be removed when fixed @MATT -Bailey
-        this.dataChannels[id].send("Test");
-      }
-    })
+  public sendChat(msg: string, recipientId?: number): void {
+    // TODO: Add check to make sure message isn't too large
+
+    // Format the message to send
+    const timeInfo = new Date();
+    const timestamp = timeInfo.getHours() + ":" + timeInfo.getMinutes();
+    const formattedMessage = JSON.stringify({
+      "message": msg,
+      "timestamp": timestamp
+    });
+
+    // Either broadcast the message to everyone or to the specified recipient
+    if (recipientId) {
+      this.dataChannels[recipientId].send(formattedMessage);
+      this.logAndDisplayChat(JSON.parse(formattedMessage));
+
+    } else {
+      Object.keys(this.dataChannels).forEach((key: string) => {
+        const id = Number(key);
+        if (this.dataChannels[id].readyState === "open") {
+          this.dataChannels[id].send(formattedMessage);
+          this.logAndDisplayChat(JSON.parse(formattedMessage));
+        }
+      });
+    }
   }
 
-  // END DataChannel Functions
+  private receivedChat(event: MessageEvent): void {
+    const data = JSON.parse(event.data);
+    this.logAndDisplayChat(data);
+  }
+
+  // TODO: Make the JSON type more strictly defined
+  // Appends the chat to the log and the html
+  private logAndDisplayChat(data: JSON): void {
+    const a = JSON.stringify(data);  // TODO: Remove this terrible workaround
+    const b = JSON.parse(a);
+    this.messageLog.push(data);  // Add the message data to the log
+    const messageList = <HTMLUListElement>document.getElementById("chat-list");
+    const message = document.createElement("li");
+    message.appendChild(document.createTextNode(b["message"]));
+    messageList.appendChild(message);
+  }
 
   private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
     peer.createOffer()

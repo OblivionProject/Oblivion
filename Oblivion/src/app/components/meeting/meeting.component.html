@@ -16,6 +16,23 @@
     </mat-grid-list>
   </mat-sidenav-container>
 
+  <!-- This template displays the overlay content and is connected to the button -->
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="chat"
+  >
+    <ul class="chat-list" id="chat-list">
+<!--      <li>Item 1</li>-->
+<!--      <li>Item 2</li>-->
+<!--      <li>Item 3</li>-->
+    </ul>
+<!--    <label for="message">Enter Message:</label>-->
+<!-- TODO: Figure out the correct maximum message length -->
+    <input type="text" id="chatInput" placeholder="Enter Message" value size=60 maxlength=150>
+    <button id="chatButton" class="buttonRight" (click)="sendChat()">Send</button>
+  </ng-template>
+
   <footer class="footer">
     <mat-toolbar id = "footer">
       <mat-label>Meeting ID: {{getMeetingID()}}</mat-label>
@@ -23,9 +40,10 @@
       <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()">
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()">
+      <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="chat = !chat"></button>
       <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
       <button mat-flat-button color="warn" routerLink="../welcome" id="leave_short">Leave</button>
     </mat-toolbar>

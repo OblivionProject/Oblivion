@@ -18,10 +18,13 @@ export class MeetingComponent implements AfterViewInit {
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
 
+  public chat: boolean;  // Flag for if the chat box is open
+
   constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
+    this.chat = false;
     this.remoteStreams = {};
   }
 
@@ -33,7 +36,10 @@ export class MeetingComponent implements AfterViewInit {
 
   // TODO: Add recipient ID option
   public sendChat(): void {
-    this.mediaService.sendChat();
+    const chatElement = document.getElementById("chatInput");
+    if (chatElement != null) {
+      this.mediaService.sendChat((<HTMLInputElement>chatElement).value);  // Needs to be casted to a input element for the value method
+    }
   }
 
   async getLocalVideo(): Promise<void> {
