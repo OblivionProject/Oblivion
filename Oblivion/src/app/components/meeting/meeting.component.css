@@ -43,3 +43,38 @@ mat-grid-tile {
 .test:hover{
   opacity: 1;
 }
+
+.chatbox{
+  width: 30%;
+  background-color: darkgrey;
+}
+
+.chatInput{
+  height: 20%;
+}
+.messagebox{
+  height: 80%;
+}
+
+.messagesSEND{
+  background-color: cornflowerblue;
+  width: 50%;
+  float: right;
+}
+
+.messagesRECIVE{
+  background-color: grey;
+  width: 50%;
+  float: left;
+}
+
+.example-full-width{
+  width: 80%;
+}
+
+.sendbutton{
+  width: 15%;
+}
+.message{
+  padding: ;
+}

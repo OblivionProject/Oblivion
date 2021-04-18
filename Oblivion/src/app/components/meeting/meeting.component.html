@@ -1,5 +1,35 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
+    <mat-drawer-container autosize >
+      <mat-drawer class="chatbox" #drawer mode="side">
+        <form class="messagebox">
+
+
+
+            <mat-list-item class="message"  *ngFor="let message of testMessage">
+              <mat-card class="messagesSEND"  *ngIf="message.origin=='SEND'">
+                <mat-card-subtitle>Sent</mat-card-subtitle>
+                <mat-card-content>{{message.message}}</mat-card-content>
+              </mat-card>
+              <mat-card class="messagesRECIVE"  *ngIf="message.origin=='RECEIVED'">{{message.message}}</mat-card>
+            </mat-list-item>
+
+        </form>
+        <form class="chatInput">
+          <mat-form-field class="example-full-width">
+            <mat-label>Message</mat-label>
+            <textarea matInput #message placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
+            <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
+            <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+          </mat-form-field>
+          <button class="sendbutton"  (click)="testMessageFUNCTION(message.value)">
+            SEND
+          </button>
+
+        </form>
+
+      </mat-drawer>
+      <mat-drawer-content>
     <mat-grid-list cols="2" rowHeight="fit" style="height: 820px">
 <!--      <mat-grid-tile-->
 <!--        [colspan]="tile.cols"-->
@@ -16,6 +46,8 @@
 <!--    </mat-grid-list>-->
       <mat-grid-tile *ngFor="let tile of getTileTest()">{{tile.number}}</mat-grid-tile>
     </mat-grid-list>
+      </mat-drawer-content>
+    </mat-drawer-container>
   </mat-sidenav-container>
 
   <footer class="footer">
@@ -30,7 +62,7 @@
       <button mat-flat-button color="warn" routerLink="../welcome" id="leave">Leave Meeting</button>
       <button class="test" mat-flat-button color="warn" (click)="prevPage()">Prev Page</button> <!-- [disabled]="pageNumber==0"-->
       <button class="test"mat-flat-button color="warn" (click)="nextPage()" >Next Page</button> <!-- [disabled]="pageNumber>=testTiles.length/4 -1" -->
-
+      <button mat-flat-button color="warn" (click)="drawer.toggle()">Chat</button>
     </mat-toolbar>
   </footer>
 </mat-sidenav-container>
