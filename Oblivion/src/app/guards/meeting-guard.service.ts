@@ -17,11 +17,11 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
     private dialog: MatDialog
   ) {}
 
-  // @ts-ignore
   canDeactivate(component: MeetingComponent) {
     const subject = new Subject<boolean>();
 
     if(component.overrideGuard){
+      component.terminate();
       return true;
     }
 
@@ -41,7 +41,6 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
           if(this.confirmDlg != undefined){
             this.type = this.confirmDlg.componentInstance.type;
           }
-          console.log(this.type);
           if(this.type == END_MEETING_TYPE.END){
             await component.endMeetingForAll();
             await component.terminate();
@@ -55,7 +54,6 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
           console.log('You decided to stay on Page!');
         }
       });
-    console.log('MATT');
     return subject.asObservable();
   }
 }

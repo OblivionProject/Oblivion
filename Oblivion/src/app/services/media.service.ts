@@ -46,7 +46,7 @@ export class MediaService{
   public setUpWebSocket(socket: WebsocketService){
     this.webSocket = socket.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
-    this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
+    this.webSocket.onclose = () => this.closedRequestFromServer();
     this.webSocket.onerror = (event: Event) => console.log(event);
     // @ts-ignore
     this.webSocket.onopen = () => this.webSocket.send(JSON.stringify({'start': true, 'meetingID': this.sharedService.meetingID}));
@@ -84,7 +84,6 @@ export class MediaService{
     } else {
       peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
     }
-
     return peer;
   }
 
@@ -157,6 +156,11 @@ export class MediaService{
       .catch(this.errorHandler);
   }
 
+  public closedRequestFromServer() {
+    this.destroy = true;
+    this.mySubject.next(this.destroy);
+  }
+
   public receivedRequestFromServer(message: MessageEvent) {
 
     const signal = JSON.parse(message.data);
@@ -187,7 +191,7 @@ export class MediaService{
         .catch(this.errorHandler);
 
       // Handle the RMI response
-    } else if (signal.rmi && (this.userId < 0 || this.userId == undefined)) {
+    } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
       this.meetingID = signal.meetingID;
       this.password = signal.password;
@@ -203,14 +207,15 @@ export class MediaService{
     }
     else if (signal.res) {
       if(signal.left){
+        console.log(this.peers[signal.userID]);
         this.peers[signal.userID].close();
         delete this.peers[signal.userID];
         delete this.remoteStreams[signal.userID];
       }
-      else{
-        this.destroy = true;
-        this.mySubject.next(this.destroy);
-      }
+    }
+    else if (signal.role_change) {
+      this.userRole = signal.role;
+      this.password = signal.password;
     }
   }
 
@@ -274,8 +279,6 @@ export class MediaService{
   }
 
   private gotRemoteStream(event: RTCTrackEvent, peerId: number) {
-    // console.log('Received Track Event');
-    // console.log(event);
     if (!(peerId in this.remoteStreams)) {
       this.remoteStreams[peerId] = new MediaStream();
     }
@@ -358,12 +361,11 @@ export class MediaService{
   }
 
   public endMeetingForAll(): void{
-    console.log("END MEETING FOR ALL IS HAPPENING");
     this.messageServer(JSON.stringify({'res': true, 'end': true, 'meetingID': this.meetingID}));
   }
 
   public leaveMeeting(): void{
-    this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID, 'userID': this.userId}));
+    this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID}));
   }
 
   public getMeetingInfo() {

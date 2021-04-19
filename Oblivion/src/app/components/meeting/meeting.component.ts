@@ -5,7 +5,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
 import {MeetingInfo} from "../../models/meeting-info";
 import {Router} from "@angular/router";
-import {MeetingStateService} from "../../services/meeting-state.service";
 import {WebsocketService} from "../../services/websocket.service";
 
 @Component({
@@ -28,7 +27,10 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public chat: boolean;  // Flag for if the chat box is open
 
 
-  constructor(private mediaService: MediaService, public dialog: MatDialog, private router: Router, private websocketService: WebsocketService) {
+  constructor(private mediaService: MediaService,
+              public dialog: MatDialog,
+              private router: Router,
+              private websocketService: WebsocketService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
@@ -41,7 +43,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.mediaService.mySubject.subscribe((data) => {
       if(data==true){
         this.overrideGuard = true;
-        console.log("MATT the subscribe is fucking working");
         this.endMeeting();
       }
     })
@@ -133,16 +134,12 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   public setMeetingInfo(){
-    if (!this.meetingInfo.user_type){
-      this.meetingInfo.setData(this.mediaService.getMeetingInfo());
-    }
+    this.meetingInfo.setData(this.mediaService.getMeetingInfo());
     return this.meetingInfo;
   }
 
   public openDialog() {
-    if (!this.meetingInfo.user_type){
-      this.setMeetingInfo();
-    }
+    this.setMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '50%',
       height: '50%',
@@ -156,21 +153,16 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   public endMeeting(){
-    if (!this.meetingInfo.user_type){
-      this.setMeetingInfo();
-    }
-
+    this.setMeetingInfo();
     this.router.navigate(['welcome']);
   }
 
   public endMeetingForAll(){
-    console.log("END MEETING FOR ALL IS HAPPENING");
     this.mediaService.endMeetingForAll();
   }
 
   public leaveMeeting(){
     this.mediaService.leaveMeeting();
   }
-
 }
 

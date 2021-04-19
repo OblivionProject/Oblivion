@@ -20,7 +20,6 @@ export class ConfirmEndMeetingComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<ConfirmEndMeetingComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
-    console.log('data', this.data);
     this.type = END_MEETING_TYPE.CANCEL;
   }
 

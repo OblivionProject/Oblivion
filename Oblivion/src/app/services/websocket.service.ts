@@ -8,7 +8,6 @@ export class WebsocketService {
   private webSocket: WebSocket;
 
   constructor() {
-    console.log("MATHEW IT IS CREATED AGAIN!");
     this.webSocket = new WebSocket(WS_ENDPOINT);
   }
 
