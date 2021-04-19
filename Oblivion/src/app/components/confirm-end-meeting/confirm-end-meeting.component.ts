@@ -13,7 +13,7 @@ export enum END_MEETING_TYPE {
   templateUrl: './confirm-end-meeting.component.html',
   styleUrls: ['./confirm-end-meeting.component.css']
 })
-export class ConfirmEndMeetingComponent implements OnInit {
+export class ConfirmEndMeetingComponent{
 
   public subject: Subject<boolean> | undefined;
   public type: END_MEETING_TYPE;
@@ -21,9 +21,6 @@ export class ConfirmEndMeetingComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<ConfirmEndMeetingComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.type = END_MEETING_TYPE.CANCEL;
-  }
-
-  ngOnInit() {
   }
 
   public endMeetingResponse() {

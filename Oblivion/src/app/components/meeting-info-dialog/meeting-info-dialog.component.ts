@@ -7,11 +7,8 @@ import {MeetingInfo} from "../../models/meeting-info";
   templateUrl: './meeting-info-dialog.component.html',
   styleUrls: ['./meeting-info-dialog.component.css']
 })
-export class MeetingInfoDialogComponent implements OnInit {
+export class MeetingInfoDialogComponent{
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: MeetingInfo) {}
-
-  ngOnInit(): void {
-  }
 
 }
