@@ -20,21 +20,27 @@ p.video-description{
 }
 
 .sidenav-cont-cont{
-  height:90%;
+  height:89%;
   width: 100%;
   z-index: 2;
 }
 
 .footer{
-  position:fixed;
-  height: 10%;
+  height: 11%;
   width: 100%;
+  bottom: 0;
+  position: fixed;
 }
 
 #footer{
   height: 100%;
   width: 100%;
 }
+
+.meeting_buttons{
+  padding-bottom: 0;
+}
+
 #leave{
   display: block;
   position: absolute;
