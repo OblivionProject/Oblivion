@@ -2,6 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MeetingComponent } from './meeting.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import {Router} from "@angular/router";
+import {ReactiveFormsModule} from "@angular/forms";
+import {RouterTestingModule} from "@angular/router/testing";
+import {OverlayModule} from "@angular/cdk/overlay";
 
 describe('MeetingComponent', () => {
   let component: MeetingComponent;
@@ -9,7 +13,10 @@ describe('MeetingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule],
+      imports: [
+        MatDialogModule,
+        OverlayModule,
+        RouterTestingModule.withRoutes([])],
       declarations: [ MeetingComponent ]
     })
     .compileComponents();

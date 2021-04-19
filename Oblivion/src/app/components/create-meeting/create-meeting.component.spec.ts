@@ -1,7 +1,10 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { CreateMeetingComponent } from './create-meeting.component';
 import {MEETING_TYPE} from "../../models/meeting.model";
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Router} from "@angular/router";
+import {WebsocketService} from "../../services/websocket.service";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('CreateMeetingComponent', () => {
   let component: CreateMeetingComponent;
@@ -12,9 +15,10 @@ describe('CreateMeetingComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule.withRoutes([])
       ],
-      declarations: [ CreateMeetingComponent ]
-
+      declarations: [ CreateMeetingComponent ],
+      providers: [ WebsocketService ]
     })
     .compileComponents();
   });

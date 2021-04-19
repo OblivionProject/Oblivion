@@ -19,8 +19,8 @@ describe("Meeting Object", function() {
     });
 
     it( "Should Generate a user role for admins and guests", function() {
-        expect(meetingObject.generateUserRole(2)).toBe('Admin');
-        expect(meetingObject.generateUserRole(3)).toBe('Guest');
+        expect(meetingObject.generateUserRole(1)).toBe('Admin');
+        expect(meetingObject.generateUserRole(2)).toBe('Guest');
     });
 
     it( "Should return the password only for Admins", function() {
