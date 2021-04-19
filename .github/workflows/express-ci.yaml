@@ -1,0 +1,37 @@
+name: Express Server CI
+
+on: [push,pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [15.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Use generated certificates
+        run: |
+          cd Server
+          openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=US/ST=Iowa/L=Iowa City/O=Global Security/OU=IT Department/CN=example.com"
+
+      - name: Initialize Dependencies
+        run: |
+          cd Server
+          npm ci
+
+      - name: Test Express Server
+        run: |
+          cd Server
+          npm test
+        env:
+          CI: true

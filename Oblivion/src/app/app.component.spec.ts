@@ -1,6 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import {fakeAsync, TestBed} from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import {By} from "@angular/platform-browser";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -26,11 +27,27 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('Oblivion');
   });
 
-  // TODO: Add title to Header in future when we implement a nav bar
-  // it('should render title', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const compiled = fixture.nativeElement;
-  //   expect(compiled.querySelector('.content span').textContent).toContain('Oblivion app is running!');
-  // });
+  it(`should have as toggle for color mode`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const toggle = fixture.debugElement.nativeElement.querySelector('#toggle');
+    expect(toggle).toBeTruthy();
+    expect(toggle.innerHTML).toEqual(' Dark Mode ');
+  });
+
+  it(`toggle should switch modes when clicked`, fakeAsync(() =>  {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    fixture.detectChanges();
+
+    spyOn(app, 'setValue');
+
+    expect(app.globals.darkMode).toEqual(false);
+
+    const toggle = fixture.debugElement.query(By.css('#toggle'));
+    toggle.triggerEventHandler('change', null);
+
+    expect(app.setValue).toHaveBeenCalled();
+  }));
 });

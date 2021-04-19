@@ -25,7 +25,11 @@ import { Globals } from './global';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import {MatChipsModule} from '@angular/material/chips';
-
+import { MeetingInfoDialogComponent } from './components/meeting-info-dialog/meeting-info-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/confirm-end-meeting.component';
+import {WebsocketService} from "./services/websocket.service";
+import {MediaService} from "./services/media.service";
 
 @NgModule({
   declarations: [
@@ -34,7 +38,9 @@ import {MatChipsModule} from '@angular/material/chips';
     MeetingComponent,
     CreateMeetingComponent,
     JoinMeetingComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    MeetingInfoDialogComponent,
+    ConfirmEndMeetingComponent
   ],
   imports: [
     BrowserModule,
@@ -56,9 +62,10 @@ import {MatChipsModule} from '@angular/material/chips';
     MatCardModule,
     OverlayModule,
     ReactiveFormsModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule
   ],
-  providers: [Globals],
+  providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],
   // schemas: [NO_ERRORS_SCHEMA]
 })

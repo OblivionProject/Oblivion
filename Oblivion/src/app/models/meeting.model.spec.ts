@@ -1,29 +1,37 @@
-import { Meeting } from './meeting.model';
+import { Meeting,MEETING_TYPE } from './meeting.model';
 
 describe('Meeting', () => {
   it('should create an instance', () => {
-    expect(new Meeting()).toBeTruthy();
+    expect(new Meeting(MEETING_TYPE.CREATE)).toBeTruthy();
+    expect(new Meeting(MEETING_TYPE.JOIN)).toBeTruthy();
   });
 
   it('should have specific types in Meeting model', () => {
-    const meeting = new Meeting();
-    meeting.title = 'test';
-    meeting.password1 = 'test1';
-    meeting.password2 = 'test1';
+    const meeting = new Meeting(MEETING_TYPE.CREATE);
+    meeting.name = 'test';
+    meeting.password = 'test1';
+    meeting.meetingID = 'test1';
 
-    expect(typeof(meeting.title)).toEqual('string');
-    expect(typeof(meeting.password1)).toEqual('string');
-    expect(typeof(meeting.password2)).toEqual('string');
+    expect(typeof(meeting.name)).toEqual('string');
+    expect(typeof(meeting.password)).toEqual('string');
+    expect(typeof(meeting.meetingID)).toEqual('string');
+  });
+
+  it('should create an instance for create meeting models', () => {
+    const meeting = new Meeting(MEETING_TYPE.CREATE);
+    meeting.name = 'test';
+    meeting.password = 'test1';
+
+    expect(meeting.name).toEqual('test');
+    expect(meeting.password).toEqual('test1');
   });
 
   it('should create an instance with data', () => {
-    const meeting = new Meeting();
-    meeting.title = 'test';
-    meeting.password1 = 'test1';
-    meeting.password2 = 'test1';
+    const meeting = new Meeting(MEETING_TYPE.JOIN);
+    meeting.meetingID = 'test';
+    meeting.password = 'test1';
 
-    expect(meeting.title).toEqual('test');
-    expect(meeting.password1).toEqual('test1');
-    expect(meeting.password2).toEqual('test1');
+    expect(meeting.meetingID).toEqual('test');
+    expect(meeting.password).toEqual('test1');
   });
 });

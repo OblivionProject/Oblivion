@@ -1,19 +1,24 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
+import {Subject} from "rxjs";
+import {MeetingStateService} from "./meeting-state.service";
 
 const mediaConstraints = {
   audio: true,
   video: true
 };
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MediaService {
+@Injectable()
+export class MediaService{
 
-  private webSocket: WebSocket; // Server connection to get connected to peers
+  mySubject : Subject<any> = new Subject<any>();
+  destroy : boolean = false ;
+  private webSocket: WebSocket | undefined; // Server connection to get connected to peers
   private userId!: number; // This users ID
   private meetingID!: number; // Meeting ID
+  private password!: string;
+  private userRole!: string;
+  private name!: string;
   private localstream!: MediaStream;  // Local video
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
@@ -24,13 +29,27 @@ export class MediaService {
     ]
   };
 
-  constructor(websocketService: WebsocketService) {
-    this.webSocket = websocketService.getWebSocket();
-    this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
-    this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
-    this.webSocket.onerror = (event: Event) => console.log(event);
+  private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
+  private messageLog: JSON[];  // TODO: Make a message object?
+
+  constructor(private websocketService: WebsocketService,private sharedService: MeetingStateService) {
+    this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
+    this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
     this.remoteStreams = {};
     this.peers = {};
+
+    this.dataChannels = {};
+    this.messageLog = new Array<JSON>();
+  }
+
+  public setUpWebSocket(socket: WebsocketService){
+    this.webSocket = socket.getWebSocket();
+    this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.webSocket.onclose = () => this.closedRequestFromServer();
+    this.webSocket.onerror = (event: Event) => console.log(event);
+    // @ts-ignore
+    this.webSocket.onopen = () => this.webSocket.send(JSON.stringify({'start': true, 'meetingID': this.sharedService.meetingID}));
   }
 
   // This method is called on startup to join the current meeting
@@ -40,7 +59,7 @@ export class MediaService {
   }
 
   // Create a new RTCPeerConnection, add it to the list and return it
-  private addNewRTCPeerConnection(userID: number): RTCPeerConnection {
+  private addNewRTCPeerConnection(userID: number, initSeq: boolean): RTCPeerConnection {
     let peer = new RTCPeerConnection(this.peerConnectionConfig);
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
@@ -52,7 +71,83 @@ export class MediaService {
     // Add the new peer to the list
     this.peers[userID] = peer;
 
+    // Only create the data channel if we are initializing it.
+    if (initSeq) {
+      const dataChannelLabel = this.userId + "-" + userID;
+      let dataChannel = peer.createDataChannel(dataChannelLabel);
+      dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+      dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+      dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+
+      this.dataChannels[userID] = dataChannel;
+
+    } else {
+      peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
+    }
     return peer;
+  }
+
+  private handleDataChannelStatusChange(event: Event, userId: number): void {
+    if (this.dataChannels[userId]) {
+      const state = this.dataChannels[userId].readyState;
+
+      if (state === 'open') {
+        // TODO: Unblock the sending of messages
+      }
+    }
+  }
+
+  private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
+    const dataChannel = event.channel;
+    dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+    dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+    dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+
+    this.dataChannels[userId] = dataChannel;
+  }
+
+  public sendChat(msg: string, recipientId?: number): void {
+    // TODO: Add check to make sure message isn't too large
+
+    // Format the message to send
+    const timeInfo = new Date();
+    const timestamp = timeInfo.getHours() + ":" + timeInfo.getMinutes();
+    const formattedMessage = JSON.stringify({
+      "message": msg,
+      "timestamp": timestamp
+    });
+
+    // Either broadcast the message to everyone or to the specified recipient
+    if (recipientId) {
+      this.dataChannels[recipientId].send(formattedMessage);
+      this.logAndDisplayChat(JSON.parse(formattedMessage));
+
+    } else {
+      Object.keys(this.dataChannels).forEach((key: string) => {
+        const id = Number(key);
+        if (this.dataChannels[id].readyState === "open") {
+          this.dataChannels[id].send(formattedMessage);
+          this.logAndDisplayChat(JSON.parse(formattedMessage));
+        }
+      });
+    }
+  }
+
+  private receivedChat(event: MessageEvent): void {
+    const data = JSON.parse(event.data);
+    this.logAndDisplayChat(data);
+  }
+
+  // TODO: Make the JSON type more strictly defined
+  // Appends the chat to the log and the html
+  private logAndDisplayChat(data: JSON): void {
+    const a = JSON.stringify(data);  // TODO: Remove this terrible workaround
+    const b = JSON.parse(a);
+    this.messageLog.push(data);  // Add the message data to the log
+    const messageList = <HTMLUListElement>document.getElementById("chat-list");
+    const message = document.createElement("li");
+    message.appendChild(document.createTextNode(b["message"]));
+    messageList.appendChild(message);
   }
 
   private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
@@ -61,14 +156,19 @@ export class MediaService {
       .catch(this.errorHandler);
   }
 
+  public closedRequestFromServer() {
+    this.destroy = true;
+    this.mySubject.next(this.destroy);
+  }
+
   public receivedRequestFromServer(message: MessageEvent) {
 
     const signal = JSON.parse(message.data);
-    console.log(signal);
+    //console.log(signal);
 
     // Debugging Statements TODO: Remove
-    console.log('Request from Server:');
-    console.log(message);
+    //console.log('Request from Server:');
+    //console.log(message);
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
@@ -94,23 +194,45 @@ export class MediaService {
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
       this.meetingID = signal.meetingID;
+      this.password = signal.password;
+      this.userRole = signal.userRole;
+      this.name = signal.name;
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
-          const currentPeer: RTCPeerConnection = this.getPeerById(id);
+          const currentPeer: RTCPeerConnection = this.getPeerById2(id, true);
           this.createPeerOffer(currentPeer, id);
         }
       });
+    }
+    else if (signal.res) {
+      if(signal.left){
+        console.log(this.peers[signal.userID]);
+        this.peers[signal.userID].close();
+        delete this.peers[signal.userID];
+        delete this.remoteStreams[signal.userID];
+      }
+    }
+    else if (signal.role_change) {
+      this.userRole = signal.role;
+      this.password = signal.password;
     }
   }
 
   // Tries to retrieve peer by id
   // If no such peer exists create it and return
-  private getPeerById(id: number) {
+  private getPeerById(id: number): RTCPeerConnection {
     if (id in this.peers) {
       return this.peers[id];
     }
-    return this.addNewRTCPeerConnection(id);
+    return this.addNewRTCPeerConnection(id, false);
+  }
+
+  private getPeerById2(id: number, initSeq: boolean): RTCPeerConnection {
+    if (id in this.peers) {
+      return this.peers[id];
+    }
+    return this.addNewRTCPeerConnection(id, initSeq);
   }
 
   //-----------------------------------------------------------------------------
@@ -119,10 +241,6 @@ export class MediaService {
     return this.peers;
   }
 
-  public clearMeeting() {
-    this.messageServer(JSON.stringify({'res': true}));
-    this.peers = {};
-  }
   //-----------------------------------------------------------------------------
 
   private createdDescription(peer: RTCPeerConnection, recipientID: number, description: RTCSessionDescriptionInit): void {
@@ -143,11 +261,13 @@ export class MediaService {
 
   private messageServer(message: string) {
     // TODO: Does this need error handling?
+    // @ts-ignore
     return this.webSocket.send(message);
   }
 
   private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number) {
     if (event.candidate != null) {
+      // @ts-ignore
       this.webSocket.send(
         JSON.stringify(
           {
@@ -159,8 +279,6 @@ export class MediaService {
   }
 
   private gotRemoteStream(event: RTCTrackEvent, peerId: number) {
-    // console.log('Received Track Event');
-    // console.log(event);
     if (!(peerId in this.remoteStreams)) {
       this.remoteStreams[peerId] = new MediaStream();
     }
@@ -168,15 +286,15 @@ export class MediaService {
     this.remoteStreams[peerId].addTrack(event.track);
     this.remoteStreams[peerId].getTracks().forEach(track => {
       track.enabled = true;
-      console.log(track);
+      //console.log(track);
     });
   }
 
 
   private handlePeerConnectionStateChange(event: Event, userID: number): void {
-    console.log('in handle state change');
-    console.log('UserID: '+userID);
-    console.log(event);
+    //console.log('in handle state change');
+    //console.log('UserID: '+userID);
+    //console.log(event);
 
     const peer = this.peers[userID];
     if (peer) {
@@ -185,6 +303,7 @@ export class MediaService {
         case "disconnected":
         case "failed":
         case "closed":
+          this.peers[userID].close();
           delete this.peers[userID];
           delete this.remoteStreams[userID];
           break;
@@ -241,14 +360,36 @@ export class MediaService {
     });
   }
 
-  public getMeetingID(): number {
-    return this.meetingID;
+  public endMeetingForAll(): void{
+    this.messageServer(JSON.stringify({'res': true, 'end': true, 'meetingID': this.meetingID}));
   }
 
-  public terminate(): void {
-    this.webSocket.close();
+  public leaveMeeting(): void{
+    this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID}));
+  }
+
+  public getMeetingInfo() {
+    return {
+      'userRole': this.userRole,
+      'meetingID': this.meetingID,
+      'password': this.password,
+      'name': this.name
+    }
+  }
+
+  terminate() {
+    console.log('Destroy Media Service');
+    //Close Peer Connections
     Object.values(this.peers).forEach(peer => {
       peer.close();
     });
+    //Close local tracks
+    this.localstream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+    //Clear remote streams
+    this.remoteStreams= {};
+    // @ts-ignore
+    this.webSocket.close();
   }
 }

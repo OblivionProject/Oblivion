@@ -1,84 +1,12 @@
-// TODO: Convert this to a node module
-class Meeting {
-
-    constructor(name, meetingID) {
-        this.name = name;     // Name of the meeting
-        this.clients = [];    // List of WebSocket connections
-        this.clientIDs = [];  // List of client ID's DELETE?
-        this.nextID = 0;
-        this.hasPassword = false;
-        this.password = '';
-        this.meetingID = meetingID;
-    }
-
-    setPassword(password) {
-        if (!this.hasPassword) {
-            this.password = password;
-            this.hasPassword = true;
-        }
-    }
-
-    // Create a response to the Request Meeting Information request & add to meeting
-    // Assign the user an ID and send the current user ids
-    generateRMIResponse(ws) {
-        const id = this.generateUserID();
-        const message = JSON.stringify({
-                'rmi': true,
-                'clientIDs': this.getClientUserIDs(),
-                'userId': id,
-                'meetingID': this.meetingID
-        });
-        this.addUser(ws, id);
-        return message;
-    }
-
-    onMessage(ws, message) {
-
-        console.log('In new onMessage');
-        const data = JSON.parse(message);
-
-        // Handle WebRTC Connection Message (SDP or ICE candidates)
-        if (data.sdp || data.ice) {
-            this.getClients().forEach(function(client) {
-                client.send(message);
-            });
-
-            // Request Meeting Information (When a client joins assign them an id and send them contact list)
-        } else if (data.rmi) {
-            const message = this.generateRMIResponse(ws);
-            ws.send(message);
-            console.log('Response:\n' + message);
-        }
-    }
-
-    generateUserID() {
-        this.nextID = this.nextID + 1;
-        return this.nextID;
-    }
-
-    getClientUserIDs() {
-        return this.clientIDs;
-    }
-
-    getClients() {
-        return this.clients;
-    }
-
-    addUser(ws, id) {
-        this.clients.push(ws);
-        this.clientIDs.push(id);
-    }
-}
-
-
+const m = require("./modules/meeting");
 const express = require('express');
 const app = express();
 const https = require('https');
 const fs = require('fs');
 
 const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert'),
 }
 
 console.log(credentials);
@@ -112,51 +40,79 @@ function connection(ws, req) {
     ws.on('message', (message) => {
 
         console.log("Received Message " + message);
-
+        console.log(meetings);
         // Parse the message
         const data = JSON.parse(message);
 
         // Client join meeting request
         if (data.meetingType && data.meetingType === 'JOIN') {
-
+            console.log(data);
             const meetingID = data.meetingID;
             if (meetingID in meetings) {
                 const meetingToJoin = meetings[meetingID];
                 if (meetingToJoin.hasPassword) {
                     if (data.password === meetingToJoin.password) {
-                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-
-                    } else {
-                        // TODO: Send incorrect password message to client
+                        meetingToJoin.correctMeetingInfo(ws);
+                    }
+                    else {
+                        meetingToJoin.incorrectMeetingInfo(ws, 'Invalid Password');
                     }
 
                 // Join if the meeting has no password
                 } else {
-                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                    console.log("MATT this shit is ")
+                    meetingToJoin.correctMeetingInfo(ws);
                 }
 
-            } else {
-                // TODO: Send a meeting not found message to client
+            }
+            else {
+                m.Meeting.incorrectMeetingInfo(ws, 'Invalid ID');
             }
 
             // Client create meeting request
-        } else if (data.meetingType && data.meetingType === 'CREATE') {
+        }
+        else if (data.meetingType && data.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
 
             const newMeetingID = generateUniqueMeetingID();
-            const newMeeting = new Meeting('New Meeting', newMeetingID); // TODO: Change 'New Meeting' to meeting name
+            const newMeeting = new m.Meeting(data.name, newMeetingID);
 
             // Check if the meeting should have a password
             if (data.password !== '') {
                 newMeeting.setPassword(data.password);
             }
 
-            // Update the on message function to be specific to the meeting
-            ws.on('message', (message) => newMeeting.onMessage(ws, message));
-
-            newMeeting.generateRMIResponse(ws); // Generate RMI response is needed to create the new user
-            meetings[newMeetingID] = newMeeting; // Add the meeting to the meetings array
+            meetings[newMeetingID] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
+
+            const message = JSON.stringify({
+                'success': true,
+                'meeting': newMeetingID
+            });
+            console.log(meetings);
+            ws.send(message);
+        }
+        //Starting or joining a meeting
+        else if(data.meetingID && data.start){
+            if (data.meetingID in meetings) {
+                const meetingToJoin = meetings[data.meetingID];
+                ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+            }
+        }
+        //Needed to delete the meeting object
+        else if (data.res) {
+            const meetingID = data.meetingID;
+            if(meetingID in meetings){
+                if(data.end){
+                    delete meetings[meetingID];
+                }
+                else{
+                    const meetingToLeave = meetings[data.meetingID];
+                    if(meetingToLeave.getClients().length === 1){
+                        delete meetings[meetingID];
+                    }
+                }
+            }
         }
     });
 }
@@ -170,3 +126,5 @@ function generateUniqueMeetingID() {
     }
     return id;
 }
+
+module.exports = httpsServer;

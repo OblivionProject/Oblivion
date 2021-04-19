@@ -5,13 +5,14 @@ import {CreateMeetingComponent} from './components/create-meeting/create-meeting
 import {MeetingComponent} from './components/meeting/meeting.component';
 import {JoinMeetingComponent} from './components/join-meeting/join-meeting.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
+import {MeetingGuardService} from './guards/meeting-guard.service';
 
 const routes: Routes = [
 
   { path: '', redirectTo: 'welcome', pathMatch: 'full'},
   { path: 'welcome', component: WelcomeComponent },
   { path: 'create-meeting', component: CreateMeetingComponent},
-  { path: 'meeting', component: MeetingComponent},
+  { path: 'meeting', component: MeetingComponent, canDeactivate:[MeetingGuardService]},
   { path: 'join-meeting', component: JoinMeetingComponent},
   { path: '**', component: PageNotFoundComponent}
 
@@ -20,7 +21,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  schemas: []
+  schemas: [],
+  providers: [MeetingGuardService]
 
 })
 export class AppRoutingModule { }

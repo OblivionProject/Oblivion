@@ -20,21 +20,27 @@ p.video-description{
 }
 
 .sidenav-cont-cont{
-  height:90%;
+  height:89%;
   width: 100%;
   z-index: 2;
 }
 
 .footer{
-  position:fixed;
-  height: 10%;
+  height: 11%;
   width: 100%;
+  bottom: 0;
+  position: fixed;
 }
 
 #footer{
   height: 100%;
   width: 100%;
 }
+
+.meeting_buttons{
+  padding-bottom: 0;
+}
+
 #leave{
   display: block;
   position: absolute;
@@ -64,3 +70,23 @@ p.video-description{
   }
 }
 
+/* Below is the chat box style */
+.chat-list {
+  width: 500px;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  background: #fff;
+  text-align: center;
+  padding: 10px;
+  margin: 0;
+}
+
+.chat-list > li {
+  list-style-type: none;
+  border-bottom: solid 1px #8b8b8b;
+  padding: 8px 0;
+}
+
+.chat-list > li:last-child {
+  border-bottom: none;
+}

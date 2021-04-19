@@ -1,0 +1,19 @@
+<div mat-dialog-content id = "meeting_info_dialog">
+  <h3 id = "meeting_info_header">Meeting Information</h3>
+  <mat-divider id = "meeting_info_divider"></mat-divider>
+  <ul id="meeting_info_list">
+    <li *ngIf="data.name">
+      <span>Name: </span><span [innerHTML]='data.name'></span>
+    </li>
+    <li *ngIf="data.user_type">
+      <span>User Type: </span><span [innerHTML]='data.user_type'></span>
+    </li>
+    <li *ngIf="data.meeting_id">
+      <span>Meeting ID: </span><span [innerHTML]='data.meeting_id'></span>
+    </li>
+    <li *ngIf="data.password">
+      <span>Password: </span><span [innerHTML]='data.password'></span>
+    </li>
+  </ul>
+</div>
+

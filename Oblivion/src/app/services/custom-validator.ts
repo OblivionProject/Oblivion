@@ -1,5 +1,6 @@
 import {ValidationErrors, ValidatorFn, AbstractControl, FormGroup} from '@angular/forms';
 
+//TODO: THIS NEEDS A SPEC FILE AND TESTING
 export class CustomValidators {
   static patternValidator(regex: RegExp, error: ValidationErrors): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {

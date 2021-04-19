@@ -1,15 +1,20 @@
-
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
+import {MatDialog} from '@angular/material/dialog';
+import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
+import {MeetingInfo} from "../../models/meeting-info";
+import {Router} from "@angular/router";
+import {WebsocketService} from "../../services/websocket.service";
 
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
-  styleUrls: ['./meeting.component.css']
+  styleUrls: ['./meeting.component.css'],
+  providers: [MediaService, WebsocketService]
 })
 
-export class MeetingComponent implements AfterViewInit {
+export class MeetingComponent implements AfterViewInit, OnInit {
 
 
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
@@ -17,18 +22,49 @@ export class MeetingComponent implements AfterViewInit {
   public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
+  public meetingInfo: MeetingInfo;
+  public overrideGuard: boolean = false;
+  public chat: boolean;  // Flag for if the chat box is open
 
-  constructor(private mediaService: MediaService) {
+
+  constructor(private mediaService: MediaService,
+              public dialog: MatDialog,
+              private router: Router,
+              private websocketService: WebsocketService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
+    this.chat = false;
     this.remoteStreams = {};
+    this.meetingInfo = new MeetingInfo();
+  }
+
+  ngOnInit() {
+    this.mediaService.mySubject.subscribe((data) => {
+      if(data==true){
+        this.overrideGuard = true;
+        this.endMeeting();
+      }
+    })
+  }
+
+  terminate() {
+    this.mediaService.terminate();
   }
 
   async ngAfterViewInit() {
+    await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
+  }
+
+  // TODO: Add recipient ID option
+  public sendChat(): void {
+    const chatElement = document.getElementById("chatInput");
+    if (chatElement != null) {
+      this.mediaService.sendChat((<HTMLInputElement>chatElement).value);  // Needs to be casted to a input element for the value method
+    }
   }
 
   async getLocalVideo(): Promise<void> {
@@ -68,7 +104,7 @@ export class MeetingComponent implements AfterViewInit {
     this.remoteStreams = this.mediaService.getRemoteStreams();
     console.log(this.mediaService.getRemoteStreams());
     (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
-      console.log(track);
+        console.log(track);
     });
     console.log(this.localVideo.nativeElement.srcObject);
   }
@@ -78,11 +114,6 @@ export class MeetingComponent implements AfterViewInit {
     return Object.values(this.remoteStreams);
   }
 
-  // Returns the meeting ID
-  public getMeetingID(): number {
-    return this.mediaService.getMeetingID();
-  }
-
   //-----------------------------------------------------------------------------
   // The functions in this section are intended for development use only
   public TEST() {
@@ -90,18 +121,8 @@ export class MeetingComponent implements AfterViewInit {
     console.log(this.mediaService.getPeers());
   }
 
-  public clearMeeting() {
-    this.remoteStreams = [];
-    this.mediaService.clearMeeting();
-  }
   // End development functions
   //-----------------------------------------------------------------------------
-
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(): void {
-    this.mediaService.terminate();
-  }
-
 
   private static appendWebRTCAdapterScript(): void {
     let node = document.createElement('script');
@@ -111,4 +132,41 @@ export class MeetingComponent implements AfterViewInit {
     node.charset = 'utf-8';
     document.getElementsByTagName('head')[0].appendChild(node);
   }
+
+  public setMeetingInfo(){
+    this.meetingInfo.setData(this.mediaService.getMeetingInfo());
+    return this.meetingInfo;
+  }
+
+  public openDialog() {
+    this.setMeetingInfo();
+    this.dialog.open(MeetingInfoDialogComponent, {
+      width: '250px',
+      height: '200px',
+      position: {
+        left: '0px',
+        bottom: '15px'
+      },
+      data: {
+        meeting_id: this.meetingInfo.meeting_id,
+        user_type: this.meetingInfo.user_type,
+        password: this.meetingInfo.password,
+        name: this.meetingInfo.name
+      }
+    });
+  }
+
+  public endMeeting(){
+    this.setMeetingInfo();
+    this.router.navigate(['welcome']);
+  }
+
+  public endMeetingForAll(){
+    this.mediaService.endMeetingForAll();
+  }
+
+  public leaveMeeting(){
+    this.mediaService.leaveMeeting();
+  }
 }
+

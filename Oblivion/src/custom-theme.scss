@@ -25,10 +25,11 @@
       color:$text;
       font-family: "Times New Roman", Times, serif;
     }
-    .mat-form-field-appearance-fill, .mat-form-field-outline-fill{
+    .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
       color: $text;
       font-family: "Times New Roman", Times, serif;
     }
+
     .mat-raised-button{
       background: $button_background;
       color: $button_text;
@@ -43,9 +44,22 @@
       font-family: "Times New Roman", Times, serif;
       color: $button_cancel;
     }
+
+    .an-1{
+      color: $text;
+    }
     .mat-display-1{
       color: $text;
       font-family: "Times New Roman", Times, serif;
+    }
+    .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar{
+      background-color: #607d8b;
+    }
+    .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb{
+      background-color: #50a3a2;
+    }
+    .mat-slide-toggle-label{
+      color: #50a3a2;
     }
   }
 }
