@@ -35,16 +35,19 @@ class Meeting {
         return message;
     }
 
-    generateEndMeetingResponse(ws) {
-        return JSON.stringify({
-            'res': true
-        });
-    }
-    generateLeaveMeetingResponse(ws, id) {
+    generateLeaveMeetingResponse(id) {
         return JSON.stringify({
             'res': true,
             'left': true,
             'userID': id
+        });
+    }
+
+    generateNewAdminCredentials() {
+        return JSON.stringify({
+            'role_change': true,
+            'role': 'Admin',
+            'password': this.password
         });
     }
 
@@ -67,21 +70,32 @@ class Meeting {
             console.log('Response:\n' + message);
         }
         else if (data.res) {
-            if(data.end || this.getClients().length === 2){
-                const message = this.generateEndMeetingResponse(ws);
+            if(data.end || this.getClients().length === 1){
+                //const message = this.generateEndMeetingResponse(ws);
                 this.getClients().forEach(function(client) {
-                    client.send(message);
+                    client.close();
                 });
             }
             else{
-                const client = this.getClients()[data.userID-1];
-                const messageForPersonLeaving = this.generateEndMeetingResponse(ws);
-                client.send(messageForPersonLeaving);
-                if (client > -1) {
-                    this.getClients().splice(client, 1);
+                const index = this.getClients().indexOf(ws);
+                const clientID = this.getClientUserIDs()[index];
+                ws.close();
+                if (index > -1) {
+                    this.getClients().splice(index, 1);
+                    this.getClientUserIDs().splice(index, 1);
                 }
-                const messageForPeopleInMeeting = this.generateLeaveMeetingResponse(ws,data.userID);
+
+                let new_admin = undefined;
+                let messageForNewAdmin = undefined;
+                if(index === 0){
+                    new_admin = this.getClients()[0];
+                    messageForNewAdmin = this.generateNewAdminCredentials();
+                }
+                const messageForPeopleInMeeting = this.generateLeaveMeetingResponse(clientID);
                 this.getClients().forEach(function(client) {
+                    if(new_admin !== undefined && client === new_admin && messageForNewAdmin !== undefined){
+                        client.send(messageForNewAdmin);
+                    }
                     client.send(messageForPeopleInMeeting);
                 });
             }
@@ -95,7 +109,7 @@ class Meeting {
     }
 
     generateUserRole(id){
-        if(id === 2){
+        if(id === 1){
             return 'Admin';
         }
         else{

@@ -95,47 +95,22 @@ function connection(ws, req) {
         //Starting or joining a meeting
         else if(data.meetingID && data.start){
             if (data.meetingID in meetings) {
-                console.log("MATT");
-
                 const meetingToJoin = meetings[data.meetingID];
-
-                if(meetingToJoin.getClients().length > 2){
-                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-                }
-                else{
-                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-
-                    meetingToJoin.generateRMIResponse(ws);
-                }
+                ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
             }
         }
+        //Needed to delete the meeting object
         else if (data.res) {
             const meetingID = data.meetingID;
-            console.log(meetingID);
             if(meetingID in meetings){
                 if(data.end){
-                    console.log("MATT");
-                    const meetingToEnd = meetings[data.meetingID];
-                    ws.on('message', (message) => meetingToEnd.onMessage(ws, message));
                     delete meetings[meetingID];
-                    console.log(meetings);
-                    console.log("There are now: "+wsServer.clients.size+" Active Connections");
                 }
                 else{
                     const meetingToLeave = meetings[data.meetingID];
-                    console.log(meetingToLeave.getClients().length);
-                    if(meetingToLeave.getClients().length === 2){
-                        console.log("MATT");
-                        ws.on('message', (message) => meetingToLeave.onMessage(ws, message));
+                    if(meetingToLeave.getClients().length === 1){
                         delete meetings[meetingID];
                     }
-                    else{
-                        console.log("MATTTTTTT");
-                        console.log(data);
-                        ws.on('message', (message) => meetingToLeave.onMessage(ws, message));
-                    }
-                    console.log(meetings);
-                    console.log("There are now: "+wsServer.clients.size+" Active Connections");
                 }
             }
         }
