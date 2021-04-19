@@ -140,9 +140,10 @@ class Meeting {
         }
     }
 
-    static correctMeetingInfo(ws) {
+    correctMeetingInfo(ws) {
         ws.send(JSON.stringify({
-            'valid': true
+            'valid': true,
+            'meetingID': this.meetingID
         }));
     }
 }

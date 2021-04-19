@@ -5,16 +5,17 @@ import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
 import {MeetingInfo} from "../../models/meeting-info";
 import {Router} from "@angular/router";
-
+import {MeetingStateService} from "../../services/meeting-state.service";
+import {WebsocketService} from "../../services/websocket.service";
 
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css'],
-  providers: [MediaService]
+  providers: [MediaService, WebsocketService]
 })
 
-export class MeetingComponent implements AfterViewInit, OnInit, OnDestroy  {
+export class MeetingComponent implements AfterViewInit, OnInit {
 
 
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
@@ -27,7 +28,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, OnDestroy  {
   public chat: boolean;  // Flag for if the chat box is open
 
 
-  constructor(private mediaService: MediaService, public dialog: MatDialog, private router: Router) {
+  constructor(private mediaService: MediaService, public dialog: MatDialog, private router: Router, private websocketService: WebsocketService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
@@ -46,11 +47,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, OnDestroy  {
     })
   }
 
-  ngOnDestroy() {
+  terminate() {
     this.mediaService.terminate();
   }
 
   async ngAfterViewInit() {
+    await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
@@ -157,10 +159,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, OnDestroy  {
     if (!this.meetingInfo.user_type){
       this.setMeetingInfo();
     }
+
     this.router.navigate(['welcome']);
   }
 
   public endMeetingForAll(){
+    console.log("END MEETING FOR ALL IS HAPPENING");
     this.mediaService.endMeetingForAll();
   }
 

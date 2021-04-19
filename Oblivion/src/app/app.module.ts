@@ -28,6 +28,8 @@ import {MatChipsModule} from '@angular/material/chips';
 import { MeetingInfoDialogComponent } from './components/meeting-info-dialog/meeting-info-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/confirm-end-meeting.component';
+import {WebsocketService} from "./services/websocket.service";
+import {MediaService} from "./services/media.service";
 
 @NgModule({
   declarations: [
@@ -63,7 +65,7 @@ import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/con
     MatChipsModule,
     MatDialogModule
   ],
-  providers: [Globals],
+  providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],
   // schemas: [NO_ERRORS_SCHEMA]
 })

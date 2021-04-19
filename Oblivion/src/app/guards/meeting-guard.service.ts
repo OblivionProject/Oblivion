@@ -3,10 +3,7 @@ import {CanDeactivate} from '@angular/router';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Subject} from 'rxjs';
 import {MeetingComponent} from '../components/meeting/meeting.component';
-import {
-  ConfirmEndMeetingComponent,
-  END_MEETING_TYPE
-} from '../components/confirm-end-meeting/confirm-end-meeting.component';
+import {ConfirmEndMeetingComponent, END_MEETING_TYPE} from '../components/confirm-end-meeting/confirm-end-meeting.component';
 
 @Injectable({
   providedIn: 'root'
@@ -42,19 +39,16 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
       .subscribe(async response => {
         if (response) {
           if(this.confirmDlg != undefined){
-            console.log("MATt");
             this.type = this.confirmDlg.componentInstance.type;
           }
           console.log(this.type);
           if(this.type == END_MEETING_TYPE.END){
-            console.log(response);
-            console.log("MATT HERE");
-            component.endMeetingForAll();
+            await component.endMeetingForAll();
+            await component.terminate();
           }
           else if(this.type == END_MEETING_TYPE.LEAVE){
-            console.log(response);
-            console.log("MATT HERE");
-            component.leaveMeeting();
+            await component.leaveMeeting();
+            await component.terminate();
           }
         } else {
           // when response is NO

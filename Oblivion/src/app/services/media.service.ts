@@ -1,6 +1,7 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
-import {Observable, Subject} from "rxjs";
+import {Subject} from "rxjs";
+import {MeetingStateService} from "./meeting-state.service";
 
 const mediaConstraints = {
   audio: true,
@@ -12,7 +13,7 @@ export class MediaService{
 
   mySubject : Subject<any> = new Subject<any>();
   destroy : boolean = false ;
-  //private webSocket: WebSocket; // Server connection to get connected to peers
+  private webSocket: WebSocket | undefined; // Server connection to get connected to peers
   private userId!: number; // This users ID
   private meetingID!: number; // Meeting ID
   private password!: string;
@@ -31,7 +32,7 @@ export class MediaService{
   private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
   private messageLog: JSON[];  // TODO: Make a message object?
 
-  constructor(private websocketService: WebsocketService) {
+  constructor(private websocketService: WebsocketService,private sharedService: MeetingStateService) {
     this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
     this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
@@ -40,6 +41,15 @@ export class MediaService{
 
     this.dataChannels = {};
     this.messageLog = new Array<JSON>();
+  }
+
+  public setUpWebSocket(socket: WebsocketService){
+    this.webSocket = socket.getWebSocket();
+    this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
+    this.webSocket.onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
+    this.webSocket.onerror = (event: Event) => console.log(event);
+    // @ts-ignore
+    this.webSocket.onopen = () => this.webSocket.send(JSON.stringify({'start': true, 'meetingID': this.sharedService.meetingID}));
   }
 
   // This method is called on startup to join the current meeting
@@ -152,8 +162,6 @@ export class MediaService{
     const signal = JSON.parse(message.data);
     //console.log(signal);
 
-    console.log("MATHEW IT IS SENDING TIWC");
-
     // Debugging Statements TODO: Remove
     //console.log('Request from Server:');
     //console.log(message);
@@ -180,11 +188,8 @@ export class MediaService{
 
       // Handle the RMI response
     } else if (signal.rmi && (this.userId < 0 || this.userId == undefined)) {
-      console.log("BITCH");
       this.userId = signal.userId;
-      console.log(this.userId);
       this.meetingID = signal.meetingID;
-      console.log(this.meetingID);
       this.password = signal.password;
       this.userRole = signal.userRole;
       this.name = signal.name;
@@ -198,14 +203,11 @@ export class MediaService{
     }
     else if (signal.res) {
       if(signal.left){
-        console.log("MATT HE LEFT THE MEETING");
-
         this.peers[signal.userID].close();
         delete this.peers[signal.userID];
         delete this.remoteStreams[signal.userID];
       }
       else{
-        console.log("MATT");
         this.destroy = true;
         this.mySubject.next(this.destroy);
       }
@@ -234,11 +236,6 @@ export class MediaService{
     return this.peers;
   }
 
-  public clearMeeting() {
-    console.log("MATT");
-    this.messageServer(JSON.stringify({'res': true}));
-    this.peers = {};
-  }
   //-----------------------------------------------------------------------------
 
   private createdDescription(peer: RTCPeerConnection, recipientID: number, description: RTCSessionDescriptionInit): void {
@@ -259,12 +256,14 @@ export class MediaService{
 
   private messageServer(message: string) {
     // TODO: Does this need error handling?
-    return this.websocketService.getWebSocket().send(message);
+    // @ts-ignore
+    return this.webSocket.send(message);
   }
 
   private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number) {
     if (event.candidate != null) {
-      this.websocketService.getWebSocket().send(
+      // @ts-ignore
+      this.webSocket.send(
         JSON.stringify(
           {
             'ice': event.candidate,
@@ -301,13 +300,9 @@ export class MediaService{
         case "disconnected":
         case "failed":
         case "closed":
-          console.log(this.peers);
-          console.log(this.remoteStreams);
           this.peers[userID].close();
           delete this.peers[userID];
           delete this.remoteStreams[userID];
-          console.log(this.peers);
-          console.log(this.remoteStreams);
           break;
       }
     }
@@ -363,6 +358,7 @@ export class MediaService{
   }
 
   public endMeetingForAll(): void{
+    console.log("END MEETING FOR ALL IS HAPPENING");
     this.messageServer(JSON.stringify({'res': true, 'end': true, 'meetingID': this.meetingID}));
   }
 
@@ -391,6 +387,7 @@ export class MediaService{
     });
     //Clear remote streams
     this.remoteStreams= {};
-    this.userId = -1;
+    // @ts-ignore
+    this.webSocket.close();
   }
 }

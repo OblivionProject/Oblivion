@@ -6,6 +6,8 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {CustomValidators} from '../../services/custom-validator';
 import {ErrorStateMatcher} from '@angular/material/core';
+import {Router} from "@angular/router";
+import {MeetingStateService} from "../../services/meeting-state.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -21,7 +23,8 @@ export interface Email {
 @Component({
   selector: 'app-create-meeting',
   templateUrl: './create-meeting.component.html',
-  styleUrls: ['./create-meeting.component.css']
+  styleUrls: ['./create-meeting.component.css'],
+  providers: [WebsocketService]
 })
 
 
@@ -29,11 +32,10 @@ export class CreateMeetingComponent {
 
   public meeting: Meeting;  // Stores the meeting creation information
   public hide: boolean;     // Indicates whether the password fields should be hidden
-  //private webSocket: WebSocket;  // WebSocket connection to server
+  private webSocket: WebSocket;  // WebSocket connection to server
   meetingName = new FormControl('', [Validators.required, Validators.email]);
   meetingEmail = new FormControl('', [Validators.email]);
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
@@ -45,8 +47,9 @@ export class CreateMeetingComponent {
   passwordError = true;
 
   // Initializes the WebSocket from the WebsocketService and creates the meeting
-  constructor(private websocketService: WebsocketService, private fb: FormBuilder) {
-    //this.webSocket = websocketService.getWebSocket();
+  constructor(private websocketService: WebsocketService, private fb: FormBuilder, private router: Router, private sharedService: MeetingStateService) {
+    this.webSocket = websocketService.getWebSocket();
+    this.webSocket.onmessage = (message: MessageEvent) => this.receivedCreateMeetingSuccess(message);
     this.meeting = new Meeting(MEETING_TYPE.CREATE);
     this.hide = true;
     this.createMeetingForm = this.createSignupForm(fb);
@@ -59,22 +62,26 @@ export class CreateMeetingComponent {
     this.websocketService.getWebSocket().send(JSON.stringify(this.meeting));
   }
 
+  async receivedCreateMeetingSuccess(message: MessageEvent) {
+    const signal = JSON.parse(message.data);
+    if (signal.success){
+      this.sharedService.meetingID = signal.meeting;
+      console.log(this.sharedService.meetingID);
+      await this.webSocket.close();
+      this.router.navigate(['meeting']);
+    }
+  }
 
-  /*
-   TODO : Ready to Test
-  */
+  //TODO: TEST
   public getEmailErrorMessage(): string {
     return this.createMeetingForm.controls.email.hasError('email') ? 'Not a valid email' : 'valid';
   }
 
-  /*
-   TODO : Ready to Test
-  */
+  //TODO:TEST
   getMeetingNameErrorMessage(): string {
     if (this.createMeetingForm.contains('meetingName') && this.createMeetingForm.controls.meetingName.hasError('required')){
       return 'You must enter a meeting name';
     }
-
     return 'Meeting Name Valid';
   }
 
@@ -109,10 +116,7 @@ export class CreateMeetingComponent {
       return errorString;
     }
 
-
-
     return errorString;
-
   }
   // TODO : Implement code to generate text to inform use about password related issues
   getPasswordMatchErrorMessage(): string{
@@ -133,7 +137,6 @@ export class CreateMeetingComponent {
   }
 
 /// EMAIL STUFF
-
   addEmail(event: MatChipInputEvent): void{
     const input = event.input;
     const value = event.value;
@@ -168,16 +171,12 @@ export class CreateMeetingComponent {
     }, 1000);
   }
 
-
-
   displayIssues(value: string): void  {
     this.doneTyping = true;
 }
 
 
   /// EMAIL STUFF
-
-
   createSignupForm(formBuilder: FormBuilder): FormGroup {
     return formBuilder.group({
       meetingName: new FormControl('', [Validators.required]),
@@ -196,5 +195,4 @@ export class CreateMeetingComponent {
       // validator: CustomValidators.passwordMatchValidator
     }, {validator: CustomValidators.valuesMatch('password', 'confirmPassword')});
   }
-
 }

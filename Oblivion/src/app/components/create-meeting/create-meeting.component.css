@@ -13,17 +13,24 @@
 }
 
 #create_meeting_header{
-  font-size: 70px;
+  font-size: 60px;
   margin-top: 2.5%;
   font-family: "Times New Roman", Times, serif;
   font-weight: lighter;
+  margin-bottom: 2% !important;
+}
+
+.mat-divider{
+  background: #333333!important;
+  opacity: 0.8;
+  margin-top: 2%;
 }
 
 .sidenav-button{
   width: 40%;
   height: 20%;
   background-color: inherit;
-  margin-top: 2.5%;
+  margin-top: 2%;
   left: 30%;
 }
 
@@ -36,11 +43,7 @@
   height: 55px;
   bottom: 0;
   float: left;
-}
 
-.my-4{
-  width:100%;
-  background-color: #333333;
 }
 
 .form-field{

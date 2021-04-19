@@ -46,33 +46,22 @@ function connection(ws, req) {
 
         // Client join meeting request
         if (data.meetingType && data.meetingType === 'JOIN') {
-
+            console.log(data);
             const meetingID = data.meetingID;
             if (meetingID in meetings) {
                 const meetingToJoin = meetings[meetingID];
                 if (meetingToJoin.hasPassword) {
                     if (data.password === meetingToJoin.password) {
-
-                        if(data.check){
-                            m.Meeting.correctMeetingInfo(ws);
-                        }
-                        else{
-                            console.log("MATT");
-                            ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-                        }
+                        meetingToJoin.correctMeetingInfo(ws);
                     }
                     else {
-                        m.Meeting.incorrectMeetingInfo(ws, 'Invalid Password');
+                        meetingToJoin.incorrectMeetingInfo(ws, 'Invalid Password');
                     }
 
                 // Join if the meeting has no password
                 } else {
-                    if(data.check){
-                        m.Meeting.correctMeetingInfo(ws);
-                    }
-                    else{
-                        ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
-                    }
+                    console.log("MATT this shit is ")
+                    meetingToJoin.correctMeetingInfo(ws);
                 }
 
             }
@@ -81,7 +70,8 @@ function connection(ws, req) {
             }
 
             // Client create meeting request
-        } else if (data.meetingType && data.meetingType === 'CREATE') {
+        }
+        else if (data.meetingType && data.meetingType === 'CREATE') {
             console.log("Create Meeting Request");
 
             const newMeetingID = generateUniqueMeetingID();
@@ -92,18 +82,39 @@ function connection(ws, req) {
                 newMeeting.setPassword(data.password);
             }
 
-            // Update the on message function to be specific to the meeting
-            ws.on('message', (message) => newMeeting.onMessage(ws, message));
-
-            newMeeting.generateRMIResponse(ws); // Generate RMI response is needed to create the new user
-            meetings[newMeetingID] = newMeeting; // Add the meeting to the meetings array
+            meetings[newMeetingID] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
+
+            const message = JSON.stringify({
+                'success': true,
+                'meeting': newMeetingID
+            });
+            console.log(meetings);
+            ws.send(message);
+        }
+        //Starting or joining a meeting
+        else if(data.meetingID && data.start){
+            if (data.meetingID in meetings) {
+                console.log("MATT");
+
+                const meetingToJoin = meetings[data.meetingID];
+
+                if(meetingToJoin.getClients().length > 2){
+                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+                }
+                else{
+                    ws.on('message', (message) => meetingToJoin.onMessage(ws, message));
+
+                    meetingToJoin.generateRMIResponse(ws);
+                }
+            }
         }
         else if (data.res) {
             const meetingID = data.meetingID;
             console.log(meetingID);
             if(meetingID in meetings){
                 if(data.end){
+                    console.log("MATT");
                     const meetingToEnd = meetings[data.meetingID];
                     ws.on('message', (message) => meetingToEnd.onMessage(ws, message));
                     delete meetings[meetingID];

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 
 export const WS_ENDPOINT = 'wss://localhost:8080' //'wss://oblivionchat.com/websocket/';//'wss://128.255.71.168:8080'; wss://localhost:8080
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class WebsocketService {
 
   private webSocket: WebSocket;

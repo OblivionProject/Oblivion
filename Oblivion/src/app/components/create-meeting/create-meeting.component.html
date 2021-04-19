@@ -63,11 +63,10 @@
     </mat-form-field>
     </section>
     </form>
-    <hr class="my-4">
+    <mat-divider></mat-divider>
   </mat-sidenav-container>
-
   <mat-sidenav-container class = "sidenav-button">
-    <button mat-raised-button (click)="createMeeting()" [disabled]="createMeetingForm.controls['meetingName'].invalid" color="primary" routerLink="../meeting" id="create_meeting_submit">Create</button>
+    <button mat-raised-button (click)="createMeeting()" color="primary" id="create_meeting_submit">Create</button>
   </mat-sidenav-container>
 
 </mat-sidenav-container>

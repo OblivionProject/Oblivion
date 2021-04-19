@@ -4,6 +4,7 @@ import {WebsocketService} from "../../services/websocket.service";
 import { Router } from '@angular/router';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
+import {MeetingStateService} from "../../services/meeting-state.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -15,7 +16,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-join-meeting',
   templateUrl: './join-meeting.component.html',
-  styleUrls: ['./join-meeting.component.css']
+  styleUrls: ['./join-meeting.component.css'],
+  providers: [WebsocketService]
 })
 export class JoinMeetingComponent {
 
@@ -28,7 +30,7 @@ export class JoinMeetingComponent {
   matcher = new MyErrorStateMatcher();
 
   // Initializes the WebSocket from the WebsocketService and joins the meeting
-  constructor(websocketService: WebsocketService, private router: Router, private fb: FormBuilder) {
+  constructor(websocketService: WebsocketService, private router: Router, private fb: FormBuilder, private sharedService: MeetingStateService) {
     this.webSocket = websocketService.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedValidationFromServer(message);
     this.meeting = new Meeting(MEETING_TYPE.JOIN);
@@ -70,7 +72,7 @@ export class JoinMeetingComponent {
     }, 1000);
   }
 
-  public receivedValidationFromServer(message: MessageEvent) {
+  async receivedValidationFromServer(message: MessageEvent) {
     const signal = JSON.parse(message.data);
     console.log("MATTTTTT");
     console.log(signal);
@@ -85,8 +87,9 @@ export class JoinMeetingComponent {
       }
     }
     else if(signal.valid){
-      this.meeting.check = false;
-      this.webSocket.send(JSON.stringify(this.meeting));
+      //this.webSocket.send(JSON.stringify(this.meeting));
+      this.sharedService.meetingID = signal.meetingID;
+      await this.webSocket.close(); // wait for this to close before routing
       this.router.navigate(['meeting']);
     }
   }
