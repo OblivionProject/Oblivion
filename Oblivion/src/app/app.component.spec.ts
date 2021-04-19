@@ -2,8 +2,6 @@ import {fakeAsync, TestBed} from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import {By} from "@angular/platform-browser";
-import {ReactiveFormsModule} from "@angular/forms";
-import { FormsModule } from '@angular/forms'
 
 describe('AppComponent', () => {
   beforeEach(async () => {

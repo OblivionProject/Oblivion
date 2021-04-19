@@ -3,6 +3,8 @@ import { JoinMeetingComponent } from './join-meeting.component';
 import {MEETING_TYPE} from "../../models/meeting.model";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { RouterTestingModule } from '@angular/router/testing';
+import {WelcomeComponent} from "../welcome/welcome.component";
+import {MeetingComponent} from "../meeting/meeting.component";
 
 describe('JoinMeetingComponent', () => {
   let component: JoinMeetingComponent;
@@ -13,7 +15,9 @@ describe('JoinMeetingComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([
+          {path: 'welcome', component: WelcomeComponent},
+          {path: 'meeting', component: MeetingComponent}])
       ],
       declarations: [ JoinMeetingComponent ]
     })

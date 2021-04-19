@@ -5,6 +5,8 @@ import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Router} from "@angular/router";
 import {WebsocketService} from "../../services/websocket.service";
 import {RouterTestingModule} from "@angular/router/testing";
+import {WelcomeComponent} from "../welcome/welcome.component";
+import {MeetingComponent} from "../meeting/meeting.component";
 
 describe('CreateMeetingComponent', () => {
   let component: CreateMeetingComponent;
@@ -15,7 +17,9 @@ describe('CreateMeetingComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([
+          {path: 'welcome', component: WelcomeComponent},
+          {path: 'meeting', component: MeetingComponent}])
       ],
       declarations: [ CreateMeetingComponent ],
       providers: [ WebsocketService ]
