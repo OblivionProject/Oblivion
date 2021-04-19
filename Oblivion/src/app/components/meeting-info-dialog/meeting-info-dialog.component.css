@@ -1,0 +1,26 @@
+#meeting_info_dialog{
+  z-index: 3;
+  background-color: #333333;
+  color: white;
+  opacity: 0.6 !important;
+  border-radius: 10px;
+}
+
+#meeting_info_header{
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+#meeting_info_divider{
+  color: white;
+  margin-top: 0!important;
+  padding-top: 0!important;
+}
+
+#meeting_info_list{
+  color: #53e3a6 !important;
+  list-style-type: none;
+  padding-top: 4px;
+  float: left !important;
+  padding-left: 10px;
+}

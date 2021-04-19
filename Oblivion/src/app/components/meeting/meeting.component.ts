@@ -141,8 +141,12 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public openDialog() {
     this.setMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {
-      width: '50%',
-      height: '50%',
+      width: '250px',
+      height: '200px',
+      position: {
+        left: '0px',
+        bottom: '15px'
+      },
       data: {
         meeting_id: this.meetingInfo.meeting_id,
         user_type: this.meetingInfo.user_type,
