@@ -1,4 +1,4 @@
-var meeting = require("../meeting");
+var meeting = require("../modules/meeting");
 
 describe("Meeting Object", function() {
 

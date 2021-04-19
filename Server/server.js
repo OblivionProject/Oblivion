@@ -1,4 +1,4 @@
-const m = require("./meeting");
+const m = require("./modules/meeting");
 const express = require('express');
 const app = express();
 const https = require('https');
