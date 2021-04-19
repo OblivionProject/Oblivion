@@ -29,9 +29,10 @@
   font-family: "Times New Roman", Times, serif;
 }
 
-.my-4{
-  width:100%;
-  background-color: #333333;
+.mat-divider{
+  background: #333333!important;
+  opacity: 0.8;
+  margin-top: 2%;
 }
 
 .sidenav-button{
