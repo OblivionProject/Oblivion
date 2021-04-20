@@ -7,11 +7,11 @@ import {MeetingInfo} from '../../models/meeting-info';
 import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
 
-// export interface Message{
-//   message: string;
-//   origin: string;
-//   user: string;
-// }
+export interface Message{
+  message: string;
+  origin: string;
+  user: string;
+}
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
@@ -22,12 +22,16 @@ import {WebsocketService} from '../../services/websocket.service';
 export class MeetingComponent implements AfterViewInit, OnInit {
 
 
-  constructor(private mediaService: MediaService) {
+  constructor(private mediaService: MediaService,
+              public dialog: MatDialog,
+              private router: Router,
+              private websocketService: WebsocketService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
+    this.meetingInfo = new MeetingInfo();
     this.message = '';
     this.unReadMessageCount = 0;
     this.readMessageCount = 0;
@@ -199,9 +203,9 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   // Returns the meeting ID
-  public getMeetingID(): number {
-    return this.mediaService.getMeetingID();
-  }
+  // public getMeetingID(): number {
+  //   return this.mediaService.getMeetingID();
+  // }
 
   // The functions in this section are intended for development use only
   public TEST() {
@@ -213,7 +217,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.meetingInfo.setData(this.mediaService.getMeetingInfo());
     return this.meetingInfo;
   }
-
   public openDialog() {
     this.setMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {
