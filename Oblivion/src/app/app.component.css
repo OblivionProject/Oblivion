@@ -1,6 +1,11 @@
 .router{
   width:100%;
-  height: 90%;
+  height: 100%;
+}
+
+#router_content{
+  z-index: 2;
+  background: inherit;
 }
 
 .output{
@@ -8,7 +13,6 @@
   height: 100%;
   overflow: hidden;
   position: absolute;
-  z-index: 2;
   margin: 0 auto;
 }
 
@@ -39,8 +43,8 @@
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: "Times New Roman", Times, serif;
   z-index: 2;
+  font-family: "Times New Roman", Times, serif;
 }
 
 #header{
@@ -49,7 +53,7 @@
   z-index: 2;
 }
 #top{
-  z-index: 2;
+  z-index: 3;
 }
 
 .bg-bubbles {

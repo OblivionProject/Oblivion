@@ -21,8 +21,9 @@
       </mat-slide-toggle>
     </mat-toolbar>
   </mat-sidenav-container>
-
-  <router-outlet class="router"></router-outlet>
+  <mat-sidenav-container id="router_content" autosize="true">
+    <router-outlet class="router"></router-outlet>
+  </mat-sidenav-container>
   <ul class="bg-bubbles">
     <li></li>
     <li></li>

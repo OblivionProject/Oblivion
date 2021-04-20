@@ -1,20 +1,21 @@
-<mat-sidenav-container class = "sidenav-cont-cont">
-  <mat-sidenav-container class="sidenav-cont">
-    <mat-grid-list cols="2" rowHeight="fit" style="height: 820px">
-      <mat-grid-tile
-        [colspan]="tile.cols"
-        [rowspan]="tile.rows">
-        <p class="video video-description"></p>
-        <video #local_video [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
-
-      <!-- Remote videos -->
-      <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
-        <p class="video video-description">Other</p>
-        <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
+<mat-sidenav-container class = "sidenav-cont-cont" autosize="true">
+      <mat-grid-list cols="4" [style.height.px]="height" rowHeight="fit" id = "videos">
+        <mat-grid-tile *ngFor="let vid of getStreams()"
+                       [colspan]="this.tiles.cols"
+                       [rowspan]="this.tiles.rows"
+                       class="tile">
+          <p class="video video-description">Other</p>
+          <video [srcObject]="vid" [autoplay]="true" [muted]="true" [style.height.px]="video_height" [style.width.px]="video_width" class="video"></video>
+        </mat-grid-tile>
     </mat-grid-list>
-  </mat-sidenav-container>
+
+<!--  *ngIf="getRemoteStreams().length > 0"-->
+  <button *ngIf="show_right" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
+    <mat-icon>arrow_forward_ios</mat-icon>
+  </button>
+  <button *ngIf="show_left" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
+    <mat-icon>arrow_back_ios_new</mat-icon>
+  </button>
 
   <!-- This template displays the overlay content and is connected to the button -->
   <ng-template
@@ -23,32 +24,28 @@
     [cdkConnectedOverlayOpen]="chat"
   >
     <ul class="chat-list" id="chat-list">
-<!--      <li>Item 1</li>-->
-<!--      <li>Item 2</li>-->
-<!--      <li>Item 3</li>-->
     </ul>
-<!--    <label for="message">Enter Message:</label>-->
 <!-- TODO: Figure out the correct maximum message length -->
     <input type="text" id="chatInput" placeholder="Enter Message" value size=60 maxlength=150>
     <button id="chatButton" class="buttonRight" (click)="sendChat()">Send</button>
   </ng-template>
 
-  <footer class="footer">
+  <mat-sidenav-container class = "meeting_container" id = "sticky_footer">
     <mat-toolbar id = "footer">
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" class = "meeting_buttons">
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" >
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
       </button>
-      <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
+      <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="chat = !chat" class = "meeting_buttons">
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="chat = !chat" >
         <mat-icon>email</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons">
+      <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()">
         <mat-icon>info</mat-icon>
       </button>
-      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
-      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
+      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>
+      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" >Leave</button>
     </mat-toolbar>
-  </footer>
+  </mat-sidenav-container>
 </mat-sidenav-container>

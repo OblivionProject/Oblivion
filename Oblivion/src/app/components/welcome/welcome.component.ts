@@ -26,14 +26,14 @@ export class WelcomeComponent implements AfterViewInit {
         opacity: [0, 1],
         translateZ: 0,
         easing: 'easeOutExpo',
-        duration: 1000,
+        duration: 2000,
         delay: (el: any, i: number) => 100 * i
       }).add({
       targets: '.an-1',
       opacity: 1,
-      duration: 1000,
+      duration: 3000,
       easing: 'easeOutExpo',
-      delay: 1000
+      delay: 1500
     });
 
 

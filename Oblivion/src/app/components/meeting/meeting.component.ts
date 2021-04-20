@@ -1,42 +1,61 @@
-import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
-import {TitleModel} from '../../models/title.model';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  OnInit,
+  HostListener,
+  ChangeDetectorRef
+} from '@angular/core';
 import {MediaService} from '../../services/media.service';
 import {MatDialog} from '@angular/material/dialog';
 import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
 import {MeetingInfo} from "../../models/meeting-info";
 import {Router} from "@angular/router";
 import {WebsocketService} from "../../services/websocket.service";
+import {VideoOrderingService} from "../../services/video-ordering.service";
+import {TitleModel} from "../../models/title.model";
 
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css'],
-  providers: [MediaService, WebsocketService]
+  providers: [MediaService, WebsocketService, VideoOrderingService]
 })
 
 export class MeetingComponent implements AfterViewInit, OnInit {
 
-
-  @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
+  //@ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
+  public localStream: MediaStream | undefined;
   private remoteStreams: {[key: number]: MediaStream};
-  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo: MeetingInfo;
   public overrideGuard: boolean = false;
   public chat: boolean;  // Flag for if the chat box is open
-
+  public height: any;
+  public video_width: any;
+  public video_height: any;
+  public show_right: boolean;
+  public show_left: boolean;
+  public tiles: TitleModel;
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
               private router: Router,
-              private websocketService: WebsocketService) {
+              private websocketService: WebsocketService,
+              private elem: ElementRef,
+              private cdref: ChangeDetectorRef,
+              public videoOrderer: VideoOrderingService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
     this.meetingInfo = new MeetingInfo();
+    this.show_right = false;
+    this.show_left = false;
+    this.tiles = new TitleModel(4,1);
   }
 
   ngOnInit() {
@@ -46,6 +65,44 @@ export class MeetingComponent implements AfterViewInit, OnInit {
         this.endMeeting();
       }
     })
+    this.videoOrderer.isRightButtonShown.subscribe( value => {
+      this.show_right = value;
+      console.log("MATHEW THE RIGHT BUTTON IS"+this.show_right);
+      this.cdref.detectChanges();
+    });
+
+    this.videoOrderer.isLeftButtonShown.subscribe( value => {
+      this.show_left = value;
+      console.log("MATHEW THE LEFT BUTTON IS"+this.show_left);
+      this.cdref.detectChanges();
+    });
+
+    this.videoOrderer.isTileChange.subscribe( value => {
+      this.tiles = value;
+      console.log("MATHEW THE TILE HAS BEEN CHANGED IS"+value);
+      const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+      this.video_height = this.videoOrderer.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+      this.video_width = this.videoOrderer.dynamicWidthSizer(this.video_height);
+      this.cdref.detectChanges();
+    });
+  }
+
+  public moveRight():void{
+    this.videoOrderer.moveRight();
+  }
+  public moveLeft():void{
+    this.videoOrderer.moveLeft();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = window.innerHeight - sizing*2;
+
+    this.videoOrderer.setVideosSizing(window.innerWidth);
+    this.videoOrderer.setTiles();
+    this.video_height = this.videoOrderer.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_width = this.videoOrderer.dynamicWidthSizer(this.video_height);
   }
 
   terminate() {
@@ -57,6 +114,17 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     await this.getLocalVideo();
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
+
+    //Window Sizing
+    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = window.innerHeight - sizing*2;
+    this.videoOrderer.setVideosSizing(window.innerWidth);//adjust ordering of videos
+    this.video_height = this.videoOrderer.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_width = this.videoOrderer.dynamicWidthSizer(this.video_height);
+  }
+
+  ngAfterContentChecked() {
+    this.cdref.detectChanges();
   }
 
   // TODO: Add recipient ID option
@@ -68,9 +136,9 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   async getLocalVideo(): Promise<void> {
-    await this.mediaService.loadLocalStream();
-    this.localVideo.nativeElement.srcObject = await this.mediaService.getLocalStream();
-    this.localVideo.nativeElement.muted = true;
+      await this.mediaService.loadLocalStream();
+      this.localStream = await this.mediaService.getLocalStream();
+      // this.localVideo.nativeElement.muted = true;
   }
 
   // Toggles the video between off and on
@@ -95,23 +163,23 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   public start(isCaller: boolean): void {
-    //this.mediaService.start(isCaller);
     this.mediaService.requestMeetingInformation();
-    // this.remoteStreams = this.mediaService.getRemoteStreams();
-  }
-
-  public getRemoteStreams1() {
-    this.remoteStreams = this.mediaService.getRemoteStreams();
-    console.log(this.mediaService.getRemoteStreams());
-    (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
-        console.log(track);
-    });
-    console.log(this.localVideo.nativeElement.srcObject);
   }
 
   // Returns an array of the remote MediaStreams
-  public getRemoteStreams(): MediaStream[] {
-    return Object.values(this.remoteStreams);
+  public getStreams(): MediaStream[] {
+    if(this.videoOrderer.videos_count!=Object.values(this.remoteStreams).length+1){
+      console.log(Object.values(this.remoteStreams).length+1);
+      this.videoOrderer.videos_count = Object.values(this.remoteStreams).length+1;
+      this.videoOrderer.setVideosSizing(window.innerWidth);
+      this.videoOrderer.setTiles();
+    }
+    if(this.localStream != undefined){
+      return ([this.localStream].concat(Object.values(this.remoteStreams)).slice(this.videoOrderer.video_start_index, this.videoOrderer.video_end_index))
+    }
+    else{
+      return [];
+    }
   }
 
   //-----------------------------------------------------------------------------
