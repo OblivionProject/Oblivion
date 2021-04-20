@@ -70,23 +70,70 @@ p.video-description{
   }
 }
 
-/* Below is the chat box style */
-.chat-list {
-  width: 500px;
-  border: solid 1px #ccc;
-  border-radius: 5px;
-  background: #fff;
-  text-align: center;
-  padding: 10px;
-  margin: 0;
+/*!* Below is the chat box style *!*/
+/*.chat-list {*/
+/*  width: 500px;*/
+/*  border: solid 1px #ccc;*/
+/*  border-radius: 5px;*/
+/*  background: #fff;*/
+/*  text-align: center;*/
+/*  padding: 10px;*/
+/*  margin: 0;*/
+/*}*/
+
+/*.chat-list > li {*/
+/*  list-style-type: none;*/
+/*  border-bottom: solid 1px #8b8b8b;*/
+/*  padding: 8px 0;*/
+/*}*/
+
+/*.chat-list > li:last-child {*/
+/*  border-bottom: none;*/
+/*}*/
+
+mat-grid-tile {
+
+}
+.test{
+  opacity: 0.3;
+}
+.test:hover{
+  opacity: 1;
 }
 
-.chat-list > li {
-  list-style-type: none;
-  border-bottom: solid 1px #8b8b8b;
-  padding: 8px 0;
+.chatbox{
+  width: 30%;
+  background-color: darkgrey;
 }
 
-.chat-list > li:last-child {
-  border-bottom: none;
+.chatInput{
+  height: 20%;
+}
+.messagebox{
+  height: 80%;
+}
+
+.messagesSEND{
+  background-color: greenyellow;
+  width: 100%;
+  text-align: right;
+  height: 5%;
+}
+
+.messagesRECIVE{
+  background-color: grey;
+  width: 100%;
+  text-align: left;
+}
+
+.example-full-width{
+  width: 80%;
+}
+
+.sendbutton{
+  width: 15%;
+}
+
+.videoGrid{
+  background-color: #333333;
 }
