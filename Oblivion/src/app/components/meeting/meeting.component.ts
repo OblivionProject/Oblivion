@@ -22,16 +22,12 @@ import {WebsocketService} from '../../services/websocket.service';
 export class MeetingComponent implements AfterViewInit, OnInit {
 
 
-  constructor(private mediaService: MediaService,
-              public dialog: MatDialog,
-              private router: Router,
-              private websocketService: WebsocketService) {
+  constructor(private mediaService: MediaService) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
-    this.meetingInfo = new MeetingInfo();
     this.message = '';
     this.unReadMessageCount = 0;
     this.readMessageCount = 0;
@@ -50,7 +46,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public unReadMessageCount = 0;
   public readMessageCount = 0;
   public chatOpen = false;
-
   // public testMessage: Message[] = [
   //   {message: 'Test message 1 adsfasdf asdfasdf',
   //     origin: 'SEND',
@@ -69,8 +64,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   // ];
   public chat: boolean;  // Flag for if the chat box is open
 
-  // End development functions
-  // -----------------------------------------------------------------------------
 
   private static appendWebRTCAdapterScript(): void {
     const node = document.createElement('script');
@@ -111,12 +104,12 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
   public getChatLog(): Array<JSON> {
     const MessageLog = this.mediaService.getMessageLog();
-    if (this.chatOpen){
+    if (this.chatOpen) {
       // console.log('this.chatOpen = true');
       this.readMessageCount = MessageLog.length;
       this.unReadMessageCount = 0;
     }else{
-      // console.log('this.chatOpen = false');
+      console.log('this.chatOpen = false');
       this.unReadMessageCount = MessageLog.length - this.readMessageCount;
     }
     return MessageLog;
@@ -137,8 +130,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     // @ts-ignore
     const timestamp = this.getTimeStamp(json);
     const origin = this.getOrigin(json);
-    return origin === 'SEND' ? 'Sent @ ' + timestamp : 'Recived @ ' + timestamp;
-
+    return origin === 'SEND' ? 'Sent @ ' + timestamp : 'Received @ ' + timestamp;
   }
   public autoGrowTextZone(e: any): void {
     e.target.style.height = '0px';
@@ -156,6 +148,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public displayUnReadchat(): boolean {
     return this.unReadMessageCount !== 0;
   }
+
+
 
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
@@ -204,7 +198,11 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     return Object.values(this.remoteStreams);
   }
 
-  // -----------------------------------------------------------------------------
+  // Returns the meeting ID
+  public getMeetingID(): number {
+    return this.mediaService.getMeetingID();
+  }
+
   // The functions in this section are intended for development use only
   public TEST() {
     console.log(Object.keys(this.mediaService.getPeers()).length);
