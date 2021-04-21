@@ -24,11 +24,6 @@
         </form>
 
         <form class="chatInput">
-
-<!--          <mat-form-field class="example-full-width">-->
-<!--            <mat-label>Test</mat-label>-->
-<!--          </mat-form-field>-->
-
           <mat-form-field class="example-full-width">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
