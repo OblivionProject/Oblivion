@@ -8,6 +8,7 @@ import {CustomValidators} from '../../services/custom-validator';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {Router} from "@angular/router";
 import {MeetingStateService} from "../../services/meeting-state.service";
+import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -45,6 +46,7 @@ export class CreateMeetingComponent {
   timeout: any = null;
   doneTyping = false;
   passwordError = true;
+  public advanceOption = false;
 
   // Initializes the WebSocket from the WebsocketService and creates the meeting
   constructor(private websocketService: WebsocketService, private fb: FormBuilder, private router: Router, private sharedService: MeetingStateService) {
@@ -181,18 +183,14 @@ export class CreateMeetingComponent {
     return formBuilder.group({
       meetingName: new FormControl('', [Validators.required]),
       email: new FormControl('', Validators.compose([Validators.email])),
-      password: new FormControl('', Validators.compose([
-        Validators.minLength(5),
-        CustomValidators.patternValidator(/\d/, {hasNumber: true}),
-        // check whether the entered password has upper case letter
-        // CustomValidators.patternValidator(/[A-Z]/, {hasCapitalCase: true}),
-        // check whether the entered password has a lower case letter
-        // CustomValidators.patternValidator(/[a-z]/, {hasSmallCase: true}),
-        // check whether the entered password has a special character
-        // CustomValidators.patternValidator(/[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, {hasSpecialCharacters: true}),
-      ])),
+      password: new FormControl('', Validators.compose([])),
       confirmPassword : new FormControl('', [Validators.required]),
       // validator: CustomValidators.passwordMatchValidator
     }, {validator: CustomValidators.valuesMatch('password', 'confirmPassword')});
   }
+
+  setValue($event: MatSlideToggleChange): void {
+    this.advanceOption = $event.checked;
+  }
 }
+
