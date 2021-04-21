@@ -4,6 +4,15 @@ const app = express();
 const https = require('https');
 const fs = require('fs');
 
+const nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'oblivionchatmeeting@gmail.com',
+        pass: 'OBLIVION'
+    }
+});
+
 const credentials = {
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert'),
@@ -82,6 +91,11 @@ function connection(ws, req) {
                 newMeeting.setPassword(data.password);
             }
 
+
+            if(data.emails.length !== 0){
+                sendEmails(data.emails,newMeetingID,data.password);
+                //console.log(data.emails);
+            }
             meetings[newMeetingID] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
 
@@ -125,6 +139,41 @@ function generateUniqueMeetingID() {
         id = Math.floor(Math.random() * 90000) + 10000;
     }
     return id;
+}
+function sendEmails(emails,meetingId, password) {
+    const data = emails;
+    var x1 = "Hello, You have been invited to a meeting on oblivionchat.com"
+    var x2 = "Details for your meeting are:"
+    var x3 = "Meeting Id: " + meetingId
+    if(password !== '') {
+        var x4 = "password: " + password
+    }
+    var message = String(x1) + '\n' +
+        String(x2) + '\n' +
+        String(x3) + '\n' +
+        String(x4) + '\n' ;
+    var subject = "Details for your private meeting";
+    var i;
+    for( i=0;i<data.length;i++){
+        var email = mailOptions(data[i],subject,message);
+        transporter.sendMail(email, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }
+}
+
+
+function mailOptions(to,subject,text){
+    return {
+        from: 'olivionchatmeeting@gmail.com',
+        to: to,
+        subject: subject,
+        text: text
+    };
 }
 
 module.exports = httpsServer;

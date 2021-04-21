@@ -40,7 +40,7 @@ export class CreateMeetingComponent {
   selectable = true;
   removable = true;
   addOnBlur = true;
-  emails: Email[] = [];
+  emails: string[] = [];
   createMeetingForm: FormGroup;
   matcher = new MyErrorStateMatcher();
   timeout: any = null;
@@ -60,6 +60,7 @@ export class CreateMeetingComponent {
   // Sends the create meeting info to the server
   public createMeeting(): void {
     // Add Simple verification step here to block if values not correct or a call back to server
+    this.meeting.emails = this.emails;
     console.log(JSON.stringify(this.meeting));
     this.websocketService.getWebSocket().send(JSON.stringify(this.meeting));
   }
@@ -145,7 +146,7 @@ export class CreateMeetingComponent {
 
     const valid = !this.createMeetingForm.controls.email.hasError('email');
     if ((value || '').trim() && valid){
-      this.emails.push({name: value.trim()});
+      this.emails.push(value.trim());
     }
 
     // Reset the input value
@@ -154,7 +155,7 @@ export class CreateMeetingComponent {
     }
   }
 
-  remove(email: Email): void {
+  remove(email: string): void {
     const index = this.emails.indexOf(email);
 
     if (index >= 0) {
