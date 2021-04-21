@@ -111,7 +111,6 @@ export class MediaService{
 
   public sendChat(msg: string, recipientId?: number): void {
     // TODO: Add check to make sure message isn't too large
-  console.log('HELLOOOO');
     // Format the message to send
   const timeInfo = new Date();
   const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
