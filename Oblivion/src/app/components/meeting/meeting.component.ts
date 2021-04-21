@@ -21,6 +21,18 @@ export interface Message{
 
 export class MeetingComponent implements AfterViewInit, OnInit {
 
+  @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
+  private remoteStreams: {[key: number]: MediaStream};
+  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
+  public video: boolean; // Flag for if video is on or off
+  public audio: boolean; // Flag for if audio is on or off
+  public meetingInfo: MeetingInfo;
+  public overrideGuard = false;
+  public message: string;
+  public unReadMessageCount = 0;
+  public readMessageCount = 0;
+  public chatOpen = false;
+  public chat: boolean;  // Flag for if the chat box is open
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -39,34 +51,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
 
-  @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
-  private remoteStreams: {[key: number]: MediaStream};
-  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
-  public video: boolean; // Flag for if video is on or off
-  public audio: boolean; // Flag for if audio is on or off
-  public meetingInfo: MeetingInfo;
-  public overrideGuard = false;
-  public message: string;
-  public unReadMessageCount = 0;
-  public readMessageCount = 0;
-  public chatOpen = false;
-  // public testMessage: Message[] = [
-  //   {message: 'Test message 1 adsfasdf asdfasdf',
-  //     origin: 'SEND',
-  //     user: 'Joe'},
-  //   {message: 'Test message 2',
-  //     origin: 'RECEIVED',
-  //   user: 'Other'},
-  //   // {message: 'Test message 3',
-  //   //   origin: 'SEND'},
-  //   // {message: 'Test message 1',
-  //   //   origin: 'RECEIVED'},
-  //   // {message: 'Test message 1',
-  //   //   origin: 'SEND'},
-  //   // {message: 'Test message 1',
-  //   //   origin: 'RECEIVED'}
-  // ];
-  public chat: boolean;  // Flag for if the chat box is open
+
 
 
   private static appendWebRTCAdapterScript(): void {
