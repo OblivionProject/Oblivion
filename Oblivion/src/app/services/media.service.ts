@@ -151,10 +151,6 @@ export class MediaService{
     const b = JSON.parse(a);
     console.log(a);
     this.messageLog.push(data);  // Add the message data to the log
-    // const messageList = <HTMLUListElement>document.getElementById("chat-list");
-    // const message = document.createElement("li");
-    // message.appendChild(document.createTextNode(b["message"]));
-    // messageList.appendChild(message);
   }
 
   private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
