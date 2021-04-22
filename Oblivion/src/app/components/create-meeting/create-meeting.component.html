@@ -49,7 +49,7 @@
       <mat-chip-list #chipList aria-label="Email selection">
         <mat-chip *ngFor="let email of emails" [selectable]="selectable"
                   [removable]="removable" (removed)="remove(email)">
-          {{email.name}}
+          {{email}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
         <input placeholder="New email..."
