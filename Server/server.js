@@ -13,10 +13,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-const credentials = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert'),
-}
+
 
 console.log(credentials);
 
@@ -93,7 +90,11 @@ function connection(ws, req) {
 
 
             if(data.emails.length !== 0){
-                sendEmails(data.emails,newMeetingID,data.password);
+                if(data.password !== '') {
+                    sendEmails(data.emails, newMeetingID, data.password);
+                }else if(data.password === ''){
+                    sendEmails(data.emails,newMeetingID, '')
+                }
                 //console.log(data.emails);
             }
             meetings[newMeetingID] = newMeeting;
@@ -144,8 +145,10 @@ function sendEmails(emails,meetingId, password) {
     const data = emails;
     var x1 = "Hello, You have been invited to a meeting on oblivionchat.com"
     var x2 = "Details for your meeting are:"
-    var x3 = "Meeting Id: " + meetingId
-    if(password !== '') {
+    var x3 = "Join Id: " + meetingId
+    if (typeof password === 'undefined') {
+        var x4 = "No password for this meeting"
+    } else if (password !== '' ) {
         var x4 = "password: " + password
     }
     var message = String(x1) + '\n' +
@@ -160,6 +163,7 @@ function sendEmails(emails,meetingId, password) {
             if (error) {
                 console.log(error);
             } else {
+                console.log('password:' + typeof (password));
                 console.log('Email sent: ' + info.response);
             }
         });
