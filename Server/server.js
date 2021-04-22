@@ -143,18 +143,14 @@ function generateUniqueMeetingID() {
 }
 function sendEmails(emails,meetingId, password) {
     const data = emails;
-    var x1 = "Hello, You have been invited to a meeting on oblivionchat.com"
-    var x2 = "Details for your meeting are:"
     var x3 = "Join Id: " + meetingId
     if (typeof password === 'undefined') {
         var x4 = "No password for this meeting"
     } else if (password !== '' ) {
         var x4 = "password: " + password
     }
-    var message = String(x1) + '\n' +
-        String(x2) + '\n' +
-        String(x3) + '\n' +
-        String(x4) + '\n' ;
+    var message = String(x3) + " and " +
+        String(x4) ;
     var subject = "Details for your private meeting";
     var i;
     for( i=0;i<data.length;i++){
@@ -176,7 +172,13 @@ function mailOptions(to,subject,text){
         from: 'olivionchatmeeting@gmail.com',
         to: to,
         subject: subject,
-        text: text
+        text: text,
+        html: ' <p>Hello, You have been invited to a meeting on oblivionchat.com <br> Details for your meeting are:   </p> '+ text + '<br> <img src="cid:logo"/> <br>',
+        attachments: [{
+            filename: 'logo.png',
+            path: __dirname + '/logo.png',
+            cid: 'logo'
+        }]
     };
 }
 
