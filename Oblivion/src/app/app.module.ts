@@ -8,7 +8,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
-import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,11 +25,15 @@ import { Globals } from './global';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatListModule} from '@angular/material/list';
+import {MatOptionModule} from '@angular/material/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatBadgeModule} from '@angular/material/badge';
 import { MeetingInfoDialogComponent } from './components/meeting-info-dialog/meeting-info-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/confirm-end-meeting.component';
-import {WebsocketService} from "./services/websocket.service";
-import {MediaService} from "./services/media.service";
+import {WebsocketService} from './services/websocket.service';
+import {MediaService} from './services/media.service';
 
 @NgModule({
   declarations: [
@@ -63,10 +67,13 @@ import {MediaService} from "./services/media.service";
     OverlayModule,
     ReactiveFormsModule,
     MatChipsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule,
+    MatOptionModule,
+    MatBadgeModule
   ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],
-  // schemas: [NO_ERRORS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

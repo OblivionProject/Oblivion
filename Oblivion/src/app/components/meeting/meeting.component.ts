@@ -2,11 +2,16 @@ import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy, OnInit} from
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import {MatDialog} from '@angular/material/dialog';
-import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
-import {MeetingInfo} from "../../models/meeting-info";
-import {Router} from "@angular/router";
-import {WebsocketService} from "../../services/websocket.service";
+import {MeetingInfoDialogComponent} from '../meeting-info-dialog/meeting-info-dialog.component';
+import {MeetingInfo} from '../../models/meeting-info';
+import {Router} from '@angular/router';
+import {WebsocketService} from '../../services/websocket.service';
 
+export interface Message{
+  message: string;
+  origin: string;
+  user: string;
+}
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
@@ -16,16 +21,18 @@ import {WebsocketService} from "../../services/websocket.service";
 
 export class MeetingComponent implements AfterViewInit, OnInit {
 
-
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
   private remoteStreams: {[key: number]: MediaStream};
   public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo: MeetingInfo;
-  public overrideGuard: boolean = false;
+  public overrideGuard = false;
+  public message: string;
+  public unReadMessageCount = 0;
+  public readMessageCount = 0;
+  public chatOpen = false;
   public chat: boolean;  // Flag for if the chat box is open
-
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -37,15 +44,32 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.chat = false;
     this.remoteStreams = {};
     this.meetingInfo = new MeetingInfo();
+    this.message = '';
+    this.unReadMessageCount = 0;
+    this.readMessageCount = 0;
+    this.chatOpen = false;
+  }
+
+
+
+
+
+  private static appendWebRTCAdapterScript(): void {
+    const node = document.createElement('script');
+    node.src = 'https://webrtc.github.io/adapter/adapter-latest.js';
+    node.type = 'text/javascript';
+    node.async = false;
+    node.charset = 'utf-8';
+    document.getElementsByTagName('head')[0].appendChild(node);
   }
 
   ngOnInit() {
     this.mediaService.mySubject.subscribe((data) => {
-      if(data==true){
+      if (data == true){
         this.overrideGuard = true;
         this.endMeeting();
       }
-    })
+    });
   }
 
   terminate() {
@@ -60,12 +84,61 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   // TODO: Add recipient ID option
-  public sendChat(): void {
-    const chatElement = document.getElementById("chatInput");
-    if (chatElement != null) {
-      this.mediaService.sendChat((<HTMLInputElement>chatElement).value);  // Needs to be casted to a input element for the value method
+  public sendChat(input: string): void {
+    // const chatElement = document.getElementById("chatInput");
+    if (input != null) {
+      this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
+      this.message = '';
     }
   }
+  public getChatLog(): Array<JSON> {
+    const MessageLog = this.mediaService.getMessageLog();
+    if (this.chatOpen) {
+      // console.log('this.chatOpen = true');
+      this.readMessageCount = MessageLog.length;
+      this.unReadMessageCount = 0;
+    }else{
+      console.log('this.chatOpen = false');
+      this.unReadMessageCount = MessageLog.length - this.readMessageCount;
+    }
+    return MessageLog;
+  }
+  public printChat(json: JSON): string{
+    // @ts-ignore
+    return json.message;
+  }
+  public getOrigin(json: JSON): string{
+    // @ts-ignore
+    return json.origin;
+  }
+  public getTimeStamp(json: JSON): string{
+    // @ts-ignore
+    return json.timestamp;
+  }
+  public printSubtitle(json: JSON): string{
+    // @ts-ignore
+    const timestamp = this.getTimeStamp(json);
+    const origin = this.getOrigin(json);
+    return origin === 'SEND' ? 'Sent @ ' + timestamp : 'Received @ ' + timestamp;
+  }
+  public autoGrowTextZone(e: any): void {
+    e.target.style.height = '0px';
+    e.target.style.height = (e.target.scrollHeight + 5) + 'px';
+  }
+
+  public textAreaTrigger(e: any, input: string): void{
+    console.log(e);
+    if (e.key === 'Enter'){
+      console.log('ENTER');
+      this.sendChat(input);
+    }
+  }
+  // TODO add input paramenter based on chats
+  public displayUnReadchat(): boolean {
+    return this.unReadMessageCount !== 0;
+  }
+
+
 
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
@@ -95,7 +168,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
 
   public start(isCaller: boolean): void {
-    //this.mediaService.start(isCaller);
+    // this.mediaService.start(isCaller);
     this.mediaService.requestMeetingInformation();
     // this.remoteStreams = this.mediaService.getRemoteStreams();
   }
@@ -114,30 +187,21 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     return Object.values(this.remoteStreams);
   }
 
-  //-----------------------------------------------------------------------------
+  // Returns the meeting ID
+  // public getMeetingID(): number {
+  //   return this.mediaService.getMeetingID();
+  // }
+
   // The functions in this section are intended for development use only
   public TEST() {
     console.log(Object.keys(this.mediaService.getPeers()).length);
     console.log(this.mediaService.getPeers());
   }
 
-  // End development functions
-  //-----------------------------------------------------------------------------
-
-  private static appendWebRTCAdapterScript(): void {
-    let node = document.createElement('script');
-    node.src = "https://webrtc.github.io/adapter/adapter-latest.js";
-    node.type = 'text/javascript';
-    node.async = false;
-    node.charset = 'utf-8';
-    document.getElementsByTagName('head')[0].appendChild(node);
-  }
-
   public setMeetingInfo(){
     this.meetingInfo.setData(this.mediaService.getMeetingInfo());
     return this.meetingInfo;
   }
-
   public openDialog() {
     this.setMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {

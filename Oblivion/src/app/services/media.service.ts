@@ -23,9 +23,9 @@ export class MediaService{
   private remoteStreams: {[key: number]: MediaStream};  // Remote videos
   private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
   private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use, add turn servers?
-    'iceServers': [
-      {'urls': 'stun:stun.stunprotocol.org:3478'},
-      {'urls': 'stun:stun.l.google.com:19302'},
+    iceServers: [
+      {urls: 'stun:stun.stunprotocol.org:3478'},
+      {urls: 'stun:stun.l.google.com:19302'},
     ]
   };
 
@@ -54,13 +54,13 @@ export class MediaService{
 
   // This method is called on startup to join the current meeting
   public requestMeetingInformation() {
-    const message = JSON.stringify({'rmi': true});
+    const message = JSON.stringify({rmi: true});
     this.messageServer(message);
   }
 
   // Create a new RTCPeerConnection, add it to the list and return it
   private addNewRTCPeerConnection(userID: number, initSeq: boolean): RTCPeerConnection {
-    let peer = new RTCPeerConnection(this.peerConnectionConfig);
+    const peer = new RTCPeerConnection(this.peerConnectionConfig);
     peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
     peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
     peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
@@ -73,8 +73,8 @@ export class MediaService{
 
     // Only create the data channel if we are initializing it.
     if (initSeq) {
-      const dataChannelLabel = this.userId + "-" + userID;
-      let dataChannel = peer.createDataChannel(dataChannelLabel);
+      const dataChannelLabel = this.userId + '-' + userID;
+      const dataChannel = peer.createDataChannel(dataChannelLabel);
       dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
       dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
       dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
@@ -105,27 +105,31 @@ export class MediaService{
 
     this.dataChannels[userId] = dataChannel;
   }
+  public getMessageLog(): JSON[]{
+    return this.messageLog;
+  }
 
   public sendChat(msg: string, recipientId?: number): void {
     // TODO: Add check to make sure message isn't too large
-
     // Format the message to send
-    const timeInfo = new Date();
-    const timestamp = timeInfo.getHours() + ":" + timeInfo.getMinutes();
-    const formattedMessage = JSON.stringify({
-      "message": msg,
-      "timestamp": timestamp
+  const timeInfo = new Date();
+  const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
+  const formattedMessage = JSON.stringify({
+      'message': msg,
+      'timestamp': timestamp,
+      'userName' : 'Place Holder',
+      'origin': 'SEND'
     });
 
     // Either broadcast the message to everyone or to the specified recipient
-    if (recipientId) {
+  if (recipientId) {
       this.dataChannels[recipientId].send(formattedMessage);
       this.logAndDisplayChat(JSON.parse(formattedMessage));
 
     } else {
       Object.keys(this.dataChannels).forEach((key: string) => {
         const id = Number(key);
-        if (this.dataChannels[id].readyState === "open") {
+        if (this.dataChannels[id].readyState === 'open') {
           this.dataChannels[id].send(formattedMessage);
           this.logAndDisplayChat(JSON.parse(formattedMessage));
         }
@@ -134,7 +138,8 @@ export class MediaService{
   }
 
   private receivedChat(event: MessageEvent): void {
-    const data = JSON.parse(event.data);
+    let data = JSON.parse(event.data);
+    data.origin = 'RECEIVED';
     this.logAndDisplayChat(data);
   }
 
@@ -143,11 +148,8 @@ export class MediaService{
   private logAndDisplayChat(data: JSON): void {
     const a = JSON.stringify(data);  // TODO: Remove this terrible workaround
     const b = JSON.parse(a);
+    console.log(a);
     this.messageLog.push(data);  // Add the message data to the log
-    const messageList = <HTMLUListElement>document.getElementById("chat-list");
-    const message = document.createElement("li");
-    message.appendChild(document.createTextNode(b["message"]));
-    messageList.appendChild(message);
   }
 
   private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
@@ -164,11 +166,11 @@ export class MediaService{
   public receivedRequestFromServer(message: MessageEvent) {
 
     const signal = JSON.parse(message.data);
-    //console.log(signal);
+    // console.log(signal);
 
     // Debugging Statements TODO: Remove
-    //console.log('Request from Server:');
-    //console.log(message);
+    // console.log('Request from Server:');
+    // console.log(message);
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
@@ -176,7 +178,7 @@ export class MediaService{
       currentPeer.setRemoteDescription(new RTCSessionDescription(signal.sdp))
         .then(() => {
           // Only create answers in response to offers
-          if(signal.sdp.type == 'offer') {
+          if (signal.sdp.type == 'offer') {
             currentPeer.createAnswer()
               .then((description: RTCSessionDescriptionInit) => this.createdDescription(currentPeer, signal.userId, description))
               .catch(this.errorHandler);
@@ -235,13 +237,17 @@ export class MediaService{
     return this.addNewRTCPeerConnection(id, initSeq);
   }
 
-  //-----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
   // TODO: Delete
   public getPeers() {
     return this.peers;
   }
 
-  //-----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
+  public clearMeeting() {
+    this.messageServer(JSON.stringify({res: true}));
+    this.peers = {};
+  }
 
   private createdDescription(peer: RTCPeerConnection, recipientID: number, description: RTCSessionDescriptionInit): void {
     peer.setLocalDescription(description)
@@ -252,9 +258,9 @@ export class MediaService{
   private sendDescription(peer: RTCPeerConnection, recipientID: number): void {
     const message = JSON.stringify(
       {
-        'sdp': peer.localDescription,
-        'userId': this.userId,
-        'recipientID': recipientID
+        sdp: peer.localDescription,
+        userId: this.userId,
+        recipientID: recipientID
       });
     this.messageServer(message);
   }
@@ -271,9 +277,9 @@ export class MediaService{
       this.webSocket.send(
         JSON.stringify(
           {
-            'ice': event.candidate,
-            'userId': this.userId,
-            'recipientID': recipientID
+            ice: event.candidate,
+            userId: this.userId,
+            recipientID: recipientID
           }));
     }
   }
@@ -286,15 +292,15 @@ export class MediaService{
     this.remoteStreams[peerId].addTrack(event.track);
     this.remoteStreams[peerId].getTracks().forEach(track => {
       track.enabled = true;
-      //console.log(track);
+      // console.log(track);
     });
   }
 
 
   private handlePeerConnectionStateChange(event: Event, userID: number): void {
-    //console.log('in handle state change');
-    //console.log('UserID: '+userID);
-    //console.log(event);
+    // console.log('in handle state change');
+    // console.log('UserID: '+userID);
+    // console.log(event);
 
     const peer = this.peers[userID];
     if (peer) {
@@ -304,7 +310,6 @@ export class MediaService{
         case "failed":
         case "closed":
           this.peers[userID].close();
-          delete this.peers[userID];
           delete this.remoteStreams[userID];
           break;
       }

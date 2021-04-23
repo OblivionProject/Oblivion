@@ -12,9 +12,16 @@
         </mat-form-field>
       </div>
     </section>
+      <section>
+        <div class="form-component-row" >
+          <mat-slide-toggle class="form-field" id="testID" (change)="setValue($event)">
+            <mat-label id="test">Advanced Settings</mat-label>
+          </mat-slide-toggle>
+        </div>
+      </section>
     <section>
       <div class="form-component-row">
-        <mat-form-field appearance="fill" class="form-field" color="primary">
+        <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
           <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" (keyup)="test($event)" [(ngModel)]="meeting.password" [errorStateMatcher]="matcher" formControlName="password"  id="meeting_password1_input">
@@ -30,7 +37,7 @@
     </section>
     <section>
       <div class="form-component-row">
-        <mat-form-field appearance="fill" class="form-field" color="primary">
+        <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
           <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password2_label" >Confirm Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.passwordConfirm" formControlName="confirmPassword" id="meeting_password2_input">
@@ -43,7 +50,7 @@
       </div>
     </section>
     <section>
-    <mat-form-field appearance="fill" class="form-field" color="primary">
+    <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
       <mat-icon matPrefix class="icons">email</mat-icon>
       <mat-label>Add Emails</mat-label>
       <mat-chip-list #chipList aria-label="Email selection">
@@ -66,7 +73,7 @@
     <mat-divider></mat-divider>
   </mat-sidenav-container>
   <mat-sidenav-container class = "sidenav-button">
-    <button mat-raised-button (click)="createMeeting()" color="primary" id="create_meeting_submit">Create</button>
+    <button mat-raised-button (click)="createMeeting()" [disabled]="createMeetingForm.controls['meetingName'].invalid" color="primary" id="create_meeting_submit">Create</button>
   </mat-sidenav-container>
 
 </mat-sidenav-container>

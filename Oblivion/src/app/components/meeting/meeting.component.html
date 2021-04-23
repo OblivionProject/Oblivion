@@ -1,6 +1,45 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
-    <mat-grid-list cols="2" rowHeight="fit" style="height: 820px">
+
+    <mat-drawer-container autosize >
+      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
+
+        <form class="messagebox">
+          <mat-list-item class="message"  *ngFor="let message of this.getChatLog()">
+            <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
+              <mat-card-header>
+               <mat-icon mat-card-avatar>call_made</mat-icon>
+              <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+              <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+              </mat-card-header>
+            </mat-card>
+            <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>call_received</mat-icon>
+                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+              </mat-card-header>
+            </mat-card>
+          </mat-list-item>
+        </form>
+
+        <form class="chatInput">
+          <mat-form-field class="example-full-width">
+            <mat-label>Message</mat-label>
+            <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
+            <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
+            <mat-hint align="end" >{{message.value.length}} / 256</mat-hint>
+          </mat-form-field>
+          <button class="sendbutton" mat-button color="primary"(click)="sendChat(message.value)" >
+            <mat-icon>send</mat-icon>
+          </button>
+        </form>
+
+
+      </mat-drawer>
+
+      <mat-drawer-content class="videoGrid">
+    <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" style="height: 820px">
       <mat-grid-tile
         [colspan]="tile.cols"
         [rowspan]="tile.rows">
@@ -14,24 +53,11 @@
         <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
       </mat-grid-tile>
     </mat-grid-list>
+      </mat-drawer-content>
+    </mat-drawer-container>
   </mat-sidenav-container>
 
   <!-- This template displays the overlay content and is connected to the button -->
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="chat"
-  >
-    <ul class="chat-list" id="chat-list">
-<!--      <li>Item 1</li>-->
-<!--      <li>Item 2</li>-->
-<!--      <li>Item 3</li>-->
-    </ul>
-<!--    <label for="message">Enter Message:</label>-->
-<!-- TODO: Figure out the correct maximum message length -->
-    <input type="text" id="chatInput" placeholder="Enter Message" value size=60 maxlength=150>
-    <button id="chatButton" class="buttonRight" (click)="sendChat()">Send</button>
-  </ng-template>
 
   <footer class="footer">
     <mat-toolbar id = "footer">
@@ -41,14 +67,11 @@
       <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="chat = !chat" class = "meeting_buttons">
-        <mat-icon>email</mat-icon>
-      </button>
-      <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons">
-        <mat-icon>info</mat-icon>
-      </button>
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="drawer.toggle()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="!displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
+      <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons"><mat-icon>info</mat-icon></button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
     </mat-toolbar>
   </footer>
 </mat-sidenav-container>
+

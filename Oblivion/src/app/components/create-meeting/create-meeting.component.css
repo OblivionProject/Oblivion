@@ -2,6 +2,12 @@
   background-color: inherit;
   text-align:center;
   z-index: 2;
+  /*display: flex;*/
+  top: 20%;
+  align-items: center;
+  justify-content: center;
+
+
 }
 
 .sidenav-cont{
@@ -23,7 +29,7 @@
 .mat-divider{
   background: #333333!important;
   opacity: 0.8;
-  margin-top: 2%;
+  margin-top: 1%;
 }
 
 .sidenav-button{
@@ -62,4 +68,19 @@
     width: 60%;
     left: 20%;
   }
+}
+
+.advanceSettings{
+  justify-content: right;
+  /*justify-content: start;*/
+  /*display: inline;*/
+  float: left;
+  padding-left: 5px;
+  margin-bottom: 1%;
+
+}
+
+#testID{
+  margin-bottom: 5%;
+
 }

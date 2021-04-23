@@ -46,25 +46,31 @@ describe('CreateMeetingComponent', () => {
   });
 
   it('should contain a meeting password label, empty input and hide button', () => {
-    const label = fixture.debugElement.nativeElement.querySelector('#meeting_password1_label');
-    expect(label.innerHTML).toBe('Enter Meeting Password');
+    if(component.advanceOption) {
+      const label = fixture.debugElement.nativeElement.querySelector('#meeting_password1_label');
+      expect(label.innerHTML).toBe('Enter Meeting Password');
 
-    const input = fixture.debugElement.nativeElement.querySelector('#meeting_password1_input');
-    expect(input.innerHTML).toBe('');
 
-    const button = fixture.debugElement.nativeElement.querySelector('#meeting_password1_hide_button');
-    expect(button).toBeTruthy();
+      const input = fixture.debugElement.nativeElement.querySelector('#meeting_password1_input');
+      expect(input.innerHTML).toBe('');
+
+
+      const button = fixture.debugElement.nativeElement.querySelector('#meeting_password1_hide_button');
+      expect(button).toBeTruthy();
+    }
   });
 
   it('should contain a meeting password confirmation label, empty input and hide button', () => {
-    const label = fixture.debugElement.nativeElement.querySelector('#meeting_password2_label');
-    expect(label.innerHTML).toBe('Confirm Meeting Password');
+    if(component.advanceOption) {
+      const label = fixture.debugElement.nativeElement.querySelector('#meeting_password2_label');
+      expect(label.innerHTML).toBe('Confirm Meeting Password');
 
-    const input = fixture.debugElement.nativeElement.querySelector('#meeting_password2_input');
-    expect(input.innerHTML).toBe('');
+      const input = fixture.debugElement.nativeElement.querySelector('#meeting_password2_input');
+      expect(input.innerHTML).toBe('');
 
-    const button = fixture.debugElement.nativeElement.querySelector('#meeting_password2_hide_button');
-    expect(button).toBeTruthy();
+      const button = fixture.debugElement.nativeElement.querySelector('#meeting_password2_hide_button');
+      expect(button).toBeTruthy();
+    }
   });
 
   it('should contain an empty Meeting model', () => {
@@ -74,23 +80,29 @@ describe('CreateMeetingComponent', () => {
   });
 
   it('should have passwords initially hidden', () => {
-    expect(component.hide).toEqual(true);
+    if (component.advanceOption) {
+      expect(component.hide).toEqual(true);
+    }
   });
 
   it('should show passwords after hide button click (initially for password1)', () => {
-    const button = fixture.debugElement.nativeElement.querySelector('#meeting_password1_hide_button');
-    button.click();
-    expect(component.hide).toEqual(false);
-    button.click();
-    expect(component.hide).toEqual(true);
+    if(component.advanceOption) {
+      const button = fixture.debugElement.nativeElement.querySelector('#meeting_password1_hide_button');
+      button.click();
+      expect(component.hide).toEqual(false);
+      button.click();
+      expect(component.hide).toEqual(true);
+    }
   });
 
   it('should show passwords after hide button click (initially for password2)', () => {
-    const button = fixture.debugElement.nativeElement.querySelector('#meeting_password2_hide_button');
-    button.click();
-    expect(component.hide).toEqual(false);
-    button.click();
-    expect(component.hide).toEqual(true);
+    if(component.advanceOption) {
+      const button = fixture.debugElement.nativeElement.querySelector('#meeting_password2_hide_button');
+      button.click();
+      expect(component.hide).toEqual(false);
+      button.click();
+      expect(component.hide).toEqual(true);
+    }
   });
 
   //TODO: Fix
