@@ -113,7 +113,9 @@ export class MediaService{
     // TODO: Add check to make sure message isn't too large
     // Format the message to send
   const timeInfo = new Date();
-  const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
+
+  /// TODO: Update timestamp to be more readable ie 21:06 -> 9:06 PM
+  const timestamp = timeInfo.getHours() + ':' + (timeInfo.getMinutes() < 10 ? '0' + timeInfo.getMinutes() : timeInfo.getMinutes());
   const formattedMessage = JSON.stringify({
       'message': msg,
       'timestamp': timestamp,
