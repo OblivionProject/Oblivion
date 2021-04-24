@@ -5,25 +5,45 @@
       <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
 
         <form class="messagebox">
-          <mat-list-item class="message"  *ngFor="let message of this.getChatLog()">
-            <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
-              <mat-card-header>
-               <mat-icon mat-card-avatar>call_made</mat-icon>
-              <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-              <mat-card-content>{{this.printChat(message)}}</mat-card-content>
-              </mat-card-header>
-            </mat-card>
-            <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>call_received</mat-icon>
-                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-                <mat-card-content>{{this.printChat(message)}}</mat-card-content>
-              </mat-card-header>
-            </mat-card>
-          </mat-list-item>
+        <mat-grid-list cols="2">
+          <mat-list dense *ngFor="let message of this.getChatLog()">
+          <mat-grid-tile class="messagesSENDGrid">
+              <mat-list-item  class="message" >
+                <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
+                  <mat-card-header>
+                    <mat-icon mat-card-avatar>call_made</mat-icon>
+                    <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  </mat-card-header>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+                </mat-card>
+                </mat-list-item>
+          </mat-grid-tile>
+          <mat-grid-tile class="messagesRECIVEGrid">
+              <mat-list-item class="message">
+                <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>call_received</mat-icon>
+                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                </mat-card-header>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+              </mat-card>
+              </mat-list-item>
+          </mat-grid-tile>
+          </mat-list>
+        </mat-grid-list>
         </form>
+        <mat-divider></mat-divider>
 
         <form class="chatInput">
+          <mat-form-field appearance="fill">
+            <mat-label>Send Message To:</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let user of users"[value]="user">
+                {{user}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <mat-form-field class="example-full-width">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
@@ -67,7 +87,7 @@
       <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="drawer.toggle()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="!displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="drawer.toggle()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
       <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons"><mat-icon>info</mat-icon></button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
