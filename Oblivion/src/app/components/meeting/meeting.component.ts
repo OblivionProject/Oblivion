@@ -33,6 +33,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public readMessageCount = 0;
   public chatOpen = false;
   public chat: boolean;  // Flag for if the chat box is open
+  public users: string[] = ['everyone', 'test1', 'test2'];
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -93,13 +94,22 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   }
   public getChatLog(): Array<JSON> {
     const MessageLog = this.mediaService.getMessageLog();
+    // console.log(MessageLog);
     if (this.chatOpen) {
-      // console.log('this.chatOpen = true');
+      console.log('this.chatOpen = true');
       this.readMessageCount = MessageLog.length;
       this.unReadMessageCount = 0;
     }else{
       console.log('this.chatOpen = false');
       this.unReadMessageCount = MessageLog.length - this.readMessageCount;
+      // tslint:disable-next-line:only-arrow-functions typedef
+      // setTimeout(function(){
+      //   console.log(MessageLog.length);
+      // }, 1000);
+      console.log(MessageLog);
+      console.log(MessageLog.length);
+      console.log(this.unReadMessageCount);
+      console.log(this.readMessageCount);
     }
     return MessageLog;
   }

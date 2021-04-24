@@ -23,6 +23,8 @@ p.video-description{
   height:89%;
   width: 100%;
   z-index: 2;
+  overflow: hidden;
+  position: fixed;
 }
 
 .footer{
@@ -56,7 +58,7 @@ p.video-description{
 
 @media (max-width: 1200px) {
   .sidenav-cont {
-    width: 60%;
+    width: 100%;
   }
   .mat-fab{
     margin: 0;
@@ -83,6 +85,7 @@ mat-grid-tile {
 .chatbox{
   width: 30%;
   background:  #333333;
+  flex: 1
   /*color:#50a3a2;*/
   /*background: -webkit-linear-gradient(top left, #333333 0%, #50a3a2 100%);*/
 }
@@ -92,19 +95,34 @@ mat-grid-tile {
 }
 .messagebox{
   height: 80%;
+  width: 100%;
+  overflow-y: scroll;
+  /*scroll-behavior: auto;*/
+}
+
+.messagesRECIVEGrid{
+  height: auto;
+  width: auto;
+}
+.messagesSENDGrid{
+  height: auto;
+  width: auto;
 }
 
 .messagesSEND{
   background-color: greenyellow;
-  width: 100%;
-  text-align: right;
-  height: 5%;
+  width: auto;
+  height: auto;
 }
 
 .messagesRECIVE{
   background-color: grey;
-  width: 100%;
-  text-align: left;
+  width: auto;
+  height: auto;
+  /*text-align: left;*/
+  /*height: 2%;*/
+  /*font-size-adjust: inherit;*/
+  /*float: right;*/
 }
 
 .example-full-width{
