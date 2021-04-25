@@ -1,7 +1,7 @@
 export enum MESSAGE_TYPE {
-  info = 'info',
-  chat = 'chat',
-  error = 'error'
+  info = 'info',  // Informational messages
+  chat = 'chat',  // User chat messages
+  error = 'error'  // Error messages
 }
 
 export interface Message {
@@ -18,7 +18,7 @@ function verifyMessageFormat(data: any): boolean {
   return (
     typeof data.type === 'string'
     && typeof data.timestamp === 'string'
-    && typeof data.data !== 'string'
+    && typeof data.data === 'string'
     && typeof data.broadcast === 'boolean'
     && typeof data.senderId === 'number'
     && (!data.broadcast) ? (typeof data.recipientId === 'number') : true

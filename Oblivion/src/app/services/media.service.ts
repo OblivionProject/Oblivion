@@ -30,17 +30,15 @@ export class MediaService {
       {urls: 'stun:stun.l.google.com:19302'},
     ]
   };
-
   private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
   private messageLog: Message[];
 
-  constructor(private websocketService: WebsocketService,private sharedService: MeetingStateService) {
+  constructor(private websocketService: WebsocketService, private sharedService: MeetingStateService) {
     this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
     this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
     this.remoteStreams = {};
     this.peers = {};
-
     this.dataChannels = {};
     this.messageLog = new Array<Message>();
   }
@@ -50,7 +48,7 @@ export class MediaService {
     return this.userId;
   }
 
-  public setUpWebSocket(socket: WebsocketService){
+  public setUpWebSocket(socket: WebsocketService): void {
     this.webSocket = socket.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.webSocket.onclose = () => this.closedRequestFromServer();
@@ -60,7 +58,7 @@ export class MediaService {
   }
 
   // This method is called on startup to join the current meeting
-  public requestMeetingInformation() {
+  public requestMeetingInformation(): void {
     const message = JSON.stringify({rmi: true});
     this.messageServer(message);
   }
