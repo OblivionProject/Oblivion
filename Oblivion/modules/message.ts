@@ -1,10 +1,14 @@
-export enum MESSAGE_TYPE {
+export {MESSAGE_TYPE as MESSAGE_TYPE}
+export {Message as Message}
+export {verifyMessageFormat as verifyMessageFormat}
+
+enum MESSAGE_TYPE {
   info = 'info',  // Informational messages
   chat = 'chat',  // User chat messages
   error = 'error'  // Error messages
 }
 
-export interface Message {
+interface Message {
   type: MESSAGE_TYPE;
   timestamp: string;
   data: string;
@@ -24,5 +28,3 @@ function verifyMessageFormat(data: any): boolean {
     && (!data.broadcast) ? (typeof data.recipientId === 'number') : true
   );
 }
-
-export {verifyMessageFormat as verifyMessageFormat}

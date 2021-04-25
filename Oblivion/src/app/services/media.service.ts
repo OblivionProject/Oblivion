@@ -165,7 +165,7 @@ export class MediaService {
       timestamp: timestamp,
       data: errorMessage,
       broadcast: false,
-      senderId: -1,
+      senderId: this.userId,
       recipientId: -1
     }
 
