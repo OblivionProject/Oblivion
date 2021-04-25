@@ -2,22 +2,24 @@
   <mat-sidenav-container class="sidenav-cont">
 
     <mat-drawer-container autosize >
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
+      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false">
 
         <form class="messagebox">
           <mat-list-item class="message"  *ngFor="let message of this.getChatLog()">
-            <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
+<!--            <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">-->
+            <mat-card class="messagesSEND"  *ngIf="message.senderId === this.getUserId()">
               <mat-card-header>
                <mat-icon mat-card-avatar>call_made</mat-icon>
               <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-              <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+              <mat-card-content>{{message.data}}</mat-card-content>
               </mat-card-header>
             </mat-card>
-            <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
+<!--            <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">-->
+            <mat-card class="messagesRECIVE"  *ngIf="message.senderId !== this.getUserId()">
               <mat-card-header>
                 <mat-icon mat-card-avatar>call_received</mat-icon>
                 <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-                <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+                <mat-card-content>{{message.data}}</mat-card-content>
               </mat-card-header>
             </mat-card>
           </mat-list-item>

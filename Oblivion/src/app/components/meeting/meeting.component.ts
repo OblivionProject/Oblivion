@@ -6,12 +6,8 @@ import {MeetingInfoDialogComponent} from '../meeting-info-dialog/meeting-info-di
 import {MeetingInfo} from '../../models/meeting-info';
 import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
+import {Message} from "../../../../modules/message";
 
-export interface Message{
-  message: string;
-  origin: string;
-  user: string;
-}
 @Component({
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
@@ -27,32 +23,30 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo: MeetingInfo;
-  public overrideGuard = false;
-  public message: string;
-  public unReadMessageCount = 0;
-  public readMessageCount = 0;
-  public chatOpen = false;
+  public overrideGuard: boolean;
+  public unReadMessageCount: number;
   public chat: boolean;  // Flag for if the chat box is open
 
-  constructor(private mediaService: MediaService,
-              public dialog: MatDialog,
-              private router: Router,
-              private websocketService: WebsocketService) {
+  constructor(
+    private mediaService: MediaService,
+    public dialog: MatDialog,
+    private router: Router,
+    private websocketService: WebsocketService
+  ) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
     this.meetingInfo = new MeetingInfo();
-    this.message = '';
+    this.overrideGuard = false;
     this.unReadMessageCount = 0;
-    this.readMessageCount = 0;
-    this.chatOpen = false;
   }
 
-
-
-
+ // TODO: Move this function. needed for the cleanup of message objects
+  public getUserId(): number {
+    return this.mediaService.getUserId();
+  }
 
   private static appendWebRTCAdapterScript(): void {
     const node = document.createElement('script');
@@ -63,20 +57,20 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     document.getElementsByTagName('head')[0].appendChild(node);
   }
 
-  ngOnInit() {
-    this.mediaService.mySubject.subscribe((data) => {
-      if (data == true){
+  public ngOnInit(): void {
+    this.mediaService.mySubject.subscribe((data: any) => {
+      if (data == true) {
         this.overrideGuard = true;
         this.endMeeting();
       }
     });
   }
 
-  terminate() {
+  public terminate(): void {
     this.mediaService.terminate();
   }
 
-  async ngAfterViewInit() {
+  async ngAfterViewInit(): Promise<void> {
     await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
     this.mediaService.requestMeetingInformation();
@@ -85,60 +79,44 @@ export class MeetingComponent implements AfterViewInit, OnInit {
 
   // TODO: Add recipient ID option
   public sendChat(input: string): void {
-    // const chatElement = document.getElementById("chatInput");
+    // TODO: Verify that the chat isn't too long
     if (input != null) {
-      this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
-      this.message = '';
+      this.mediaService.sendChat(input);
     }
   }
-  public getChatLog(): Array<JSON> {
-    const MessageLog = this.mediaService.getMessageLog();
-    if (this.chatOpen) {
-      // console.log('this.chatOpen = true');
-      this.readMessageCount = MessageLog.length;
-      this.unReadMessageCount = 0;
-    }else{
-      console.log('this.chatOpen = false');
-      this.unReadMessageCount = MessageLog.length - this.readMessageCount;
-    }
+
+  public getChatLog(): Array<Message> {
+    const MessageLog = <Array<Message>>this.mediaService.getMessageLog();
+    // if (this.chat) {
+    //   this.unReadMessageCount = 0;
+    // } else {
+    //   this.unReadMessageCount += 1;
+    // }
     return MessageLog;
   }
-  public printChat(json: JSON): string{
-    // @ts-ignore
-    return json.message;
+
+  // TODO: I think this function can be removed... Instead format in the html
+  public printSubtitle(message: Message): string {
+    const timestamp = message.timestamp;
+    const origin = message.senderId;
+    return (origin === this.mediaService.getUserId()) ? 'Sent @ ' + timestamp : 'Received @ ' + timestamp;
   }
-  public getOrigin(json: JSON): string{
-    // @ts-ignore
-    return json.origin;
-  }
-  public getTimeStamp(json: JSON): string{
-    // @ts-ignore
-    return json.timestamp;
-  }
-  public printSubtitle(json: JSON): string{
-    // @ts-ignore
-    const timestamp = this.getTimeStamp(json);
-    const origin = this.getOrigin(json);
-    return origin === 'SEND' ? 'Sent @ ' + timestamp : 'Received @ ' + timestamp;
-  }
+
   public autoGrowTextZone(e: any): void {
     e.target.style.height = '0px';
     e.target.style.height = (e.target.scrollHeight + 5) + 'px';
   }
 
-  public textAreaTrigger(e: any, input: string): void{
-    console.log(e);
-    if (e.key === 'Enter'){
-      console.log('ENTER');
+  public textAreaTrigger(e: any, input: string): void {
+    if (e.key === 'Enter') {
       this.sendChat(input);
     }
   }
+
   // TODO add input paramenter based on chats
   public displayUnReadchat(): boolean {
     return this.unReadMessageCount !== 0;
   }
-
-
 
   async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
@@ -167,19 +145,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     }
   }
 
-  public start(isCaller: boolean): void {
-    // this.mediaService.start(isCaller);
+  public start(): void {
     this.mediaService.requestMeetingInformation();
-    // this.remoteStreams = this.mediaService.getRemoteStreams();
-  }
-
-  public getRemoteStreams1() {
-    this.remoteStreams = this.mediaService.getRemoteStreams();
-    console.log(this.mediaService.getRemoteStreams());
-    (Object.values(this.mediaService.getRemoteStreams())[0]as MediaStream).getTracks().forEach((track: MediaStreamTrack) => {
-        console.log(track);
-    });
-    console.log(this.localVideo.nativeElement.srcObject);
   }
 
   // Returns an array of the remote MediaStreams
@@ -187,22 +154,18 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     return Object.values(this.remoteStreams);
   }
 
-  // Returns the meeting ID
-  // public getMeetingID(): number {
-  //   return this.mediaService.getMeetingID();
-  // }
-
   // The functions in this section are intended for development use only
   public TEST() {
     console.log(Object.keys(this.mediaService.getPeers()).length);
     console.log(this.mediaService.getPeers());
   }
 
-  public setMeetingInfo(){
-    this.meetingInfo.setData(this.mediaService.getMeetingInfo());
+  public setMeetingInfo(): MeetingInfo {
+    this.meetingInfo = this.mediaService.getMeetingInfo();
     return this.meetingInfo;
   }
-  public openDialog() {
+
+  public openDialog(): void {
     this.setMeetingInfo();
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '250px',
@@ -220,16 +183,16 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     });
   }
 
-  public endMeeting(){
+  public endMeeting(): void {
     this.setMeetingInfo();
     this.router.navigate(['welcome']);
   }
 
-  public endMeetingForAll(){
+  public endMeetingForAll(): void {
     this.mediaService.endMeetingForAll();
   }
 
-  public leaveMeeting(){
+  public leaveMeeting(): void {
     this.mediaService.leaveMeeting();
   }
 }

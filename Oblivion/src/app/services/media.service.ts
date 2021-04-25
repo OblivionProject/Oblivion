@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 import {Subject} from "rxjs";
 import {MeetingStateService} from "./meeting-state.service";
+import {Message, MESSAGE_TYPE, verifyMessageFormat} from "../../../modules/message";
+import {MeetingInfo} from "../models/meeting-info";
 
 const mediaConstraints = {
   audio: true,
@@ -9,7 +11,7 @@ const mediaConstraints = {
 };
 
 @Injectable()
-export class MediaService{
+export class MediaService {
 
   mySubject : Subject<any> = new Subject<any>();
   destroy : boolean = false ;
@@ -30,7 +32,7 @@ export class MediaService{
   };
 
   private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
-  private messageLog: JSON[];  // TODO: Make a message object?
+  private messageLog: Message[];
 
   constructor(private websocketService: WebsocketService,private sharedService: MeetingStateService) {
     this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
@@ -40,7 +42,12 @@ export class MediaService{
     this.peers = {};
 
     this.dataChannels = {};
-    this.messageLog = new Array<JSON>();
+    this.messageLog = new Array<Message>();
+  }
+
+  // TODO: Should we get rid of this? Needed for the printSubtitle [change subtitle?]
+  public getUserId(): number {
+    return this.userId;
   }
 
   public setUpWebSocket(socket: WebsocketService){
@@ -105,50 +112,71 @@ export class MediaService{
 
     this.dataChannels[userId] = dataChannel;
   }
-  public getMessageLog(): JSON[]{
+  public getMessageLog(): Array<Message> {
     return this.messageLog;
   }
 
   public sendChat(msg: string, recipientId?: number): void {
     // TODO: Add check to make sure message isn't too large
-    // Format the message to send
-  const timeInfo = new Date();
-  const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
-  const formattedMessage = JSON.stringify({
-      'message': msg,
-      'timestamp': timestamp,
-      'userName' : 'Place Holder',
-      'origin': 'SEND'
-    });
+    // Generate the Timestamp
+    const timeInfo = new Date();
+    const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
+
+    const message: Message = {
+      type: MESSAGE_TYPE.chat,
+      timestamp: timestamp,
+      data: msg,
+      broadcast: true,
+      senderId: this.userId
+    };
 
     // Either broadcast the message to everyone or to the specified recipient
-  if (recipientId) {
-      this.dataChannels[recipientId].send(formattedMessage);
-      this.logAndDisplayChat(JSON.parse(formattedMessage));
+    if (recipientId) {
+      this.dataChannels[recipientId].send(JSON.stringify(message));
+      this.logAndDisplayChat(message);
 
-    } else {
-      Object.keys(this.dataChannels).forEach((key: string) => {
-        const id = Number(key);
-        if (this.dataChannels[id].readyState === 'open') {
-          this.dataChannels[id].send(formattedMessage);
-          this.logAndDisplayChat(JSON.parse(formattedMessage));
-        }
-      });
-    }
+      } else {
+        Object.keys(this.dataChannels).forEach((key: string) => {
+          const id = Number(key);
+          if (this.dataChannels[id].readyState === 'open') {
+            this.dataChannels[id].send(JSON.stringify(message));
+            this.logAndDisplayChat(message);
+          }
+        });
+      }
   }
 
   private receivedChat(event: MessageEvent): void {
-    let data = JSON.parse(event.data);
-    data.origin = 'RECEIVED';
-    this.logAndDisplayChat(data);
+    const data = JSON.parse(event.data);
+    if (verifyMessageFormat(data)) {
+      const message = <Message>data;  // TODO: Add check to make sure data is a valid message
+      this.logAndDisplayChat(message);
+
+    } else {
+      this.logMessageError('Invalid message format by data. data: ' + data);
+    }
   }
 
-  // TODO: Make the JSON type more strictly defined
-  // Appends the chat to the log and the html
-  private logAndDisplayChat(data: JSON): void {
-    const a = JSON.stringify(data);  // TODO: Remove this terrible workaround
-    const b = JSON.parse(a);
-    console.log(a);
+  private logMessageError(errorMessage: string): void {
+    // Generate the Timestamp
+    const timeInfo = new Date();
+    const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
+
+    const message: Message = {
+      type: MESSAGE_TYPE.error,
+      timestamp: timestamp,
+      data: errorMessage,
+      broadcast: false,
+      senderId: -1,
+      recipientId: -1
+    }
+
+    this.messageLog.push(message);
+  }
+
+  // TODO: Change function name
+  private logAndDisplayChat(data: Message): void {
+    console.log(data); // TODO: Remove the log
     this.messageLog.push(data);  // Add the message data to the log
   }
 
@@ -373,16 +401,20 @@ export class MediaService{
     this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID}));
   }
 
-  public getMeetingInfo() {
-    return {
-      'userRole': this.userRole,
-      'meetingID': this.meetingID,
-      'password': this.password,
-      'name': this.name
-    }
+  public getMeetingInfo(): MeetingInfo {
+    const meetingInfo = new MeetingInfo();
+    meetingInfo.setData(
+      {
+        'userRole': this.userRole,
+        'meetingID': this.meetingID,
+        'password': this.password,
+        'name': this.name
+      }
+    );
+    return meetingInfo;
   }
 
-  terminate() {
+  public terminate(): void {
     console.log('Destroy Media Service');
     //Close Peer Connections
     Object.values(this.peers).forEach(peer => {
