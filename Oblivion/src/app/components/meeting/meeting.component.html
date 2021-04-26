@@ -53,8 +53,6 @@
             <mat-icon>send</mat-icon>
           </button>
         </form>
-
-
       </mat-drawer>
 
       <mat-drawer-content class="videoGrid">
@@ -74,6 +72,14 @@
           </mat-grid-list>
       </mat-drawer-content>
     </mat-drawer-container>
+
+    <button *ngIf="show_right" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
+      <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+    <button *ngIf="show_left" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
+      <mat-icon>arrow_back_ios_new</mat-icon>
+    </button>
+
   </mat-sidenav-container>
 
   <!-- This template displays the overlay content and is connected to the button -->

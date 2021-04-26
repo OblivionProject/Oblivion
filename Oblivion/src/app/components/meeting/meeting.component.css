@@ -9,6 +9,37 @@
   position: fixed;
 }
 
+.move_video_buttons{
+  opacity: 0.3;
+  background: inherit !important;
+  color: #53e3a6!important;
+  z-index: 3;
+}
+
+#move_right{
+  float: right;
+  position: fixed;
+  margin: auto;
+  top: 50%;
+  left: 97%;
+  transform: translate(-50%, -50%);
+}
+
+#move_left{
+  float: left;
+  position: fixed;
+  margin: auto;
+  top: 50%;
+  left: 3%;
+  transform: translate(-50%, -50%);
+}
+
+.move_video_buttons:hover{
+  opacity: 0.9;
+  background: inherit!important;
+  color: #53e3a6;
+}
+
 p.video-description{
   position: absolute;
   top: 0px;

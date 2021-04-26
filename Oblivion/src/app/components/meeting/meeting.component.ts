@@ -39,6 +39,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public height: any;
   public video_width: any;
   public video_height: any;
+  public show_right:boolean;
+  public show_left: boolean;
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -58,6 +60,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.readMessageCount = 0;
     this.chatOpen = false;
     this.tile = new TitleModel(2,1);
+    this.show_right = false
+    this.show_left = false;
   }
 
   private static appendWebRTCAdapterScript(): void {
@@ -84,10 +88,28 @@ export class MeetingComponent implements AfterViewInit, OnInit {
       this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });
+    this.videoOrderingService.isRightButtonShown.subscribe( value => {
+      this.show_right = value;
+      console.log("MATHEW THE RIGHT BUTTON IS"+this.show_right);
+      this.cdref.detectChanges();
+    });
+    this.videoOrderingService.isLeftButtonShown.subscribe( value => {
+      this.show_left = value;
+      console.log("MATHEW THE LEFT BUTTON IS"+this.show_left);
+      this.cdref.detectChanges();
+    });
   }
 
   terminate() {
     this.mediaService.terminate();
+  }
+
+  public moveRight():void{
+    this.videoOrderingService.moveRight();
+  }
+
+  public moveLeft():void{
+    this.videoOrderingService.moveLeft();
   }
 
   async ngAfterViewInit() {
