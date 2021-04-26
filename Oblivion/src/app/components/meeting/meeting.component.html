@@ -79,7 +79,7 @@
 
   <!-- This template displays the overlay content and is connected to the button -->
 
-  <footer class="footer">
+  <mat-sidenav-container class = "meeting_container" id = "sticky_footer">
     <mat-toolbar id = "footer">
       <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" class = "meeting_buttons">
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
@@ -92,6 +92,6 @@
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
     </mat-toolbar>
-  </footer>
+  </mat-sidenav-container>
 </mat-sidenav-container>
 

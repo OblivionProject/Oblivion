@@ -3,6 +3,13 @@ video {
   background: grey;
 }
 
+#sticky_footer{
+  height: 4rem;
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+}
+
 p.video-description{
   position: absolute;
   top: 0px;
