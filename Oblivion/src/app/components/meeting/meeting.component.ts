@@ -57,10 +57,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.tile = new TitleModel(2,1);
   }
 
-
-
-
-
   private static appendWebRTCAdapterScript(): void {
     const node = document.createElement('script');
     node.src = 'https://webrtc.github.io/adapter/adapter-latest.js';

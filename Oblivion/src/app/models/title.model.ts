@@ -14,17 +14,17 @@ export class TitleModel {
   }
 
   public setOdd(){
-    this.cols = 4;
+    this.cols = 2;
     this.rows = 1;
   }
 
   public setEven(){
-    this.cols = 2;
+    this.cols = 1;
     this.rows = 1;
   }
 
   public setLarge(){
-    this.cols = 2;
-    this.rows = 2;
+    this.cols = 1;
+    this.rows = 1;
   }
 }
