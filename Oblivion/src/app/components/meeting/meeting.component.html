@@ -1,9 +1,8 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
 
-    <mat-drawer-container autosize >
+    <mat-drawer-container>
       <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
-
         <form class="messagebox">
         <mat-grid-list cols="2">
           <mat-list dense *ngFor="let message of this.getChatLog()">
@@ -59,18 +58,13 @@
       </mat-drawer>
 
       <mat-drawer-content class="videoGrid">
-          <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" style="height: 820px">
-            <mat-grid-tile
-              [colspan]="tile.cols"
-              [rowspan]="tile.rows">
-              <p class="video video-description"></p>
-              <video #local_video [autoplay]="true" [muted]="false"></video>
-            </mat-grid-tile>
-
-            <!-- Remote videos -->
-            <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
+          <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
+            <mat-grid-tile *ngFor="let vid of getStreams()"
+                           [colspan]="this.tile.cols"
+                           [rowspan]="this.tile.rows"
+                           class="tile">
               <p class="video video-description">Other</p>
-              <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
+              <video [srcObject]="vid" [autoplay]="true" [muted]="true" class="video"></video>
             </mat-grid-tile>
           </mat-grid-list>
       </mat-drawer-content>
