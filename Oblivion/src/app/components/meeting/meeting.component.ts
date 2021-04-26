@@ -23,7 +23,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
 
   @ViewChild('local_video') localVideo!: ElementRef; // Reference to the local video
   private remoteStreams: {[key: number]: MediaStream};
-  public tile: TitleModel =  {cols: 1, rows: 1, text: 'Test Meeting', video : 'local_video', name: 'Joe'};
+  public tile: TitleModel;
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo: MeetingInfo;
@@ -49,6 +49,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     this.unReadMessageCount = 0;
     this.readMessageCount = 0;
     this.chatOpen = false;
+    this.tile = new TitleModel(2,1);
   }
 
 
