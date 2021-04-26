@@ -7,4 +7,24 @@ export class TitleModel {
   border?: string;
   video?: string;
   name?: string;
+
+  constructor(columns:number, rows:number) {
+    this.cols = columns;
+    this.rows = rows;
+  }
+
+  public setOdd(){
+    this.cols = 4;
+    this.rows = 1;
+  }
+
+  public setEven(){
+    this.cols = 2;
+    this.rows = 1;
+  }
+
+  public setLarge(){
+    this.cols = 2;
+    this.rows = 2;
+  }
 }
