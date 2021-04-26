@@ -37,6 +37,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
+  public video_width: any;
+  public video_height: any;
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -74,6 +76,14 @@ export class MeetingComponent implements AfterViewInit, OnInit {
         this.endMeeting();
       }
     });
+    this.videoOrderingService.isTileChange.subscribe( value => {
+      this.tile = value;
+      console.log("MATHEW THE TILE HAS BEEN CHANGED IS"+value);
+      const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+      this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+      this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+      this.cdref.detectChanges();
+    });
   }
 
   terminate() {
@@ -89,6 +99,10 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.videoOrderingService.setVideosSizing(window.innerWidth);
+    this.videoOrderingService.setTiles();
+    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
   }
 
   @HostListener('window:resize')
@@ -203,12 +217,12 @@ export class MeetingComponent implements AfterViewInit, OnInit {
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
-    // if(this.videoOrderingService.videos_count!=Object.values(this.remoteStreams).length+1){
-    //   console.log(Object.values(this.remoteStreams).length+1);
-    //   this.videoOrderingService.videos_count = Object.values(this.remoteStreams).length+1;
-    //   this.videoOrderingService.setVideosSizing(window.innerWidth);
-    //   this.videoOrderingService.setTiles();
-    // }
+    if(this.videoOrderingService.videos_count!=Object.values(this.remoteStreams).length+1){
+      console.log(Object.values(this.remoteStreams).length+1);
+      this.videoOrderingService.videos_count = Object.values(this.remoteStreams).length+1;
+      this.videoOrderingService.setVideosSizing(window.innerWidth);
+      this.videoOrderingService.setTiles();
+    }
     if(this.localStream != undefined){
       return ([this.localStream].concat(Object.values(this.remoteStreams)).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index))
     }

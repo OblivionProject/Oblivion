@@ -64,7 +64,12 @@
                            [rowspan]="this.tile.rows"
                            class="tile">
               <p class="video video-description">Other</p>
-              <video [srcObject]="vid" [autoplay]="true" [muted]="true" class="video"></video>
+              <video [srcObject]="vid"
+                     [autoplay]="true"
+                     [muted]="true"
+                     [style.height.px]="video_height"
+                     [style.width.px]="video_width"
+                     class="video"></video>
             </mat-grid-tile>
           </mat-grid-list>
       </mat-drawer-content>
