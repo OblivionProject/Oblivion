@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -6,6 +6,8 @@ import {MeetingInfoDialogComponent} from '../meeting-info-dialog/meeting-info-di
 import {MeetingInfo} from '../../models/meeting-info';
 import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
+import {VideoOrderingService} from "../../services/video-ordering.service";
+
 
 export interface Message{
   message: string;
@@ -16,7 +18,7 @@ export interface Message{
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css'],
-  providers: [MediaService, WebsocketService]
+  providers: [MediaService, WebsocketService, VideoOrderingService]
 })
 
 export class MeetingComponent implements AfterViewInit, OnInit {
@@ -38,7 +40,10 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
               private router: Router,
-              private websocketService: WebsocketService) {
+              private websocketService: WebsocketService,
+              private videoOrderingService: VideoOrderingService,
+              private elem: ElementRef,
+              private cdref: ChangeDetectorRef) {
     MeetingComponent.appendWebRTCAdapterScript();
     this.video = true;
     this.audio = true;
