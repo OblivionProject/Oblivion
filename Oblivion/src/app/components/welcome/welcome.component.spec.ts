@@ -23,18 +23,21 @@ describe('WelcomeComponent', () => {
   //   expect(component).toBeTruthy();
   // });
   //
-  // it('should contain a create button that hrefs to create-meeting path', () => {
-  //   const button = fixture.debugElement.nativeElement.querySelector('#create_meeting');
-  //   expect(button.innerHTML).toBe('Create Meeting');
+  it('should contain a create button that hrefs to create-meeting path', () => {
+    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting');
+    expect(button.innerHTML).toBe('Create Meeting');
+
+    const path = button.getAttribute('routerLink');
+    expect(path).toEqual('../create-meeting');
+  });
   //
-  //   const path = button.getAttribute('routerLink');
-  //   expect(path).toEqual('../create-meeting');
-  // });
-  //
-  // it('should contain a join button', () => {
-  //   const button = fixture.debugElement.nativeElement.querySelector('#join_meeting');
-  //   expect(button.innerHTML).toBe('Join Meeting');
-  //
-  //   // TODO: Include href testing when JoinComponent is created
-  // });
+  it('should contain a join button', () => {
+    const button = fixture.debugElement.nativeElement.querySelector('#join_meeting');
+    expect(button.innerHTML).toBe('Join Meeting');
+
+    const path = button.getAttribute('routerLink');
+    expect(path).toEqual('../join-meeting');
+
+    // TODO: Include href testing when JoinComponent is created
+  });
 });
