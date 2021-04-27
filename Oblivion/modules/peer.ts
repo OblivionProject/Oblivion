@@ -164,6 +164,7 @@ export class Peer {
 
   private receivedChat(event: MessageEvent, notify: () => void): void {
     const data = JSON.parse(event.data);
+    console.log(data);
     if (verifyMessageFormat(data)) {
       notify();
       const message = <Message>data;

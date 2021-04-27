@@ -92,7 +92,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     });
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
-      console.log("MATHEW THE TILE HAS BEEN CHANGED IS"+value);
       const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
       this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
       this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
@@ -100,12 +99,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     });
     this.videoOrderingService.isRightButtonShown.subscribe( value => {
       this.show_right = value;
-      console.log("MATHEW THE RIGHT BUTTON IS"+this.show_right);
       this.cdref.detectChanges();
     });
     this.videoOrderingService.isLeftButtonShown.subscribe( value => {
       this.show_left = value;
-      console.log("MATHEW THE LEFT BUTTON IS"+this.show_left);
       this.cdref.detectChanges();
     });
   }
@@ -182,14 +179,11 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   // TODO: Look at this
   public getChatLog(): Array<Message> {
     const MessageLog = <Array<Message>>this.mediaService.getMessageLog();
-    // console.log(MessageLog);
     if (this.chat) {
-      console.log('this.chat = true');
       this.readMessageCount = MessageLog.length;
       this.unReadMessageCount = 0;
 
-    } else{
-      console.log('this.chat = false');
+    } else {
       this.unReadMessageCount = MessageLog.length - this.readMessageCount;
     }
     return MessageLog;
@@ -235,7 +229,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Toggles the audio between off and on
   public toggleAudio(): void {
-    console.log('In audio');
     this.audio = !this.audio;
     if (this.audio) {
       this.mediaService.unmuteLocalAudio();
@@ -256,13 +249,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
     if (this.videoOrderingService.videos_count!=Object.values(this.remoteStreams).length+1) {
-      console.log(Object.values(this.remoteStreams).length+1);
+      //console.log(this.getRemoteStreams().length+1);
       this.videoOrderingService.videos_count = Object.values(this.remoteStreams).length+1;
       this.videoOrderingService.setVideosSizing(window.innerWidth);
       this.videoOrderingService.setTiles();
     }
     if (this.localStream != undefined) {
-      return ([this.localStream].concat(Object.values(this.remoteStreams)).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index))
+      return ([this.localStream].concat(this.getRemoteStreams()).slice(0, 2));
     } else {
       return [];
     }

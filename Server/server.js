@@ -5,17 +5,19 @@ const https = require('https');
 const fs = require('fs');
 
 const nodemailer = require('nodemailer');
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'oblivionchatmeeting@gmail.com',
-        pass: 'OBLIVION'
+        user: '',
+        pass: ''
     }
 });
 
+const credentials = {
+    key: fs.readFileSync(''),
+    cert: fs.readFileSync(''),
+}
 
-
-console.log(credentials);
 
 const httpsServer = https.createServer(credentials, app);
 httpsServer.listen(8080);

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export const WS_ENDPOINT = 'wss://oblivionchat.com/websocket/';
+export const WS_ENDPOINT = 'wss://172.26.91.236:8080';//'wss://oblivionchat.com/websocket/';
 
 @Injectable()
 export class WebsocketService {
