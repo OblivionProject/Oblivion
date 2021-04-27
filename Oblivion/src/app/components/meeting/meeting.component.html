@@ -45,10 +45,10 @@
       </mat-drawer>
 
       <mat-drawer-content class="videoGrid">
-        <button *ngIf="true" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
+        <button *ngIf="show_right" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
           <mat-icon>arrow_forward_ios</mat-icon>
         </button>
-        <button *ngIf="true" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
+        <button *ngIf="show_left" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
           <mat-icon>arrow_back_ios_new</mat-icon>
         </button>
 
