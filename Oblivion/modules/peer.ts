@@ -19,7 +19,8 @@ export class Peer {
     peerID: number,
     initSeq: boolean,
     localStream: MediaStream,
-    webSocket: WebSocket
+    webSocket: WebSocket,
+    receivedMessageNotify: () => void
   ) {
 
     // if (Peer.userID == 'undefined') {
@@ -44,10 +45,10 @@ export class Peer {
       this.dataChannel = this.peer.createDataChannel(dataChannelLabel);
       this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
       this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
-      this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+      this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event, receivedMessageNotify);
 
     } else {
-      this.peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event);
+      this.peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, receivedMessageNotify);
     }
   }
 
@@ -154,16 +155,17 @@ export class Peer {
     }
   }
 
-  private receiveChannelCallback(event: RTCDataChannelEvent): void {
+  private receiveChannelCallback(event: RTCDataChannelEvent, receiveMessageNotify: () => void): void {
     this.dataChannel = event.channel;
-    this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+    this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event, receiveMessageNotify);
     this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
     this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
   }
 
-  private receivedChat(event: MessageEvent): void {
+  private receivedChat(event: MessageEvent, notify: () => void): void {
     const data = JSON.parse(event.data);
     if (verifyMessageFormat(data)) {
+      notify();
       const message = <Message>data;
       this.logMessage(message);
 

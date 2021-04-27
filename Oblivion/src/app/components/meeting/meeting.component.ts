@@ -28,7 +28,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public chat: boolean;  // Flag for if the chat box is open
 
   constructor(
-    private mediaService: MediaService,
+    public mediaService: MediaService,
     public dialog: MatDialog,
     private router: Router,
     private websocketService: WebsocketService
@@ -88,11 +88,6 @@ export class MeetingComponent implements AfterViewInit, OnInit {
 
   public getChatLog(): Array<Message> {
     const MessageLog = <Array<Message>>this.mediaService.getMessageLog();
-    // if (this.chat) {
-    //   this.unReadMessageCount = 0;
-    // } else {
-    //   this.unReadMessageCount += 1;
-    // }
     return MessageLog;
   }
 
@@ -155,16 +150,19 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     return Object.values(this.mediaService.getRemoteStreams());
   }
 
-  // // The functions in this section are intended for development use only
-  // public TEST() {
-  //   console.log(Object.keys(this.mediaService.getPeers()).length);
-  //   console.log(this.mediaService.getPeers());
-  // }
-
   public setMeetingInfo(): MeetingInfo {
     this.meetingInfo = this.mediaService.getMeetingInfo();
     return this.meetingInfo;
   }
+
+  public incrementUnreadMessageCount(): void {
+    this.unReadMessageCount = this.unReadMessageCount + 1;
+  }
+
+  // public getUnreadMessageCount(): number {
+  //   // return this.unReadMessageCount;
+  //   return this.
+  // }
 
   public openDialog(): void {
     this.setMeetingInfo();

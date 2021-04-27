@@ -2,15 +2,15 @@ import {Injectable} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 import {Subject} from "rxjs";
 import {MeetingStateService} from "./meeting-state.service";
-import {Message, MESSAGE_TYPE, verifyMessageFormat} from "../../../modules/message";
+import {Message, MESSAGE_TYPE} from "../../../modules/message";
 import {MeetingInfo} from "../models/meeting-info";
 import {Peer} from "../../../modules/peer";
 
 @Injectable()
 export class MediaService {
 
-  mySubject : Subject<any> = new Subject<any>();
-  destroy : boolean = false ;
+  public mySubject : Subject<any> = new Subject<any>();
+  destroy : boolean = false;  // TODO: What is this?
   // TODO: Why is this or undefined? Doesn't seem right... We should also get rid of all @ts-ignore
   private webSocket: WebSocket | undefined; // Server connection to get connected to peers
   private userId!: number; // This users ID
@@ -19,27 +19,19 @@ export class MediaService {
   private userRole!: string;
   private name!: string;
   private localstream!: MediaStream;  // Local video
-  //private remoteStreams: {[key: number]: MediaStream};  // Remote videos
-  //private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
-  // private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use, add turn servers?
-  //   iceServers: [
-  //     {urls: 'stun:stun.stunprotocol.org:3478'},
-  //     {urls: 'stun:stun.l.google.com:19302'},
-  //   ]
-  // };
-  // private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
+  private peers: {[key: number]: Peer};
   private messageLog: Message[];
 
-  private peers: {[key: number]: Peer};
+  private unreadMessageCount: number;
 
   constructor(private websocketService: WebsocketService, private sharedService: MeetingStateService) {
     this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
     this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
-    //this.remoteStreams = {};
     this.peers = {};
-    //this.dataChannels = {};
     this.messageLog = new Array<Message>();
+
+    this.unreadMessageCount = 0;
   }
 
   // TODO: Should we get rid of this? Needed for the printSubtitle [change subtitle?]
@@ -63,59 +55,23 @@ export class MediaService {
   }
 
   // Create a new RTCPeerConnection, add it to the list and return it
-  private addNewRTCPeerConnection(userID: number, initSeq: boolean): Peer {//RTCPeerConnection {
-    // const peer = new RTCPeerConnection(this.peerConnectionConfig);
-    // peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
-    // peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
-    // peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
-    // this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
-    //   peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
-    // });
-    //
-    // // Add the new peer to the list
-    // this.peers[userID] = peer;
-    //
-    // // Only create the data channel if we are initializing it.
-    // if (initSeq) {
-    //   const dataChannelLabel = this.userId + '-' + userID;
-    //   const dataChannel = peer.createDataChannel(dataChannelLabel);
-    //   dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
-    //   dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
-    //   dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
-    //
-    //   this.dataChannels[userID] = dataChannel;
-    //
-    // } else {
-    //   peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
-    // }
-
+  private addNewRTCPeerConnection(userID: number, initSeq: boolean): Peer {
     // @ts-ignore
-    const peer = new Peer(userID, initSeq, this.localstream, this.webSocket);
+    const peer = new Peer(userID, initSeq, this.localstream, this.webSocket, () => this.incrementUnreadMessageCount);
     this.peers[userID] = peer;
     return peer;
   }
 
-  // private handleDataChannelStatusChange(event: Event, userId: number): void {
-  //   if (this.dataChannels[userId]) {
-  //     const state = this.dataChannels[userId].readyState;
-  //
-  //     if (state === 'open') {
-  //       // TODO: Unblock the sending of messages
-  //     }
-  //   }
-  // }
-
-  // private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
-  //   const dataChannel = event.channel;
-  //   dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
-  //   dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
-  //   dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
-  //
-  //   this.dataChannels[userId] = dataChannel;
-  // }
-
   public getMessageLog(): Array<Message> {
     return this.messageLog;
+  }
+
+  public getUnreadMessageCount(): number {
+    return this.unreadMessageCount;
+  }
+
+  public incrementUnreadMessageCount(): void {
+    this.unreadMessageCount += 1;
   }
 
   public sendChat(msg: string, recipientId?: number): void {
@@ -134,18 +90,10 @@ export class MediaService {
 
     // Either broadcast the message to everyone or to the specified recipient
     if (recipientId) {
-      //this.dataChannels[recipientId].send(JSON.stringify(message));
       this.peers[recipientId].sendMessage(message);
       this.logAndDisplayChat(message);
 
       } else {
-        // Object.keys(this.dataChannels).forEach((key: string) => {
-        //   const id = Number(key);
-        //   if (this.dataChannels[id].readyState === 'open') {
-        //     this.dataChannels[id].send(JSON.stringify(message));
-        //     this.logAndDisplayChat(message);
-        //   }
-        // });
         Object.keys(this.peers).forEach((key: string) => {
           const id = Number(key);
           this.peers[id].sendMessage(message);
