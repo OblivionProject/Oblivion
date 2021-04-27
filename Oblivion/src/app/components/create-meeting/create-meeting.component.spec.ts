@@ -130,4 +130,39 @@ describe('CreateMeetingComponent', () => {
     tick();
     expect(component.createMeeting).not.toHaveBeenCalled();
   }));
+
+  it('should get an error message for meeting Name', fakeAsync ( () => {
+    spyOn(component, 'getMeetingNameErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#meeting_name_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.createMeetingForm.controls.meetingName.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getMeetingNameErrorMessage).toHaveBeenCalled();
+
+  }));
+
+  it('should get an error message for meeting Password', fakeAsync ( () => {
+    spyOn(component, 'getPasswordErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#meeting_password1_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.createMeetingForm.controls.password.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getPasswordErrorMessage).not.toHaveBeenCalled();
+
+  }));
+
+  it('should get an error message for meeting Password2', fakeAsync ( () => {
+    spyOn(component, 'getPasswordErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#meeting_password2_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.createMeetingForm.controls.confirmPassword.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getPasswordErrorMessage).not.toHaveBeenCalled();
+
+  }));
+
+
 });
