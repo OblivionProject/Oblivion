@@ -164,5 +164,14 @@ describe('CreateMeetingComponent', () => {
 
   }));
 
+  it('should get an error message for confirm meeting Password2', fakeAsync ( () => {
+    spyOn(component, 'getPasswordMatchErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#meeting_password2_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.createMeetingForm.controls.confirmPassword.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getPasswordMatchErrorMessage).toHaveBeenCalled();
 
+  }));
 });
