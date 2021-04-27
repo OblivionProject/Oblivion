@@ -130,6 +130,18 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.moveLeft();
   }
 
+  public adjustWindowSizing():void{
+    //Window Sizing
+    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = window.innerHeight - sizing*2;
+    this.videoOrderingService.setVideosSizing(window.innerWidth);
+    this.videoOrderingService.setTiles();
+    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
+    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
+  }
+
   async ngAfterViewInit() {
     await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
@@ -139,24 +151,23 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
-    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
     this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
+    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
   }
 
   @HostListener('window:resize')
   onResize() {
-    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-    this.height = window.innerHeight - sizing*2;
-    this.videoOrderingService.setVideosSizing(window.innerWidth);
-    this.videoOrderingService.setTiles();
-    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
-    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
-    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
-    this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight - 12;
+    this.adjustWindowSizing();
+  }
+
+  public toggleDrawer():void{
+    this.chatOpen = !this.chatOpen;
+    this.videoOrderingService.showChat = this.chatOpen;
+    this.adjustWindowSizing();
   }
 
 

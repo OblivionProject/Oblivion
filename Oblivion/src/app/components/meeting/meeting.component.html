@@ -45,6 +45,14 @@
       </mat-drawer>
 
       <mat-drawer-content class="videoGrid">
+        <button *ngIf="true" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
+          <mat-icon>arrow_forward_ios</mat-icon>
+        </button>
+        <button *ngIf="true" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
+          <mat-icon>arrow_back_ios_new</mat-icon>
+        </button>
+
+
           <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
             <mat-grid-tile *ngFor="let vid of getStreams()"
                            [colspan]="this.tile.cols"
@@ -62,13 +70,6 @@
       </mat-drawer-content>
     </mat-drawer-container>
 
-    <button *ngIf="show_right" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
-      <mat-icon>arrow_forward_ios</mat-icon>
-    </button>
-    <button *ngIf="show_left" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
-      <mat-icon>arrow_back_ios_new</mat-icon>
-    </button>
-
   </mat-sidenav-container>
 
   <!-- This template displays the overlay content and is connected to the button -->
@@ -81,7 +82,7 @@
       <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="drawer.toggle()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
       <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons"><mat-icon>info</mat-icon></button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>

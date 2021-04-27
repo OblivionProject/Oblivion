@@ -17,8 +17,7 @@
 }
 
 #move_right{
-  float: right;
-  position: fixed;
+  position: absolute;
   margin: auto;
   top: 50%;
   left: 97%;
@@ -26,8 +25,7 @@
 }
 
 #move_left{
-  float: left;
-  position: fixed;
+  position: absolute;
   margin: auto;
   top: 50%;
   left: 3%;

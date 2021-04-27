@@ -23,8 +23,7 @@ export class VideoOrderingService {
   public isLeftButtonShown: Subject<any> = new Subject<any>();
   public isTileChange: Subject<any> = new Subject<any>();
   public height: any;
-  public video_width: any;
-  public video_height: any;
+  public showChat: boolean;
 
   constructor() {
     this.video_start_index = 0;
@@ -34,33 +33,45 @@ export class VideoOrderingService {
     this.video_mover_button_left = false;
     this.videos_count = 0;
     this.tiles = new TitleModel(4,1);
+    this.showChat = false;
   }
 
   public setVideosSizing(windowWidth:number): void{
     if (windowWidth <= 640){
       this.mode = Modes.SM;
-      console.log("MATHEW IT IS SMALL NOW!");
       this.video_tile_incrementer = 1;
       this.adjustTileOrderOnResize();
-      this.adjustViewOnResize();
+      this.adjustViewOnResize(this.showChat);
     }
 
     //medium window sizes
     else if(windowWidth <= 1024 && windowWidth > 640){
-      this.mode = Modes.MD;
-      console.log("MATHEW IT IS MEDIUM NOW!");
-      this.video_tile_incrementer = 2;
+      if(this.showChat){
+        console.log("MATHEW THIS IS WHAT WE WANT");
+        this.mode = Modes.SM;
+        this.video_tile_incrementer = 1;
+      }
+      else{
+        this.mode = Modes.MD;
+        this.video_tile_incrementer = 2;
+      }
+
       this.adjustTileOrderOnResize();
-      this.adjustViewOnResize();
+      this.adjustViewOnResize(false);
     }
 
     //large window sizes
     else{
-      this.mode = Modes.LG;
-      console.log("MATHEW IT IS LARGE NOW!");
-      this.video_tile_incrementer = 4;
+      if(this.showChat){
+        this.mode = Modes.MD;
+        this.video_tile_incrementer = 2;
+      }
+      else{
+        this.mode = Modes.LG;
+        this.video_tile_incrementer = 4;
+      }
       this.adjustTileOrderOnResize();
-      this.adjustViewOnResize();
+      this.adjustViewOnResize(false);
     }
   }
 
@@ -174,15 +185,15 @@ export class VideoOrderingService {
     }
   }
 
-  public adjustViewOnResize(){
+  public adjustViewOnResize(hideButton:boolean){
     if (this.videos_count > this.video_tile_incrementer) {
-      if(this.video_start_index==0){
+      if(this.video_start_index==0 || hideButton){
         this.updateLeft(false);
       }
       else{
         this.updateLeft(true);
       }
-      if(this.video_end_index==this.videos_count){
+      if(this.video_end_index==this.videos_count || hideButton){
         this.updateRight(false);
       }
       else{
@@ -208,11 +219,21 @@ export class VideoOrderingService {
     console.log("MATHEW WIDTH IS " + width);
     switch(this.mode) {
       case Modes.SM:
-        return width;
+        if (width <= 640){
+          return width;
+        }
+        else{
+          return width/2;
+        }
       case Modes.MD:
-        return width / 2;
+        if (width <= 1024 && width > 640){
+          return width/2;
+        }
+        else{
+          return width/3;
+        }
       case Modes.LG:
-        return width / 3;
+          return width/3;
       default:
         return width / 3;
     }
