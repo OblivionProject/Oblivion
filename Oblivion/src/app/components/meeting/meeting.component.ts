@@ -92,8 +92,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     });
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
-      const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-      this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+      this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
       this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });
@@ -132,7 +131,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.height = window.innerHeight - sizing*2;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
-    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
     this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
@@ -150,7 +149,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.height = window.innerHeight - sizing*2;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
-    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
     this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
@@ -248,14 +247,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
-    if (this.videoOrderingService.videos_count!=Object.values(this.remoteStreams).length+1) {
-      //console.log(this.getRemoteStreams().length+1);
-      this.videoOrderingService.videos_count = Object.values(this.remoteStreams).length+1;
+    if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
+      this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
       this.videoOrderingService.setVideosSizing(window.innerWidth);
       this.videoOrderingService.setTiles();
     }
     if (this.localStream != undefined) {
-      return ([this.localStream].concat(this.getRemoteStreams()).slice(0, 2));
+      return ([this.localStream].concat(this.getRemoteStreams()).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index));
     } else {
       return [];
     }

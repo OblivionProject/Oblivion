@@ -47,7 +47,6 @@ export class VideoOrderingService {
     //medium window sizes
     else if(windowWidth <= 1024 && windowWidth > 640){
       if(this.showChat){
-        console.log("MATHEW THIS IS WHAT WE WANT");
         this.mode = Modes.SM;
         this.video_tile_incrementer = 1;
       }
@@ -78,7 +77,6 @@ export class VideoOrderingService {
   public moveRight():void{
     let new_start_index = this.video_start_index + this.video_tile_incrementer;
     let new_end_index = this.video_end_index + this.video_tile_incrementer;
-    console.log("MATHEW MOVE RIGHT HAS BEEN CALLED");
     this.updateLeft(true);
 
     switch (this.mode){
@@ -86,13 +84,11 @@ export class VideoOrderingService {
         this.video_start_index = new_start_index;
         this.video_end_index = new_end_index;
         break;
-      case Modes.MD:
+      default:
         if(new_end_index > this.videos_count){
           this.video_end_index = this.videos_count;
           this.video_start_index = this.video_end_index - this.video_tile_incrementer;
         }
-        break;
-      default:
         break;
     }
     if(this.video_end_index == this.videos_count){
@@ -110,13 +106,11 @@ export class VideoOrderingService {
         this.video_start_index = new_start_index;
         this.video_end_index = new_end_index;
         break;
-      case Modes.MD:
+      default:
         if (new_start_index < 0) {
           this.video_start_index = 0;
           this.video_end_index = this.video_start_index + this.video_tile_incrementer;
         }
-        break;
-      default:
         break;
     }
 
@@ -206,9 +200,9 @@ export class VideoOrderingService {
     }
   }
 
-  public dynamicHeightSizer(windowHeight:number,height:number, sizing:number):number{
+  public dynamicHeightSizer(height:number):number{
     if(this.tiles.cols == 2 && this.tiles.rows == 2 && this.videos_count > 2){
-      return (windowHeight - sizing*2)/2;
+      return height/2;
     }
     else{
       return height;
@@ -216,7 +210,6 @@ export class VideoOrderingService {
   }
 
   public setMessageWidth(width:number):number{
-    console.log("MATHEW WIDTH IS " + width);
     switch(this.mode) {
       case Modes.SM:
         if (width <= 640){
