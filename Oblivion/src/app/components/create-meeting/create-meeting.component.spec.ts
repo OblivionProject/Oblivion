@@ -1,12 +1,12 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { CreateMeetingComponent } from './create-meeting.component';
-import {MEETING_TYPE} from "../../models/meeting.model";
+import {MEETING_TYPE} from '../../models/meeting.model';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {Router} from "@angular/router";
-import {WebsocketService} from "../../services/websocket.service";
-import {RouterTestingModule} from "@angular/router/testing";
-import {WelcomeComponent} from "../welcome/welcome.component";
-import {MeetingComponent} from "../meeting/meeting.component";
+import {Router} from '@angular/router';
+import {WebsocketService} from '../../services/websocket.service';
+import {RouterTestingModule} from '@angular/router/testing';
+import {WelcomeComponent} from '../welcome/welcome.component';
+import {MeetingComponent} from '../meeting/meeting.component';
 
 describe('CreateMeetingComponent', () => {
   let component: CreateMeetingComponent;
