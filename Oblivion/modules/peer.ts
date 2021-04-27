@@ -20,7 +20,7 @@ export class Peer {
     initSeq: boolean,
     localStream: MediaStream,
     webSocket: WebSocket,
-    receivedMessageNotify: () => void
+    receivedMessageNotify: (message: Message) => void
   ) {
 
     // if (Peer.userID == 'undefined') {
@@ -155,19 +155,19 @@ export class Peer {
     }
   }
 
-  private receiveChannelCallback(event: RTCDataChannelEvent, receiveMessageNotify: () => void): void {
+  private receiveChannelCallback(event: RTCDataChannelEvent, receiveMessageNotify: (message: Message) => void): void {
     this.dataChannel = event.channel;
     this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event, receiveMessageNotify);
     this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
     this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
   }
 
-  private receivedChat(event: MessageEvent, notify: () => void): void {
+  private receivedChat(event: MessageEvent, notify: (message: Message) => void): void {
     const data = JSON.parse(event.data);
     console.log(data);
     if (verifyMessageFormat(data)) {
-      notify();
       const message = <Message>data;
+      notify(message);
       this.logMessage(message);
 
     } else {

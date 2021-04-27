@@ -47,7 +47,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public messageWidth: any;
   public messageHeight: any;
 
-  constructor(private mediaService: MediaService,
+  constructor(public mediaService: MediaService,
               public dialog: MatDialog,
               private router: Router,
               private websocketService: WebsocketService,

@@ -3,7 +3,7 @@
     <mat-drawer-container>
       <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
         <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
-          <mat-list-item dense *ngFor="let message of this.getChatLog()" role="listitem">
+          <mat-list-item dense *ngFor="let message of this.mediaService.getMessageLog()" role="listitem">
             <div matLine>
               <mat-card class ="messagesSEND" *ngIf="message.senderId === this.getUserId()">
                 <mat-card-header>
@@ -12,7 +12,7 @@
                   <mat-card-content>{{message.data}}</mat-card-content>
                 </mat-card-header>
               </mat-card>
-              <mat-card class ="messagesRECIVE" *ngIf="message.recipientId === this.getUserId()">
+              <mat-card class ="messagesRECIVE" *ngIf="message.senderId !== this.getUserId()">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_received</mat-icon>
                   <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>

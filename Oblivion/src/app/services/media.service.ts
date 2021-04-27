@@ -57,7 +57,7 @@ export class MediaService {
   // Create a new RTCPeerConnection, add it to the list and return it
   private addNewRTCPeerConnection(userID: number, initSeq: boolean): Peer {
     // @ts-ignore
-    const peer = new Peer(userID, initSeq, this.localstream, this.webSocket, () => this.incrementUnreadMessageCount);
+    const peer = new Peer(userID, initSeq, this.localstream, this.webSocket, (message: Message) => this.receivedMessage(message));
     this.peers[userID] = peer;
     return peer;
   }
@@ -70,8 +70,8 @@ export class MediaService {
     return this.unreadMessageCount;
   }
 
-  public incrementUnreadMessageCount(): void {
-    this.unreadMessageCount += 1;
+  public receivedMessage(message: Message) {
+    this.messageLog.push(message);
   }
 
   public sendChat(msg: string, recipientId?: number): void {
@@ -88,17 +88,18 @@ export class MediaService {
       senderId: this.userId
     };
 
+    this.logAndDisplayChat(message);
+
     // Either broadcast the message to everyone or to the specified recipient
     if (recipientId) {
       this.peers[recipientId].sendMessage(message);
-      this.logAndDisplayChat(message);
 
-      } else {
-        Object.keys(this.peers).forEach((key: string) => {
-          const id = Number(key);
-          this.peers[id].sendMessage(message);
-        });
-      }
+    } else {
+      Object.keys(this.peers).forEach((key: string) => {
+        const id = Number(key);
+        this.peers[id].sendMessage(message);
+      });
+    }
   }
 
   // TODO: Change function name
