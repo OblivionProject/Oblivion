@@ -105,4 +105,27 @@ describe('JoinMeetingComponent', () => {
     expect(component.joinMeeting).not.toHaveBeenCalled();
   }));
 
+
+  it('should get an error message for meeting ID', fakeAsync ( () => {
+    spyOn(component, 'getMeetingIDErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#join_meeting_meeting_id_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.joinMeetingForm.controls.meetingID.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getMeetingIDErrorMessage).toHaveBeenCalled();
+
+  }));
+
+  it('should get an error message for meeting Password', fakeAsync ( () => {
+    spyOn(component, 'getMeetingPasswordErrorMessage');
+    const val = fixture.debugElement.nativeElement.querySelector('#join_meeting_meeting_password_input');
+    // tslint:disable-next-line:no-unused-expression
+    component.joinMeetingForm.controls.password.invalid;
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.getMeetingPasswordErrorMessage).not.toHaveBeenCalled();
+
+  }));
+
 });
