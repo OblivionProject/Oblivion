@@ -4,10 +4,16 @@ const app = express();
 const https = require('https');
 const fs = require('fs');
 
-const credentials = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert'),
-}
+const nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'oblivionchatmeeting@gmail.com',
+        pass: 'OBLIVION'
+    }
+});
+
+
 
 console.log(credentials);
 
@@ -82,6 +88,15 @@ function connection(ws, req) {
                 newMeeting.setPassword(data.password);
             }
 
+
+            if(data.emails.length !== 0){
+                if(data.password !== '') {
+                    sendEmails(data.emails, newMeetingID, data.password);
+                }else if(data.password === ''){
+                    sendEmails(data.emails,newMeetingID, '')
+                }
+                //console.log(data.emails);
+            }
             meetings[newMeetingID] = newMeeting;
             console.log('Meeting ID: ' + newMeetingID);
 
@@ -125,6 +140,46 @@ function generateUniqueMeetingID() {
         id = Math.floor(Math.random() * 90000) + 10000;
     }
     return id;
+}
+function sendEmails(emails,meetingId, password) {
+    const data = emails;
+    var x3 = "Join Id: " + meetingId
+    if (typeof password === 'undefined') {
+        var x4 = "No password for this meeting"
+    } else if (password !== '' ) {
+        var x4 = "password: " + password
+    }
+    var message = String(x3) + " and " +
+        String(x4) ;
+    var subject = "Details for your private meeting";
+    var i;
+    for( i=0;i<data.length;i++){
+        var email = mailOptions(data[i],subject,message);
+        transporter.sendMail(email, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('password:' + typeof (password));
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }
+}
+
+
+function mailOptions(to,subject,text){
+    return {
+        from: 'olivionchatmeeting@gmail.com',
+        to: to,
+        subject: subject,
+        text: text,
+        html: ' <p>Hello, You have been invited to a meeting on oblivionchat.com <br> Details for your meeting are:   </p> '+ text + '<br> <img src="cid:logo"/> <br>',
+        attachments: [{
+            filename: 'logo.png',
+            path: __dirname + '/logo.png',
+            cid: 'logo'
+        }]
+    };
 }
 
 module.exports = httpsServer;

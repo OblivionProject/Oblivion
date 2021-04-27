@@ -11,6 +11,7 @@ export class Meeting {
   public name?: string;
   public meetingID?: any;
   public check?: boolean;
+  public emails?: Array<string>;
 
   constructor(meetingType: MEETING_TYPE) {
     this.meetingType = meetingType;
