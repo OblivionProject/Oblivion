@@ -1,10 +1,11 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { JoinMeetingComponent } from './join-meeting.component';
-import {MEETING_TYPE} from "../../models/meeting.model";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MEETING_TYPE} from '../../models/meeting.model';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import {WelcomeComponent} from "../welcome/welcome.component";
-import {MeetingComponent} from "../meeting/meeting.component";
+import {WelcomeComponent} from '../welcome/welcome.component';
+import {MeetingComponent} from '../meeting/meeting.component';
+import {WebsocketService} from '../../services/websocket.service';
 
 describe('JoinMeetingComponent', () => {
   let component: JoinMeetingComponent;
@@ -19,7 +20,9 @@ describe('JoinMeetingComponent', () => {
           {path: 'welcome', component: WelcomeComponent},
           {path: 'meeting', component: MeetingComponent}])
       ],
-      declarations: [ JoinMeetingComponent ]
+      declarations: [ JoinMeetingComponent ],
+      providers: [ WebsocketService ]
+
     })
     .compileComponents();
   });
@@ -76,16 +79,30 @@ describe('JoinMeetingComponent', () => {
     expect(component.hide).toEqual(true);
   });
 
-  //TODO: Fix with valid join and invalid join
-  // it('should contain a join meeting button that calls joinMeeting', fakeAsync(() => {
-  //   spyOn(component, 'joinMeeting');
-  //
-  //   const button = fixture.debugElement.nativeElement.querySelector('#join_meeting_submit');
-  //   expect(button.innerHTML).toEqual('Join');
-  //
-  //   button.click();
-  //   tick();
-  //   expect(component.joinMeeting).toHaveBeenCalled();
-  // }));
+  // TODO: Fix with valid join and invalid join
+  it('should contain a join meeting button that does call joinMeeting', fakeAsync(() => {
+    spyOn(component, 'joinMeeting');
+    const val = fixture.debugElement.nativeElement.querySelector('#join_meeting_meeting_id_input');
+    component.joinMeetingForm.controls.meetingID.setValue('123456');
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const button = fixture.debugElement.nativeElement.querySelector('#join_meeting_submit');
+    expect(button.innerHTML).toEqual('Join');
+
+    button.click();
+    tick();
+    expect(component.joinMeeting).toHaveBeenCalled();
+  }));
+
+  it('should contain a join meeting button that does not call joinMeeting', fakeAsync(() => {
+    spyOn(component, 'joinMeeting');
+
+    const button = fixture.debugElement.nativeElement.querySelector('#join_meeting_submit');
+    expect(button.innerHTML).toEqual('Join');
+
+    button.click();
+    tick();
+    expect(component.joinMeeting).not.toHaveBeenCalled();
+  }));
 
 });
