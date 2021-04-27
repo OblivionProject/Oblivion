@@ -73,6 +73,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   async ngAfterViewInit(): Promise<void> {
     await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
+    while (this.websocketService.getWebSocket().readyState !== 1);  // Ensure that the websocket is open before moving on... TODO: improve
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
   }
@@ -113,7 +114,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     }
   }
 
-  // TODO add input paramenter based on chats
+  // TODO add input parameter based on chats
   public displayUnReadchat(): boolean {
     return this.unReadMessageCount !== 0;
   }

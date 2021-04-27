@@ -4,17 +4,14 @@ import {Subject} from "rxjs";
 import {MeetingStateService} from "./meeting-state.service";
 import {Message, MESSAGE_TYPE, verifyMessageFormat} from "../../../modules/message";
 import {MeetingInfo} from "../models/meeting-info";
-
-const mediaConstraints = {
-  audio: true,
-  video: true
-};
+import {Peer} from "../../../modules/peer";
 
 @Injectable()
 export class MediaService {
 
   mySubject : Subject<any> = new Subject<any>();
   destroy : boolean = false ;
+  // TODO: Why is this or undefined? Doesn't seem right... We should also get rid of all @ts-ignore
   private webSocket: WebSocket | undefined; // Server connection to get connected to peers
   private userId!: number; // This users ID
   private meetingID!: number; // Meeting ID
@@ -22,24 +19,26 @@ export class MediaService {
   private userRole!: string;
   private name!: string;
   private localstream!: MediaStream;  // Local video
-  private remoteStreams: {[key: number]: MediaStream};  // Remote videos
-  private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
-  private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use, add turn servers?
-    iceServers: [
-      {urls: 'stun:stun.stunprotocol.org:3478'},
-      {urls: 'stun:stun.l.google.com:19302'},
-    ]
-  };
-  private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
+  //private remoteStreams: {[key: number]: MediaStream};  // Remote videos
+  //private peers: {[key: number]: RTCPeerConnection};    // WebRTC peer connections
+  // private peerConnectionConfig = {  // TODO: Verify the ice servers we want to use, add turn servers?
+  //   iceServers: [
+  //     {urls: 'stun:stun.stunprotocol.org:3478'},
+  //     {urls: 'stun:stun.l.google.com:19302'},
+  //   ]
+  // };
+  // private dataChannels: {[key: number]: RTCDataChannel};  // Remote Data Channels
   private messageLog: Message[];
+
+  private peers: {[key: number]: Peer};
 
   constructor(private websocketService: WebsocketService, private sharedService: MeetingStateService) {
     this.websocketService.getWebSocket().onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.websocketService.getWebSocket().onclose = (closeEvent: CloseEvent) => console.log(closeEvent);
     this.websocketService.getWebSocket().onerror = (event: Event) => console.log(event);
-    this.remoteStreams = {};
+    //this.remoteStreams = {};
     this.peers = {};
-    this.dataChannels = {};
+    //this.dataChannels = {};
     this.messageLog = new Array<Message>();
   }
 
@@ -64,52 +63,57 @@ export class MediaService {
   }
 
   // Create a new RTCPeerConnection, add it to the list and return it
-  private addNewRTCPeerConnection(userID: number, initSeq: boolean): RTCPeerConnection {
-    const peer = new RTCPeerConnection(this.peerConnectionConfig);
-    peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
-    peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
-    peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
-    this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
-      peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
-    });
+  private addNewRTCPeerConnection(userID: number, initSeq: boolean): Peer {//RTCPeerConnection {
+    // const peer = new RTCPeerConnection(this.peerConnectionConfig);
+    // peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, userID);
+    // peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event, userID);
+    // peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, userID);
+    // this.localstream.getTracks().forEach((track: MediaStreamTrack) => {
+    //   peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
+    // });
+    //
+    // // Add the new peer to the list
+    // this.peers[userID] = peer;
+    //
+    // // Only create the data channel if we are initializing it.
+    // if (initSeq) {
+    //   const dataChannelLabel = this.userId + '-' + userID;
+    //   const dataChannel = peer.createDataChannel(dataChannelLabel);
+    //   dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+    //   dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
+    //   dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+    //
+    //   this.dataChannels[userID] = dataChannel;
+    //
+    // } else {
+    //   peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
+    // }
 
-    // Add the new peer to the list
+    // @ts-ignore
+    const peer = new Peer(userID, initSeq, this.localstream, this.webSocket);
     this.peers[userID] = peer;
-
-    // Only create the data channel if we are initializing it.
-    if (initSeq) {
-      const dataChannelLabel = this.userId + '-' + userID;
-      const dataChannel = peer.createDataChannel(dataChannelLabel);
-      dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userID);
-      dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userID);
-      dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
-
-      this.dataChannels[userID] = dataChannel;
-
-    } else {
-      peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, userID);
-    }
     return peer;
   }
 
-  private handleDataChannelStatusChange(event: Event, userId: number): void {
-    if (this.dataChannels[userId]) {
-      const state = this.dataChannels[userId].readyState;
+  // private handleDataChannelStatusChange(event: Event, userId: number): void {
+  //   if (this.dataChannels[userId]) {
+  //     const state = this.dataChannels[userId].readyState;
+  //
+  //     if (state === 'open') {
+  //       // TODO: Unblock the sending of messages
+  //     }
+  //   }
+  // }
 
-      if (state === 'open') {
-        // TODO: Unblock the sending of messages
-      }
-    }
-  }
+  // private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
+  //   const dataChannel = event.channel;
+  //   dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
+  //   dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+  //   dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
+  //
+  //   this.dataChannels[userId] = dataChannel;
+  // }
 
-  private receiveChannelCallback(event: RTCDataChannelEvent, userId: number): void {
-    const dataChannel = event.channel;
-    dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event);
-    dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event, userId);
-    dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event, userId);
-
-    this.dataChannels[userId] = dataChannel;
-  }
   public getMessageLog(): Array<Message> {
     return this.messageLog;
   }
@@ -130,47 +134,52 @@ export class MediaService {
 
     // Either broadcast the message to everyone or to the specified recipient
     if (recipientId) {
-      this.dataChannels[recipientId].send(JSON.stringify(message));
+      //this.dataChannels[recipientId].send(JSON.stringify(message));
+      this.peers[recipientId].sendMessage(message);
       this.logAndDisplayChat(message);
 
       } else {
-        Object.keys(this.dataChannels).forEach((key: string) => {
+        // Object.keys(this.dataChannels).forEach((key: string) => {
+        //   const id = Number(key);
+        //   if (this.dataChannels[id].readyState === 'open') {
+        //     this.dataChannels[id].send(JSON.stringify(message));
+        //     this.logAndDisplayChat(message);
+        //   }
+        // });
+        Object.keys(this.peers).forEach((key: string) => {
           const id = Number(key);
-          if (this.dataChannels[id].readyState === 'open') {
-            this.dataChannels[id].send(JSON.stringify(message));
-            this.logAndDisplayChat(message);
-          }
+          this.peers[id].sendMessage(message);
         });
       }
   }
 
-  private receivedChat(event: MessageEvent): void {
-    const data = JSON.parse(event.data);
-    if (verifyMessageFormat(data)) {
-      const message = <Message>data;  // TODO: Add check to make sure data is a valid message
-      this.logAndDisplayChat(message);
+  // private receivedChat(event: MessageEvent): void {
+  //   const data = JSON.parse(event.data);
+  //   if (verifyMessageFormat(data)) {
+  //     const message = <Message>data;
+  //     this.logAndDisplayChat(message);
+  //
+  //   } else {
+  //     this.logMessageError('Invalid message format by data. data: ' + data);
+  //   }
+  // }
 
-    } else {
-      this.logMessageError('Invalid message format by data. data: ' + data);
-    }
-  }
-
-  private logMessageError(errorMessage: string): void {
-    // Generate the Timestamp
-    const timeInfo = new Date();
-    const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
-
-    const message: Message = {
-      type: MESSAGE_TYPE.error,
-      timestamp: timestamp,
-      data: errorMessage,
-      broadcast: false,
-      senderId: this.userId,
-      recipientId: -1
-    }
-
-    this.messageLog.push(message);
-  }
+  // private logMessageError(errorMessage: string): void {
+  //   // Generate the Timestamp
+  //   const timeInfo = new Date();
+  //   const timestamp = timeInfo.getHours() + ':' + timeInfo.getMinutes();
+  //
+  //   const message: Message = {
+  //     type: MESSAGE_TYPE.error,
+  //     timestamp: timestamp,
+  //     data: errorMessage,
+  //     broadcast: false,
+  //     senderId: this.userId,
+  //     recipientId: -1
+  //   }
+  //
+  //   this.messageLog.push(message);
+  // }
 
   // TODO: Change function name
   private logAndDisplayChat(data: Message): void {
@@ -178,11 +187,11 @@ export class MediaService {
     this.messageLog.push(data);  // Add the message data to the log
   }
 
-  private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
-    peer.createOffer()
-      .then((description: RTCSessionDescriptionInit) => this.createdDescription(peer, recipientID, description))
-      .catch(this.errorHandler);
-  }
+  // private createPeerOffer(peer: RTCPeerConnection, recipientID: number) {
+  //   peer.createOffer()
+  //     .then((description: RTCSessionDescriptionInit) => this.createdDescription(peer, recipientID, description))
+  //     .catch(this.errorHandler);
+  // }
 
   public closedRequestFromServer() {
     this.destroy = true;
@@ -200,27 +209,37 @@ export class MediaService {
 
     // Handle the Session Description Protocol messages
     if (signal.sdp && signal.userId != this.userId && signal.recipientID == this.userId) {
-      const currentPeer: RTCPeerConnection = this.getPeerById(signal.userId);
-      currentPeer.setRemoteDescription(new RTCSessionDescription(signal.sdp))
-        .then(() => {
-          // Only create answers in response to offers
-          if (signal.sdp.type == 'offer') {
-            currentPeer.createAnswer()
-              .then((description: RTCSessionDescriptionInit) => this.createdDescription(currentPeer, signal.userId, description))
-              .catch(this.errorHandler);
-          }
-        })
-        .catch(this.errorHandler);
+      //const currentPeer: RTCPeerConnection = this.getPeerById(signal.userId);
+      //currentPeer.setRemoteDescription(new RTCSessionDescription(signal.sdp))
+      //   .then(() => {
+      //     // Only create answers in response to offers
+      //     if (signal.sdp.type == 'offer') {
+      //       currentPeer.createAnswer()
+      //         .then((description: RTCSessionDescriptionInit) => this.createdDescription(currentPeer, signal.userId, description))
+      //         .catch(this.errorHandler);
+      //     }
+      //   })
+      //   .catch(this.errorHandler);
+      const currentPeer = this.getPeerById(signal.userId);
+      // @ts-ignore
+      currentPeer.setRemoteDescription(
+        new RTCSessionDescription(signal.sdp),
+      signal.sdp.type == 'offer',
+        <WebSocket>this.webSocket  // TODO: Look at this....
+      );
 
       // Handle the ICE server information
     } else if (signal.ice && signal.userId != this.userId && signal.recipientID == this.userId) {
-      const currentPeer: RTCPeerConnection = this.getPeerById(signal.userId);
-      currentPeer.addIceCandidate(new RTCIceCandidate(signal.ice))
-        .catch(this.errorHandler);
+      // const currentPeer: RTCPeerConnection = this.getPeerById(signal.userId);
+      // currentPeer.addIceCandidate(new RTCIceCandidate(signal.ice))
+      //   .catch(this.errorHandler);
+      const currentPeer: Peer = this.getPeerById(signal.userId);
+      currentPeer.addIceCandidate(new RTCIceCandidate(signal.ice));
 
       // Handle the RMI response
     } else if (signal.rmi && this.userId == undefined) {
       this.userId = signal.userId;
+      Peer.setUserID(this.userId);
       this.meetingID = signal.meetingID;
       this.password = signal.password;
       this.userRole = signal.userRole;
@@ -228,8 +247,10 @@ export class MediaService {
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.userId) {
-          const currentPeer: RTCPeerConnection = this.getPeerById2(id, true);
-          this.createPeerOffer(currentPeer, id);
+          //const currentPeer: RTCPeerConnection = this.getPeerById2(id, true);
+          //this.createPeerOffer(currentPeer, id);
+          // @ts-ignore
+          this.getPeerById2(id, true).createPeerOffer(this.webSocket);
         }
       });
     }
@@ -238,7 +259,7 @@ export class MediaService {
         console.log(this.peers[signal.userID]);
         this.peers[signal.userID].close();
         delete this.peers[signal.userID];
-        delete this.remoteStreams[signal.userID];
+        // delete this.remoteStreams[signal.userID];
       }
     }
     else if (signal.role_change) {
@@ -249,14 +270,14 @@ export class MediaService {
 
   // Tries to retrieve peer by id
   // If no such peer exists create it and return
-  private getPeerById(id: number): RTCPeerConnection {
+  private getPeerById(id: number): Peer {//RTCPeerConnection {
     if (id in this.peers) {
       return this.peers[id];
     }
     return this.addNewRTCPeerConnection(id, false);
   }
 
-  private getPeerById2(id: number, initSeq: boolean): RTCPeerConnection {
+  private getPeerById2(id: number, initSeq: boolean): Peer {//RTCPeerConnection {
     if (id in this.peers) {
       return this.peers[id];
     }
@@ -270,92 +291,95 @@ export class MediaService {
   }
 
   // -----------------------------------------------------------------------------
-  public clearMeeting() {
-    this.messageServer(JSON.stringify({res: true}));
-    this.peers = {};
-  }
 
-  private createdDescription(peer: RTCPeerConnection, recipientID: number, description: RTCSessionDescriptionInit): void {
-    peer.setLocalDescription(description)
-      .then(() => this.sendDescription(peer, recipientID))
-      .catch(this.errorHandler);
-  }
+  // private createdDescription(
+  //   peer: RTCPeerConnection,
+  //   recipientID: number,
+  //   description: RTCSessionDescriptionInit
+  // ): void {
+  //   peer.setLocalDescription(description)
+  //     .then(() => this.sendDescription(peer, recipientID))
+  //     .catch(this.errorHandler);
+  // }
 
-  private sendDescription(peer: RTCPeerConnection, recipientID: number): void {
-    const message = JSON.stringify(
-      {
-        sdp: peer.localDescription,
-        userId: this.userId,
-        recipientID: recipientID
-      });
-    this.messageServer(message);
-  }
+  // private sendDescription(peer: RTCPeerConnection, recipientID: number): void {
+  //   const message = JSON.stringify(
+  //     {
+  //       sdp: peer.localDescription,
+  //       userId: this.userId,
+  //       recipientID: recipientID
+  //     });
+  //   this.messageServer(message);
+  // }
 
-  private messageServer(message: string) {
+  private messageServer(message: string): void {
     // TODO: Does this need error handling?
     // @ts-ignore
     return this.webSocket.send(message);
   }
 
-  private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number) {
-    if (event.candidate != null) {
-      // @ts-ignore
-      this.webSocket.send(
-        JSON.stringify(
-          {
-            ice: event.candidate,
-            userId: this.userId,
-            recipientID: recipientID
-          }));
-    }
-  }
+  // private gotIceCandidate(event: RTCPeerConnectionIceEvent, recipientID: number): void {
+  //   if (event.candidate != null) {
+  //     // @ts-ignore
+  //     this.webSocket.send(
+  //       JSON.stringify(
+  //         {
+  //           ice: event.candidate,
+  //           userId: this.userId,
+  //           recipientID: recipientID
+  //         }));
+  //   }
+  // }
 
-  private gotRemoteStream(event: RTCTrackEvent, peerId: number) {
-    if (!(peerId in this.remoteStreams)) {
-      this.remoteStreams[peerId] = new MediaStream();
-    }
+  // private gotRemoteStream(event: RTCTrackEvent, peerId: number): void {
+  //   if (!(peerId in this.remoteStreams)) {
+  //     this.remoteStreams[peerId] = new MediaStream();
+  //   }
+  //
+  //   this.remoteStreams[peerId].addTrack(event.track);
+  //   this.remoteStreams[peerId].getTracks().forEach(track => {
+  //     track.enabled = true;
+  //   });
+  // }
 
-    this.remoteStreams[peerId].addTrack(event.track);
-    this.remoteStreams[peerId].getTracks().forEach(track => {
-      track.enabled = true;
-      // console.log(track);
-    });
-  }
 
+  // private handlePeerConnectionStateChange(event: Event, userID: number): void {
+  //   // console.log('in handle state change');
+  //   // console.log('UserID: '+userID);
+  //   // console.log(event);
+  //
+  //   const peer = this.peers[userID];
+  //   if (peer) {
+  //     switch (peer.connectionState) {
+  //       // Removes the peer and stream from their respective objects if the connection fails
+  //       case "disconnected":
+  //       case "failed":
+  //       case "closed":
+  //         this.peers[userID].close();
+  //         delete this.remoteStreams[userID];
+  //         break;
+  //     }
+  //   }
+  // }
 
-  private handlePeerConnectionStateChange(event: Event, userID: number): void {
-    // console.log('in handle state change');
-    // console.log('UserID: '+userID);
-    // console.log(event);
-
-    const peer = this.peers[userID];
-    if (peer) {
-      switch (peer.connectionState) {
-        // Removes the peer and stream from their respective objects if the connection fails
-        case "disconnected":
-        case "failed":
-        case "closed":
-          this.peers[userID].close();
-          delete this.remoteStreams[userID];
-          break;
-      }
-    }
-  }
-
-  private errorHandler(error: Error) {
+  private errorHandler(error: Error): void {
     console.log(error);
   }
   // ----- End webrtc proto-----
 
-  async loadLocalStream() {
+  async loadLocalStream(): Promise<void> {
     try {
-      this.localstream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+      this.localstream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
+      });
       this.localstream.getTracks().forEach(track => {
         track.enabled = true;
       });
-      // TODO: Improve error handling
+
     } catch (e) {
       console.log(e);
+      this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
     }
   }
 
@@ -364,7 +388,14 @@ export class MediaService {
   }
 
   public getRemoteStreams(): {[key: number]: MediaStream} {
-    return this.remoteStreams;
+    //return this.remoteStreams;
+    const remote: {[key: number]: MediaStream} = {};
+    Object.keys(this.peers).forEach((key: string) => {
+      const id = Number(key);
+      remote[id] = this.peers[id].getRemoteStream();
+    });
+
+    return remote;
   }
 
   public muteLocalVideo(): void {
@@ -391,11 +422,11 @@ export class MediaService {
     });
   }
 
-  public endMeetingForAll(): void{
+  public endMeetingForAll(): void {
     this.messageServer(JSON.stringify({'res': true, 'end': true, 'meetingID': this.meetingID}));
   }
 
-  public leaveMeeting(): void{
+  public leaveMeeting(): void {
     this.messageServer(JSON.stringify({'res': true, 'end': false, 'meetingID': this.meetingID}));
   }
 
@@ -415,15 +446,18 @@ export class MediaService {
   public terminate(): void {
     console.log('Destroy Media Service');
     //Close Peer Connections
-    Object.values(this.peers).forEach(peer => {
+    // Object.values(this.peers).forEach((peer: RTCPeerConnection) => {
+    //   peer.close();
+    // });
+    Object.values(this.peers).forEach((peer: Peer) => {
       peer.close();
     });
     //Close local tracks
-    this.localstream.getTracks().forEach(function(track) {
+    this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
       track.stop();
     });
     //Clear remote streams
-    this.remoteStreams= {};
+    //this.remoteStreams= {};
     // @ts-ignore
     this.webSocket.close();
   }
