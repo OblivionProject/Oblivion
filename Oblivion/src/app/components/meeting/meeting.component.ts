@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef, HostListener} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  OnInit,
+  ChangeDetectorRef,
+  HostListener,
+  AfterViewChecked
+} from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -21,7 +30,7 @@ export interface Message{
   providers: [MediaService, WebsocketService, VideoOrderingService]
 })
 
-export class MeetingComponent implements AfterViewInit, OnInit {
+export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked {
 
   public localStream: MediaStream | undefined;
   private remoteStreams: {[key: number]: MediaStream};
@@ -41,6 +50,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
+  public messages: string[] = [];
+  public messageWidth: any;
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -100,6 +111,13 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     });
   }
 
+  ngAfterViewChecked(): void {
+    try {
+      this.elem.nativeElement.querySelectorAll('.messagebox')[0].scrollTop = this.elem.nativeElement.querySelectorAll('.messagebox')[0].scrollHeight;
+    }
+    catch(err) { }
+  }
+
   terminate() {
     this.mediaService.terminate();
   }
@@ -121,6 +139,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
@@ -131,11 +150,12 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   onResize() {
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.videoOrderingService.setVideosSizing(window.innerWidth);
+    this.videoOrderingService.setTiles();
+    this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
+    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
 
-    // this.videoOrderer.setVideosSizing(window.innerWidth);
-    // this.videoOrderer.setTiles();
-    // this.video_height = this.videoOrderer.dynamicHeightSizer(window.innerHeight,this.height,sizing);
-    // this.video_width = this.videoOrderer.dynamicWidthSizer(this.video_height);
   }
 
 
@@ -143,7 +163,8 @@ export class MeetingComponent implements AfterViewInit, OnInit {
   public sendChat(input: string): void {
     // const chatElement = document.getElementById("chatInput");
     if (input != null) {
-      this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
+      this.messages.push(input);
+      //this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
       this.message = '';
     }
   }
@@ -275,7 +296,7 @@ export class MeetingComponent implements AfterViewInit, OnInit {
       height: '200px',
       position: {
         left: '0px',
-        bottom: '15px'
+        bottom: '2em'
       },
       data: {
         meeting_id: this.meetingInfo.meeting_id,

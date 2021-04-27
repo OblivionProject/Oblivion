@@ -204,6 +204,20 @@ export class VideoOrderingService {
     }
   }
 
+  public setMessageWidth(width:number):number{
+    console.log("MATHEW WIDTH IS " + width);
+    switch(this.mode) {
+      case Modes.SM:
+        return width;
+      case Modes.MD:
+        return width / 2;
+      case Modes.LG:
+        return width / 3;
+      default:
+        return width / 3;
+    }
+  }
+
   public dynamicWidthSizer(height:number): number{
     if(this.mode == Modes.SM){
       return (4*height)/3;

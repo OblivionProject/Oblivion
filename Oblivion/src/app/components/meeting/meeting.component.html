@@ -2,56 +2,55 @@
   <mat-sidenav-container class="sidenav-cont">
 
     <mat-drawer-container>
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
-        <form class="messagebox">
-        <mat-grid-list cols="2">
-          <mat-list dense *ngFor="let message of this.getChatLog()">
-          <mat-grid-tile class="messagesSENDGrid">
-              <mat-list-item  class="message" >
-                <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
-                  <mat-card-header>
-                    <mat-icon mat-card-avatar>call_made</mat-icon>
-                    <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-                  </mat-card-header>
-                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
-                </mat-card>
-                </mat-list-item>
-          </mat-grid-tile>
-          <mat-grid-tile class="messagesRECIVEGrid">
-              <mat-list-item class="message">
-                <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
+      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false" [style.width.px]="messageWidth">
+        <mat-list class="messagebox" role="list">
+          <mat-list-item *ngFor="let message of this.messages" role="listitem">
+            <div matLine>
+              <mat-card class ="messagesSEND">
                 <mat-card-header>
-                  <mat-icon mat-card-avatar>call_received</mat-icon>
-                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  <mat-icon mat-card-avatar>call_made</mat-icon>
+<!--                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
+                  <mat-card-content>{{message}}</mat-card-content>
                 </mat-card-header>
-                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
               </mat-card>
-              </mat-list-item>
-          </mat-grid-tile>
-          </mat-list>
-        </mat-grid-list>
-        </form>
+            </div>
+
+<!--            <mat-card class="messages" id="messagesSEND" >-->
+<!--              <mat-card-header>-->
+<!--                <mat-icon mat-card-avatar>call_made</mat-icon>-->
+<!--                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
+<!--                <mat-card-content>{{message}}</mat-card-content>-->
+<!--              </mat-card-header>-->
+<!--            </mat-card>-->
+<!--            <mat-card class="messages" id="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">-->
+<!--              <mat-card-header>-->
+<!--                <mat-icon mat-card-avatar>call_received</mat-icon>-->
+<!--                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
+<!--                <mat-card-content>{{this.printChat(message)}}</mat-card-content>-->
+<!--              </mat-card-header>-->
+<!--            </mat-card>-->
+          </mat-list-item>
+        </mat-list>
         <mat-divider></mat-divider>
 
         <form class="chatInput">
-          <mat-form-field appearance="fill">
-            <mat-label>Send Message To:</mat-label>
-            <mat-select>
-              <mat-option *ngFor="let user of users"[value]="user">
-                {{user}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+<!--          <mat-form-field appearance="fill">-->
+<!--            <mat-label>Send Message To:</mat-label>-->
+<!--            <mat-select>-->
+<!--              <mat-option *ngFor="let user of users"[value]="user">-->
+<!--                {{user}}-->
+<!--              </mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
 
-          <mat-form-field class="example-full-width">
+          <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
-            <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
             <mat-hint align="end" >{{message.value.length}} / 256</mat-hint>
+            <button class="sendbutton" matSuffix mat-button color="primary" (click)="sendChat(message.value)" >
+              <mat-icon>send</mat-icon>
+            </button>
           </mat-form-field>
-          <button class="sendbutton" mat-button color="primary"(click)="sendChat(message.value)" >
-            <mat-icon>send</mat-icon>
-          </button>
         </form>
       </mat-drawer>
 
