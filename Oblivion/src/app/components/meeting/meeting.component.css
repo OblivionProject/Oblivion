@@ -124,7 +124,6 @@ p.video-description{
 }
 
 .messagebox{
-  height: 78%;
   width: 100%;
   overflow-y: auto;
 }
@@ -133,7 +132,7 @@ p.video-description{
   width: 95%;
   word-break: break-word !important;
   hyphens: auto !important;
-  background-color: grey !important;
+  background-color: #53e3a6 !important;
 }
 
 .messagesRECIVE{
@@ -144,8 +143,12 @@ p.video-description{
 }
 
 .chatInput{
+  border-top: grey;
+  border-top-style: groove;
+  padding-top: 5px;
   width: 100%;
   bottom: 0 !important;
+  position: absolute;
   padding-bottom: 0 !important;
   margin-bottom: 0!important;
 }
@@ -179,7 +182,7 @@ p.video-description{
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #53e3a6;
+  background: #50a3a2;
 }
 
 /*========*/

@@ -2,37 +2,27 @@
   <mat-sidenav-container class="sidenav-cont">
 
     <mat-drawer-container>
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false" [style.width.px]="messageWidth">
-        <mat-list class="messagebox" role="list">
-          <mat-list-item *ngFor="let message of this.messages" role="listitem">
+      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false" [style.width.px]="messageWidth" [style.height.px]="height">
+        <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
+          <mat-list-item dense *ngFor="let message of this.getChatLog()" role="listitem">
             <div matLine>
-              <mat-card class ="messagesSEND">
+              <mat-card class ="messagesSEND" *ngIf="this.getOrigin(message)=='SEND'">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_made</mat-icon>
-<!--                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
-                  <mat-card-content>{{message}}</mat-card-content>
+                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+                </mat-card-header>
+              </mat-card>
+              <mat-card class ="messagesRECIVE" *ngIf="this.getOrigin(message)=='RECEIVED'">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>call_received</mat-icon>
+                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
                 </mat-card-header>
               </mat-card>
             </div>
-
-<!--            <mat-card class="messages" id="messagesSEND" >-->
-<!--              <mat-card-header>-->
-<!--                <mat-icon mat-card-avatar>call_made</mat-icon>-->
-<!--                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
-<!--                <mat-card-content>{{message}}</mat-card-content>-->
-<!--              </mat-card-header>-->
-<!--            </mat-card>-->
-<!--            <mat-card class="messages" id="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">-->
-<!--              <mat-card-header>-->
-<!--                <mat-icon mat-card-avatar>call_received</mat-icon>-->
-<!--                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>-->
-<!--                <mat-card-content>{{this.printChat(message)}}</mat-card-content>-->
-<!--              </mat-card-header>-->
-<!--            </mat-card>-->
           </mat-list-item>
         </mat-list>
-        <mat-divider></mat-divider>
-
         <form class="chatInput">
 <!--          <mat-form-field appearance="fill">-->
 <!--            <mat-label>Send Message To:</mat-label>-->

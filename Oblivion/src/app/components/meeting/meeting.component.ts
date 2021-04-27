@@ -50,8 +50,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
-  public messages: string[] = [];
   public messageWidth: any;
+  public messageHeight: any;
 
   constructor(private mediaService: MediaService,
               public dialog: MatDialog,
@@ -144,6 +144,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
     this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
   }
 
   @HostListener('window:resize')
@@ -155,7 +156,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.video_height = this.videoOrderingService.dynamicHeightSizer(window.innerHeight,this.height,sizing);
     this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
-
+    this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight - 12;
   }
 
 
@@ -163,8 +164,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public sendChat(input: string): void {
     // const chatElement = document.getElementById("chatInput");
     if (input != null) {
-      this.messages.push(input);
-      //this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
+      this.mediaService.sendChat(input);  // Needs to be casted to a input element for the value method
       this.message = '';
     }
   }
