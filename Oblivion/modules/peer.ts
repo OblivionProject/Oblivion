@@ -57,8 +57,8 @@ export class Peer {
 
   // TODO: Add a return type of boolean to make sure it sends or add error checking?
   public sendMessage(message: Message): void {
-    console.log(this.dataChannel.readyState);
     if (this.dataChannel.readyState === "open") {
+      this.messageLog.push(message);
       this.dataChannel.send(JSON.stringify(message));
     }
   }
@@ -68,7 +68,7 @@ export class Peer {
   }
 
   public close(): void {
-    this.peer.close();  // Close the RTCPeerConnection
+    this.peer.close();
   }
 
   public createPeerOffer(webSocket: WebSocket): void {
@@ -87,19 +87,15 @@ export class Peer {
     isOffer: boolean,
     webSocket: WebSocket
   ): void {
-    console.log('In setRemoteDescription');
-    console.log(description);
-    console.log(isOffer);
-    console.log(this.peer.localDescription);
     this.peer.setRemoteDescription(description)
       .then(() => {
         if (isOffer) {
           this.peer.createAnswer()
             .then((descriptionInit: RTCSessionDescriptionInit) => this.createdDescription(descriptionInit, webSocket))
-            .catch((error) => console.log(error));
+            .catch(this.errorHandler);
         }
       })
-      .catch((error) => console.log(error));  // TODO: Add error handler
+      .catch(this.errorHandler);
   }
 
   private createdDescription(description: RTCSessionDescriptionInit, webSocket: WebSocket): void {
@@ -115,8 +111,6 @@ export class Peer {
         userId: Peer.userID,
         recipientID: this.peerId
       });
-    console.log('Send Description: ');
-    console.log(message);
     webSocket.send(message);
   }
 
@@ -169,7 +163,6 @@ export class Peer {
 
   private receivedChat(event: MessageEvent): void {
     const data = JSON.parse(event.data);
-    console.log(data);
     if (verifyMessageFormat(data)) {
       const message = <Message>data;
       this.logMessage(message);

@@ -152,14 +152,14 @@ export class MeetingComponent implements AfterViewInit, OnInit {
 
   // Returns an array of the remote MediaStreams
   public getRemoteStreams(): MediaStream[] {
-    return Object.values(this.remoteStreams);
+    return Object.values(this.mediaService.getRemoteStreams());
   }
 
-  // The functions in this section are intended for development use only
-  public TEST() {
-    console.log(Object.keys(this.mediaService.getPeers()).length);
-    console.log(this.mediaService.getPeers());
-  }
+  // // The functions in this section are intended for development use only
+  // public TEST() {
+  //   console.log(Object.keys(this.mediaService.getPeers()).length);
+  //   console.log(this.mediaService.getPeers());
+  // }
 
   public setMeetingInfo(): MeetingInfo {
     this.meetingInfo = this.mediaService.getMeetingInfo();
