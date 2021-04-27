@@ -105,15 +105,29 @@ describe('CreateMeetingComponent', () => {
     }
   });
 
-  //TODO: Fix
-  // it('should contain a create meeting button that calls createMeeting', fakeAsync(() => {
-  //   spyOn(component, 'createMeeting');
-  //
-  //   const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_submit');
-  //   expect(button.innerHTML).toEqual('Create');
-  //
-  //   button.click();
-  //   tick();
-  //   expect(component.createMeeting).toHaveBeenCalled();
-  // }));
+  // TODO: Fix
+  it('should contain a create meeting button that calls createMeeting', fakeAsync(() => {
+    spyOn(component, 'createMeeting');
+    const val = fixture.debugElement.nativeElement.querySelector('#meeting_name_input');
+    component.createMeetingForm.controls.meetingName.setValue('123456');
+    val.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_submit');
+    expect(button.innerHTML).toEqual('Create');
+
+    button.click();
+    tick();
+    expect(component.createMeeting).toHaveBeenCalled();
+  }));
+
+  it('should contain a create meeting button that does not call createMeeting', fakeAsync(() => {
+    spyOn(component, 'createMeeting');
+
+    const button = fixture.debugElement.nativeElement.querySelector('#create_meeting_submit');
+    expect(button.innerHTML).toEqual('Create');
+
+    button.click();
+    tick();
+    expect(component.createMeeting).not.toHaveBeenCalled();
+  }));
 });
