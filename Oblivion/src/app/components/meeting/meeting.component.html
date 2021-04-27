@@ -1,65 +1,80 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <mat-sidenav-container class="sidenav-cont">
 
-    <mat-drawer-container autosize >
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false">
-
-        <form class="messagebox">
-          <mat-list-item class="message"  *ngFor="let message of this.getChatLog()">
-            <mat-card class="messagesSEND"  *ngIf="this.getOrigin(message)=='SEND'">
-              <mat-card-header>
-               <mat-icon mat-card-avatar>call_made</mat-icon>
-              <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-              <mat-card-content>{{this.printChat(message)}}</mat-card-content>
-              </mat-card-header>
-            </mat-card>
-            <mat-card class="messagesRECIVE"  *ngIf="this.getOrigin(message)=='RECEIVED'">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>call_received</mat-icon>
-                <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
-                <mat-card-content>{{this.printChat(message)}}</mat-card-content>
-              </mat-card-header>
-            </mat-card>
+    <mat-drawer-container>
+      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chatOpen" (opened)="chatOpen=true" (closed)="chatOpen=false" [style.width.px]="messageWidth" [style.height.px]="height">
+        <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
+          <mat-list-item dense *ngFor="let message of this.getChatLog()" role="listitem">
+            <div matLine>
+              <mat-card class ="messagesSEND" *ngIf="this.getOrigin(message)=='SEND'">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>call_made</mat-icon>
+                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+                </mat-card-header>
+              </mat-card>
+              <mat-card class ="messagesRECIVE" *ngIf="this.getOrigin(message)=='RECEIVED'">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>call_received</mat-icon>
+                  <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
+                  <mat-card-content>{{this.printChat(message)}}</mat-card-content>
+                </mat-card-header>
+              </mat-card>
+            </div>
           </mat-list-item>
-        </form>
-
+        </mat-list>
         <form class="chatInput">
-          <mat-form-field class="example-full-width">
+<!--          <mat-form-field appearance="fill">-->
+<!--            <mat-label>Send Message To:</mat-label>-->
+<!--            <mat-select>-->
+<!--              <mat-option *ngFor="let user of users"[value]="user">-->
+<!--                {{user}}-->
+<!--              </mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+
+          <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
-            <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
             <mat-hint align="end" >{{message.value.length}} / 256</mat-hint>
+            <button class="sendbutton" matSuffix mat-button color="primary" (click)="sendChat(message.value)" >
+              <mat-icon>send</mat-icon>
+            </button>
           </mat-form-field>
-          <button class="sendbutton" mat-button color="primary"(click)="sendChat(message.value)" >
-            <mat-icon>send</mat-icon>
-          </button>
         </form>
-
-
       </mat-drawer>
 
       <mat-drawer-content class="videoGrid">
-    <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" style="height: 820px">
-      <mat-grid-tile
-        [colspan]="tile.cols"
-        [rowspan]="tile.rows">
-        <p class="video video-description"></p>
-        <video #local_video [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
+        <button *ngIf="show_right" mat-fab  aria-label="Move Right" class="move_video_buttons" id="move_right" (click)="moveRight()">
+          <mat-icon>arrow_forward_ios</mat-icon>
+        </button>
+        <button *ngIf="show_left" mat-fab aria-label="Move Left" class="move_video_buttons" id="move_left" (click)="moveLeft()">
+          <mat-icon>arrow_back_ios_new</mat-icon>
+        </button>
 
-      <!-- Remote videos -->
-      <mat-grid-tile *ngFor="let vid of getRemoteStreams()">
-        <p class="video video-description">Other</p>
-        <video [srcObject]="vid" [autoplay]="true" [muted]="false"></video>
-      </mat-grid-tile>
-    </mat-grid-list>
+
+          <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
+            <mat-grid-tile *ngFor="let vid of getStreams()"
+                           [colspan]="this.tile.cols"
+                           [rowspan]="this.tile.rows"
+                           class="tile">
+              <p class="video video-description">Other</p>
+              <video [srcObject]="vid"
+                     [autoplay]="true"
+                     [muted]="true"
+                     [style.height.px]="video_height"
+                     [style.width.px]="video_width"
+                     class="video"></video>
+            </mat-grid-tile>
+          </mat-grid-list>
       </mat-drawer-content>
     </mat-drawer-container>
+
   </mat-sidenav-container>
 
   <!-- This template displays the overlay content and is connected to the button -->
 
-  <footer class="footer">
+  <mat-sidenav-container class = "meeting_container" id = "sticky_footer">
     <mat-toolbar id = "footer">
       <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" class = "meeting_buttons">
         <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
@@ -67,11 +82,11 @@
       <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
         <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
       </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="drawer.toggle()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="!displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
+      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
       <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons"><mat-icon>info</mat-icon></button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
       <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
     </mat-toolbar>
-  </footer>
+  </mat-sidenav-container>
 </mat-sidenav-container>
 
