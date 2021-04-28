@@ -5,7 +5,7 @@
     <li *ngIf="data.name">
       <span>Name: </span><span [innerHTML]='data.name'></span>
     </li>
-    <li *ngIf="data.user.getRole()">
+    <li *ngIf="data.user">
       <span>User Type: </span><span [innerHTML]='data.user.getRole()'></span>
     </li>
     <li *ngIf="data.meeting_id">

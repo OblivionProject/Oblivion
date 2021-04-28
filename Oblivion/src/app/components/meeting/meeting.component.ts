@@ -293,12 +293,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
         left: '0px',
         bottom: '2em'
       },
-      data: {
-        meeting_id: this.meetingInfo.meeting_id,
-        user_type: this.meetingInfo.user.getRole(),
-        password: this.meetingInfo.password,
-        name: this.meetingInfo.name
-      }
+      data: this.meetingInfo
     });
   }
 
