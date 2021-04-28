@@ -160,6 +160,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.adjustWindowSizing();
   }
 
+  @HostListener('window:beforeunload')
+  async beforeUnloadHandler(){
+    await this.leaveMeeting();
+    await this.terminate();
+  }
+
   public toggleDrawer():void{
     this.chat = !this.chat;
     this.videoOrderingService.showChat = this.chat;
