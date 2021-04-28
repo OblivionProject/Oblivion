@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const credentials = {
-    key: fs.readFileSync(''),
-    cert: fs.readFileSync(''),
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert'),
 }
 
 
