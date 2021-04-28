@@ -21,7 +21,7 @@ export class MediaService {
   private localstream!: MediaStream;  // Local video
   private peers: {[key: number]: Peer};
   private messageLog: Message[];
-
+  public messageSubject : Subject<any> = new Subject<any>();
   private unreadMessageCount: number;
 
   constructor(private websocketService: WebsocketService, private sharedService: MeetingStateService) {
@@ -72,6 +72,7 @@ export class MediaService {
 
   public receivedMessage(message: Message) {
     this.messageLog.push(message);
+    this.messageSubject.next(message);
   }
 
   public sendChat(msg: string, recipientId?: number): void {

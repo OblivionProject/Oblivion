@@ -1,7 +1,7 @@
-<mat-sidenav-container class = "sidenav-cont-cont">
-  <mat-sidenav-container class="sidenav-cont">
+<mat-sidenav-container class = "sidenav-cont-cont" [style.height.px]="overall_height">
+  <mat-sidenav-container class="sidenav-cont" [style.height.px]="height">
     <mat-drawer-container>
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
+      <mat-drawer class="chatbox" mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
         <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
           <mat-list-item dense *ngFor="let message of this.mediaService.getMessageLog()" role="listitem">
             <div matLine>

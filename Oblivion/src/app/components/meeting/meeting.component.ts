@@ -40,6 +40,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
+  public overall_height: any;
   //public video_width: any;
   public video_height: any;
   public show_right:boolean;
@@ -104,6 +105,9 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
       this.show_left = value;
       this.cdref.detectChanges();
     });
+    this.mediaService.messageSubject.subscribe( value => {
+      this.cdref.detectChanges();
+    });
   }
 
   public ngAfterViewChecked(): void {
@@ -129,6 +133,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.overall_height = window.innerHeight - sizing;
+    this.overall_height = window.innerHeight - sizing;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
@@ -147,6 +153,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.overall_height = window.innerHeight - sizing;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
