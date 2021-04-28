@@ -184,6 +184,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     // TODO: Verify that the chat isn't too long
     if (input != null) {
       this.mediaService.sendChat(input);
+      this.elem.nativeElement.querySelectorAll('.mat-input-element')[0].value = '';
     }
   }
 
