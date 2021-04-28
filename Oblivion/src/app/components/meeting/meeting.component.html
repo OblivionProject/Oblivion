@@ -51,7 +51,7 @@
               <p class="video video-description">Other</p>
               <video [srcObject]="vid"
                      [autoplay]="true"
-                     [muted]="false"
+                     [muted]="vid===localStream"
                      [style.height.px]="video_height"
                      [style.width.px]="video_width"
                      class="video"></video>
