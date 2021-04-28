@@ -253,6 +253,9 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
       this.videoOrderingService.setTiles();
     }
     if (this.localStream != undefined) {
+      this.localStream.getAudioTracks().forEach((track: MediaStreamTrack) => {
+        track.enabled = false;
+      });
       return ([this.localStream].concat(this.getRemoteStreams()).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index));
     } else {
       return [];
