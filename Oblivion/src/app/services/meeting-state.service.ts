@@ -4,7 +4,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MeetingStateService {
-  meetingID: number | undefined;
+  public meetingID: number | undefined;
+  public userName: string | undefined;
+  public audio: boolean;
+  public video: boolean;
+  public cancel:boolean;
 
-  constructor() { }
+  constructor() {
+    this.userName = '';
+    this.audio = true;
+    this.video = true;
+    this.cancel = false;
+  }
 }
