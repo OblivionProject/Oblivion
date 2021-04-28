@@ -175,6 +175,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // TODO: Add recipient ID option
   public sendChat(input: string): void {
+    console.log(this.getAudioStreams());  //TODO: DELETE THIS FOR TESTING
     // TODO: Verify that the chat isn't too long
     if (input != null) {
       this.mediaService.sendChat(input);
@@ -263,6 +264,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     } else {
       return [];
     }
+  }
+
+  public getAudioStreams(): MediaStream[] {
+    return this.getRemoteStreams().filter((stream: MediaStream) => !this.getStreams().includes(stream));
   }
 
   public setMeetingInfo(): MeetingInfo {

@@ -151,7 +151,7 @@ export class MediaService {
     }
 
     else if (signal.res) {
-      if(signal.left){
+      if (signal.left){
         console.log(this.peers[signal.userID]);
         this.peers[signal.userID].close();
         delete this.peers[signal.userID];

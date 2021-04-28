@@ -61,6 +61,10 @@
 
   </mat-sidenav-container>
 
+  <div *ngFor="let audio of getAudioStreams()">
+    <audio [srcObject]="audio" [muted]="false" [autoplay]="true"></audio>
+  </div>
+
   <!-- This template displays the overlay content and is connected to the button -->
 
   <mat-sidenav-container class = "meeting_container" id = "sticky_footer">
