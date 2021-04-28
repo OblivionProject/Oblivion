@@ -22,7 +22,7 @@
             </div>
           </mat-list-item>
         </mat-list>
-        <form class="chatInput">
+        <form class="chatInput" autocomplete="off">
           <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
