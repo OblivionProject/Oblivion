@@ -1,8 +1,9 @@
 import {Message, MESSAGE_TYPE, verifyMessageFormat} from "./message";
+import {User} from "./user";
 
 export class Peer {
 
-  private static userID: number;  // This users ID shared by all Peers
+  private static user: User;  // This user shared by all peers
   private peer: RTCPeerConnection;
   private remoteStream: MediaStream;
   private dataChannel!: RTCDataChannel;
@@ -34,14 +35,15 @@ export class Peer {
     this.peer = new RTCPeerConnection(this.peerConnectionConfig);
     this.peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => this.gotIceCandidate(event, webSocket);
     this.peer.ontrack = (event: RTCTrackEvent) => this.gotRemoteStream(event);
-    this.peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event);
+    this.peer.onconnectionstatechange = (event: Event) => this.handlePeerConnectionStateChange(event, webSocket);
+    this.peer.oniceconnectionstatechange = (event: Event) => this.handleIceConnectionStateChange(event, webSocket);
     localStream.getTracks().forEach((track: MediaStreamTrack) => {
       this.peer.addTrack(track);  // Add The local audio and video tracks to the peer connection
     });
 
     // Only create the data channel if we are initializing it.
     if (initSeq) {
-      const dataChannelLabel = Peer.userID + '-' + this.peerId;
+      const dataChannelLabel = Peer.user.getUserID() + '-' + this.peerId;
       this.dataChannel = this.peer.createDataChannel(dataChannelLabel);
       this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
       this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
@@ -52,8 +54,8 @@ export class Peer {
     }
   }
 
-  public static setUserID(userID: number): void {
-    this.userID = userID;
+  public static setUser(user: User): void {
+    this.user = user;
   }
 
   // TODO: Add a return type of boolean to make sure it sends or add error checking?
@@ -109,7 +111,7 @@ export class Peer {
     const message = JSON.stringify(
       {
         sdp: this.peer.localDescription,
-        userId: Peer.userID,
+        userId: Peer.user.getUserID(),
         recipientID: this.peerId
       });
     webSocket.send(message);
@@ -124,7 +126,7 @@ export class Peer {
         JSON.stringify(
           {
             ice: event.candidate,
-            userId: Peer.userID,
+            userId: Peer.user.getUserID(),
             recipientID: this.peerId
           }));
     }
@@ -137,14 +139,32 @@ export class Peer {
     });
   }
 
-  private handlePeerConnectionStateChange(event: Event): void {
-    switch (this.peer.connectionState) {
-      // Removes the peer and stream from their respective objects if the connection fails
-      case "disconnected":
+  private handleIceConnectionStateChange(event: Event, webSocket: WebSocket): void {
+    switch (this.peer.iceConnectionState) {
       case "failed":
+      case "disconnected":
+        this.iceRestart(webSocket);  // Attempt to restart the connection
+        break;
       case "closed":
-        this.peer.close();
+        this.peer.close();  // Removes the peer and stream from their respective objects if the connection fails
     }
+  }
+
+  private handlePeerConnectionStateChange(event: Event, webSocket: WebSocket): void {
+    switch (this.peer.connectionState) {
+      case "failed":
+      case "disconnected":
+        this.iceRestart(webSocket);  // Attempt to restart the connection
+        break;
+      case "closed":
+        this.peer.close();  // Removes the peer and stream from their respective objects if the connection fails
+    }
+  }
+
+  private iceRestart(webSocket: WebSocket): void {
+    this.peer.createOffer({iceRestart: true})
+      .then((description: RTCSessionDescriptionInit) => this.createdDescription(description, webSocket))
+      .catch(this.errorHandler);
   }
 
   private handleDataChannelStatusChange(event: Event): void {
@@ -164,7 +184,7 @@ export class Peer {
 
   private receivedChat(event: MessageEvent, notify: (message: Message) => void): void {
     const data = JSON.parse(event.data);
-    console.log(data);
+
     if (verifyMessageFormat(data)) {
       const message = <Message>data;
       notify(message);
@@ -189,8 +209,7 @@ export class Peer {
       timestamp: timestamp,
       data: errorMessage,
       broadcast: false,
-      senderId: -1,
-      recipientId: -1
+      senderId: Peer.user.getUserID()
     }
 
     this.logMessage(message);

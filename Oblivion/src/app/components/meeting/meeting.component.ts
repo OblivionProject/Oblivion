@@ -33,7 +33,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public tile: TitleModel;
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
-  public meetingInfo: MeetingInfo;
+  public meetingInfo!: MeetingInfo;
   public overrideGuard: boolean;
   public unReadMessageCount: number;
   public readMessageCount: number;
@@ -61,7 +61,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
-    this.meetingInfo = new MeetingInfo();
     this.overrideGuard = false;
     this.unReadMessageCount = 0;
     this.readMessageCount = 0;
@@ -182,7 +181,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // TODO: Add recipient ID option
   public sendChat(input: string): void {
-    console.log(this.getAudioStreams());  //TODO: DELETE THIS FOR TESTING
     // TODO: Verify that the chat isn't too long
     if (input != null) {
       this.mediaService.sendChat(input);
@@ -297,7 +295,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
       },
       data: {
         meeting_id: this.meetingInfo.meeting_id,
-        user_type: this.meetingInfo.user_type,
+        user_type: this.meetingInfo.user.getRole(),
         password: this.meetingInfo.password,
         name: this.meetingInfo.name
       }
