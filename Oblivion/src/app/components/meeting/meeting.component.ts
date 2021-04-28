@@ -40,7 +40,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
-  public video_width: any;
+  //public video_width: any;
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
@@ -93,7 +93,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
       this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-      this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+      //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });
     this.videoOrderingService.isRightButtonShown.subscribe( value => {
@@ -132,7 +132,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
   }
@@ -150,7 +150,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
   }
