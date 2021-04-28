@@ -1,5 +1,5 @@
 .video{
-  object-fit: fill;
+  width: 100% !important;
 }
 
 #sticky_footer{
