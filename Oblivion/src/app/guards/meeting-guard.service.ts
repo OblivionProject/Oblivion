@@ -28,7 +28,7 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
     this.confirmDlg = this.dialog.open(ConfirmEndMeetingComponent, {
       disableClose: true,
       data: {
-        userRole: component.meetingInfo.user_type
+        userRole: component.meetingInfo.user.getRole()
       },
       height: '500px',
       width: '450px',

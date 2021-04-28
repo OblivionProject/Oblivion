@@ -1,7 +1,7 @@
-<mat-sidenav-container class = "sidenav-cont-cont">
-  <mat-sidenav-container class="sidenav-cont">
+<mat-sidenav-container class = "sidenav-cont-cont" [style.height.px]="overall_height">
+  <mat-sidenav-container class="sidenav-cont" [style.height.px]="height">
     <mat-drawer-container>
-      <mat-drawer class="chatbox" #drawer mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
+      <mat-drawer class="chatbox" mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
         <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
           <mat-list-item dense *ngFor="let message of this.mediaService.getMessageLog()" role="listitem">
             <div matLine>
@@ -22,7 +22,7 @@
             </div>
           </mat-list-item>
         </mat-list>
-        <form class="chatInput">
+        <form class="chatInput" autocomplete="off">
           <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
@@ -53,7 +53,6 @@
                      [autoplay]="true"
                      [muted]="vid===localStream"
                      [style.height.px]="video_height"
-                     [style.width.px]="video_width"
                      class="video"></video>
             </mat-grid-tile>
           </mat-grid-list>
@@ -61,6 +60,10 @@
     </mat-drawer-container>
 
   </mat-sidenav-container>
+
+  <div *ngFor="let audio of getAudioStreams()">
+    <audio [srcObject]="audio" [muted]="false" [autoplay]="true"></audio>
+  </div>
 
   <!-- This template displays the overlay content and is connected to the button -->
 

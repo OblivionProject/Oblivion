@@ -33,14 +33,15 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public tile: TitleModel;
   public video: boolean; // Flag for if video is on or off
   public audio: boolean; // Flag for if audio is on or off
-  public meetingInfo: MeetingInfo;
+  public meetingInfo!: MeetingInfo;
   public overrideGuard: boolean;
   public unReadMessageCount: number;
   public readMessageCount: number;
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
-  public video_width: any;
+  public overall_height: any;
+  //public video_width: any;
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
@@ -60,7 +61,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.audio = true;
     this.chat = false;
     this.remoteStreams = {};
-    this.meetingInfo = new MeetingInfo();
     this.overrideGuard = false;
     this.unReadMessageCount = 0;
     this.readMessageCount = 0;
@@ -93,7 +93,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
       this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-      this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+      //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });
     this.videoOrderingService.isRightButtonShown.subscribe( value => {
@@ -102,6 +102,9 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     });
     this.videoOrderingService.isLeftButtonShown.subscribe( value => {
       this.show_left = value;
+      this.cdref.detectChanges();
+    });
+    this.mediaService.messageSubject.subscribe( value => {
       this.cdref.detectChanges();
     });
   }
@@ -129,10 +132,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.overall_height = window.innerHeight - sizing;
+    this.overall_height = window.innerHeight - sizing;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
   }
@@ -147,10 +152,11 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     //Window Sizing
     const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
     this.height = window.innerHeight - sizing*2;
+    this.overall_height = window.innerHeight - sizing;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
-    this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
+    //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
     this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
   }
@@ -158,6 +164,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   @HostListener('window:resize')
   public onResize(): void {
     this.adjustWindowSizing();
+  }
+
+  @HostListener('window:beforeunload')
+  async beforeUnloadHandler(){
+    await this.leaveMeeting();
+    await this.terminate();
   }
 
   public toggleDrawer():void{
@@ -259,6 +271,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     }
   }
 
+  public getAudioStreams(): MediaStream[] {
+    return this.getRemoteStreams().filter((stream: MediaStream) => !this.getStreams().includes(stream));
+  }
+
   public setMeetingInfo(): MeetingInfo {
     this.meetingInfo = this.mediaService.getMeetingInfo();
     return this.meetingInfo;
@@ -279,7 +295,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
       },
       data: {
         meeting_id: this.meetingInfo.meeting_id,
-        user_type: this.meetingInfo.user_type,
+        user_type: this.meetingInfo.user.getRole(),
         password: this.meetingInfo.password,
         name: this.meetingInfo.name
       }

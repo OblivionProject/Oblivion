@@ -1,7 +1,3 @@
-.video{
-  object-fit: fill;
-}
-
 #sticky_footer{
   height: 4rem;
   width: 100%;
@@ -18,18 +14,16 @@
 
 #move_right{
   position: absolute;
-  margin: auto;
+  margin-right: 1px;
   top: 50%;
-  left: 97%;
-  transform: translate(-50%, -50%);
+  right: 0;
 }
 
 #move_left{
   position: absolute;
-  margin: auto;
   top: 50%;
-  left: 3%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  margin-left: 1px;
 }
 
 .move_video_buttons:hover{
@@ -50,7 +44,6 @@ p.video-description{
 
 
 .sidenav-cont{
-  height: 90%;
   width: 100%;
 }
 
@@ -187,4 +180,9 @@ p.video-description{
 
 .videoGrid{
   background-color: #333333;
+  padding: 0!important;
+}
+
+.mat-drawer-content{
+  padding: 0!important;
 }
