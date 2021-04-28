@@ -9,6 +9,9 @@ import {ErrorStateMatcher} from '@angular/material/core';
 import {Router} from "@angular/router";
 import {MeetingStateService} from "../../services/meeting-state.service";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {MatDialog} from "@angular/material/dialog";
+import {MeetingInfoDialogComponent} from "../meeting-info-dialog/meeting-info-dialog.component";
+import {UserEnterMeetingSettingsComponent} from "../user-enter-meeting-settings/user-enter-meeting-settings.component";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -49,7 +52,11 @@ export class CreateMeetingComponent {
   public advanceOption = false;
 
   // Initializes the WebSocket from the WebsocketService and creates the meeting
-  constructor(private websocketService: WebsocketService, private fb: FormBuilder, private router: Router, private sharedService: MeetingStateService) {
+  constructor(private websocketService: WebsocketService,
+              private fb: FormBuilder,
+              private router: Router,
+              private sharedService: MeetingStateService,
+              public dialog: MatDialog,) {
     this.webSocket = websocketService.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedCreateMeetingSuccess(message);
     this.meeting = new Meeting(MEETING_TYPE.CREATE);
@@ -106,10 +113,6 @@ export class CreateMeetingComponent {
       return errorString;
     }
 
-    // if (!hasNumber && !hasMin){
-    //   errorString = hasNumberString + '\n' + hasMinString;
-    //   return errorString;
-    // }
     if (!hasNumber){
       errorString = hasNumberString;
       return errorString;
@@ -174,13 +177,13 @@ export class CreateMeetingComponent {
     }, 1000);
   }
 
-  displayIssues(value: string): void  {
+  public displayIssues(value: string): void  {
     this.doneTyping = true;
-}
+  }
 
 
   /// EMAIL STUFF
-  createSignupForm(formBuilder: FormBuilder): FormGroup {
+  public createSignupForm(formBuilder: FormBuilder): FormGroup {
     return formBuilder.group({
       meetingName: new FormControl('', [Validators.required]),
       email: new FormControl('', Validators.compose([Validators.email])),
@@ -190,8 +193,31 @@ export class CreateMeetingComponent {
     }, {validator: CustomValidators.valuesMatch('password', 'confirmPassword')});
   }
 
-  setValue($event: MatSlideToggleChange): void {
+  public setValue($event: MatSlideToggleChange): void {
     this.advanceOption = $event.checked;
+  }
+
+  public openDialog(): void {
+    const dialogRef = this.dialog.open(UserEnterMeetingSettingsComponent, {
+      disableClose: true,
+      position: {
+        top: '4rem'
+      },
+      data: {
+        userName: this.sharedService.userName,
+        audio: this.sharedService.audio,
+        video: this.sharedService.video,
+        cancel: this.sharedService.cancel
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result.cancel){
+        this.sharedService.userName = result.userName;
+        this.sharedService.video = result.video;
+        this.sharedService.audio = result.audio;
+        this.createMeeting();
+      }
+    });
   }
 }
 
