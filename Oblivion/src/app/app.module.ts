@@ -34,6 +34,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/confirm-end-meeting.component';
 import {WebsocketService} from './services/websocket.service';
 import {MediaService} from './services/media.service';
+import { UserEnterMeetingSettingsComponent } from './components/user-enter-meeting-settings/user-enter-meeting-settings.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {MediaService} from './services/media.service';
     JoinMeetingComponent,
     PageNotFoundComponent,
     MeetingInfoDialogComponent,
-    ConfirmEndMeetingComponent
+    ConfirmEndMeetingComponent,
+    UserEnterMeetingSettingsComponent
   ],
     imports: [
         BrowserModule,

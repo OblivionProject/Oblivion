@@ -1,0 +1,115 @@
+#user_enter_meeting_dialog{
+  z-index: 3;
+  background-color: #333333 !important;
+  color: white;
+  border-radius: 10px;
+  max-height: 100vh!important;
+  min-height: 80vh!important;
+  text-align:center;
+  align-items: center;
+  justify-content: center;
+}
+
+.video{
+  width: 100%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  text-align:center;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 640px) {
+  .column {
+    width: 100%;
+  }
+  #user_enter_meeting_header{
+    font-size: 4vh !important;
+  }
+  #input-data{
+    padding-top: 0 !important;
+  }
+}
+
+#cancel_button{
+  color: #c62828;
+  float: right;
+  background-color: #333333;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+  margin-bottom: 1vh;
+  margin-left: 0!important;
+  padding-left: 0!important;
+}
+
+#cancel_button_div{
+  width: 100%;
+}
+
+#user_enter_meeting_header{
+  margin-top: 1vh;
+  margin-bottom: 2vh;
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 3vw;
+}
+
+#meeting_info_divider{
+  color: white;
+  margin-top: 0!important;
+  padding-top: 0!important;
+  margin-bottom: 2vh;
+}
+
+#video-audio-card{
+  background-color: grey;
+  border-radius: 10px;
+}
+
+#video-audio-card-header-container{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+#video-audio-card-header{
+  text-align: center !important;
+  font-family: "Times New Roman", Times, serif !important;
+}
+
+#input-data{
+  padding-top: 20vh;
+}
+
+.form-field{
+  width:80%;
+  font-family: "Times New Roman", Times, serif;
+}
+
+#form-field-icon{
+  color: #53e3a6;
+}
+
+#submit_button{
+  color: #53e3a6;
+  font-size: 3vw;
+  font-weight: lighter !important;
+  margin: auto!important;
+  padding-top: 2vh!important;
+  padding-bottom: 2vh!important;
+  font-family: "Times New Roman", Times, serif !important;
+  width: 80%;
+}
+
+#buttons{
+  display: inline-block;
+}
