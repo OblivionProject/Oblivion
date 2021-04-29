@@ -27,18 +27,41 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
   }
 
   public async loadLocalStream(): Promise<void> {
+    // try {
+    //   this.localstream = await navigator.mediaDevices.getUserMedia({
+    //     audio: true,
+    //     video: true
+    //   });
+    //   this.localstream.getTracks().forEach(track => {
+    //     track.enabled = true;
+    //   });
+    //
+    // } catch (e) {
+    //   console.log(e);
+    //   this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
+    // }
+    this.localstream = new MediaStream();
+
     try {
-      this.localstream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
-      });
-      this.localstream.getTracks().forEach(track => {
-        track.enabled = true;
+      const videoStream: MediaStream = await navigator.mediaDevices.getUserMedia({video: true});
+      videoStream.getVideoTracks().forEach((videoTrack: MediaStreamTrack) => {
+        videoTrack.enabled = true;
+        this.localstream.addTrack(videoTrack);
       });
 
-    } catch (e) {
-      console.log(e);
-      this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
+    } catch (error) {
+      console.log('Unable to get video device');  // TODO: Add more robust catching
+    }
+
+    try {
+      const audioStream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+      audioStream.getAudioTracks().forEach((audioTrack: MediaStreamTrack) => {
+        audioTrack.enabled = true;
+        this.localstream.addTrack(audioTrack);
+      });
+
+    } catch (error) {
+      console.log('Unable to get audio device');  // TODO: Add more robust catching
     }
   }
 

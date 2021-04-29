@@ -180,22 +180,46 @@ export class MediaService {
   }
 
   public async loadLocalStream(): Promise<void> {
-    try {
-      this.localstream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
-      });
-      this.localstream.getVideoTracks().forEach(videoTrack => {
-        videoTrack.enabled = this.sharedService.video;
-      });
-      this.localstream.getAudioTracks().forEach(audioTrack => {
-        audioTrack.enabled = this.sharedService.audio;
-      });
+    // try {
+      // this.localstream = await navigator.mediaDevices.getUserMedia({
+      //   audio: true,
+      //   video: true
+      // });
+      // this.localstream.getVideoTracks().forEach(videoTrack => {
+      //   videoTrack.enabled = this.sharedService.video;
+      // });
+      // this.localstream.getAudioTracks().forEach(audioTrack => {
+      //   audioTrack.enabled = this.sharedService.audio;
+      // });
 
-    } catch (e) {
-      console.log(e);
-      this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
-    }
+      this.localstream = new MediaStream();
+
+      try {
+        const videoStream: MediaStream = await navigator.mediaDevices.getUserMedia({video: true});
+        videoStream.getVideoTracks().forEach((videoTrack: MediaStreamTrack) => {
+          videoTrack.enabled = this.sharedService.video;
+          this.localstream.addTrack(videoTrack);
+        });
+
+      } catch (error) {
+        console.log('Unable to get video device');  // TODO: Add more robust catching
+      }
+
+      try {
+        const audioStream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+        audioStream.getAudioTracks().forEach((audioTrack: MediaStreamTrack) => {
+          audioTrack.enabled = this.sharedService.audio;
+          this.localstream.addTrack(audioTrack);
+        });
+
+      } catch (error) {
+        console.log('Unable to get audio device');  // TODO: Add more robust catching
+      }
+
+    // } catch (e) {
+    //   console.log(e);
+    //   this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
+    // }
   }
 
   public getLocalStream(): MediaStream {
