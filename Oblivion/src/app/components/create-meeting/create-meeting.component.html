@@ -4,7 +4,7 @@
     <form [formGroup]="createMeetingForm" autocomplete="off">
     <section>
       <div class="form-component-row">
-        <mat-form-field appearance="fill" class="form-field" color="primary">
+        <mat-form-field appearance="fill" class="form-field">
           <mat-icon matPrefix class="icons">fingerprint</mat-icon>
           <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
           <input matInput placeholder="Meeting Name" (keyup)="test($event)" [(ngModel)]="meeting.name" [errorStateMatcher]="matcher" formControlName="meetingName"  id="meeting_name_input">
@@ -21,7 +21,7 @@
       </section>
     <section>
       <div class="form-component-row">
-        <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
+        <mat-form-field appearance="fill" class="form-field" *ngIf="advanceOption">
           <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" (keyup)="test($event)" [(ngModel)]="meeting.password" [errorStateMatcher]="matcher" formControlName="password"  id="meeting_password1_input">
@@ -37,7 +37,7 @@
     </section>
     <section>
       <div class="form-component-row">
-        <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
+        <mat-form-field appearance="fill" class="form-field" *ngIf="advanceOption">
           <mat-icon matPrefix class="icons">lock</mat-icon>
           <mat-label id="meeting_password2_label" >Confirm Meeting Password</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.passwordConfirm" formControlName="confirmPassword" id="meeting_password2_input">
@@ -50,7 +50,7 @@
       </div>
     </section>
     <section>
-    <mat-form-field appearance="fill" class="form-field" color="primary" *ngIf="advanceOption">
+    <mat-form-field appearance="fill" class="form-field" *ngIf="advanceOption">
       <mat-icon matPrefix class="icons">email</mat-icon>
       <mat-label>Add Emails</mat-label>
       <mat-chip-list #chipList aria-label="Email selection">

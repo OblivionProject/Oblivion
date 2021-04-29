@@ -28,7 +28,7 @@
           <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
-            <mat-hint align="end" >{{message.value.length}} / 256</mat-hint>
+            <mat-hint id = "message-hint" align="end" >{{message.value.length}} / 256</mat-hint>
             <button class="sendbutton" matSuffix mat-button color="primary" (click)="sendChat(message.value)" >
               <mat-icon>send</mat-icon>
             </button>

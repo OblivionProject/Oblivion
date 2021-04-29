@@ -36,6 +36,8 @@ p.video-description{
   position: absolute;
   top: 0px;
   left: 10px;
+  color: #53e3a6;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .mat-fab {
@@ -69,12 +71,18 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
+  font-size: 6vh;
 }
 #leave_short{
   display: none;
   position: absolute;
   right:0;
   margin-right: 4px;
+  font-size: 6vh;
+}
+
+#message-hint{
+  color: white!important;
 }
 
 @media (max-width: 1200px) {

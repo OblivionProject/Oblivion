@@ -23,12 +23,24 @@
       background: -o-linear-gradient(top left, $background 0%, $background2 100%);
       background: linear-gradient(to bottom right, $background 0%, $background2 100%);
     }
-    .mat-form-field-empty.mat-form-field-label {
-      color:$text;
+
+    .mat-input-element {
+      color: $text !important;
       font-family: "Times New Roman", Times, serif;
     }
+
+    .mat-form-field-ripple {
+      color:$text !important;
+      background-color: $text !important;
+    }
+
+    .mat-focused .mat-form-field-label {
+      color:$text !important;
+      font-family: "Times New Roman", Times, serif;
+    }
+
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
-      color: $text;
+      color: $text !important;
       font-family: "Times New Roman", Times, serif;
     }
 
@@ -43,11 +55,11 @@
 
     .mat-raised-button .mat-ripple-element {
       background-color: $button_text !important;
-      opacity: 0.3;
+      opacity: 0.2 !important;
     }
 
     mat-form-field {
-      font-size: 3vh !important;
+      font-size: 4vh !important;
     }
 
     .mat-flat-button{
@@ -62,6 +74,7 @@
       color: $text;
       font-family: "Times New Roman", Times, serif;
     }
+
     .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar{
       background-color: #607d8b;
     }
@@ -88,7 +101,7 @@
 
     //change the color of the input to white
     .chatInput .mat-input-element {
-      color: white;
+      color: white !important;
       font-family: "Times New Roman", Times, serif;
     }
   }

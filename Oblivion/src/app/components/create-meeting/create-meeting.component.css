@@ -37,7 +37,7 @@
 }
 
 .icons{
-  margin-right: 5px;
+  margin-right: 2vw;
 }
 
 #create_meeting_submit{
@@ -79,5 +79,6 @@
 
 #test{
   font-family: "Times New Roman", Times, serif;
-  font-size: 3vh;
+  font-size: 4vh;
+  margin-left: 2vw;
 }

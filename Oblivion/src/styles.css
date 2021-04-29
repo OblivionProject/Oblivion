@@ -10,6 +10,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   color: white;
 }
 
+#user_name_field {
+  font-size: 4vh !important;
+}
+
+#user_name_field .mat-icon{
+  margin-right: 2vw !important;
+}
+
 #submit_button .mat-ripple-element {
   background-color: #53e3a6 !important;
   opacity: 0.3;
