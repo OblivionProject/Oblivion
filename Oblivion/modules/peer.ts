@@ -215,7 +215,6 @@ export class Peer {
           this.infoHandler(message);
           break;
         case MESSAGE_TYPE.chat:
-        case MESSAGE_TYPE.error:
           notify(message);
       }
 
@@ -232,8 +231,6 @@ export class Peer {
         this.peerUser.setRole(data.role);
       }
     }
-
-    console.log(this.peerUser);
   }
 
   private logMessage(message: Message): void {
