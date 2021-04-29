@@ -63,7 +63,7 @@ function connection(ws, req) {
                         meetingToJoin.correctMeetingInfo(ws);
                     }
                     else {
-                        meetingToJoin.incorrectMeetingInfo(ws, 'Invalid Password');
+                        m.Meeting.incorrectMeetingInfo(ws, 'Invalid Password');
                     }
 
                 // Join if the meeting has no password
