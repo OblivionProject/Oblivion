@@ -11,29 +11,36 @@
 
 .sidenav-cont{
   background-color: inherit;
-  width: 60%;
+  width: 80%;
   position: fixed;
   top: 70%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: row;
+  text-align:center;
+  align-items: center;
+  justify-content: center;
 }
 
 .welcome_button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26vw;
-  height: 18vh;
-  font-size: 16vw;
+  width: 24vw;
+  height: 16vmin;
+  font-size: 12vmin;
+  font-weight: 90;
   border-radius: 10px !important;
+  margin: 10px !important;
 }
 
 .an-1 {
   background-color: inherit;
-  font-weight: 90;
-  font-size: 8vw;
-  line-height: 12vw;
+  font-size: 18vmin;
   font-family: "Times New Roman", Times, serif;
   margin: 0 auto;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
