@@ -57,6 +57,19 @@
   font-family: "Times New Roman", Times, serif;
 }
 
+@media (max-width: 1200px) {
+  #create_meeting_header {
+    font-size: 50px;
+  }
+  .sidenav-cont {
+    width: 60%;
+  }
+  .sidenav-button{
+    width: 60%;
+    left: 20%;
+  }
+}
+
 .advanceSettings{
   justify-content: right;
   /*justify-content: start;*/

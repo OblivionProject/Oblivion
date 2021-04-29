@@ -2,7 +2,7 @@
   height: 4rem;
   width: 100%;
   bottom: 0;
-  position: fixed;
+  position: absolute;
 }
 
 .move_video_buttons{
@@ -52,7 +52,7 @@ p.video-description{
   width: 100%;
   z-index: 2;
   overflow: hidden;
-  position: fixed;
+  position: relative;
 }
 
 #footer{
@@ -69,6 +69,28 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
+}
+#leave_short{
+  display: none;
+  position: absolute;
+  right:0;
+  margin-right: 4px;
+}
+
+@media (max-width: 1200px) {
+  .sidenav-cont {
+    width: 100%;
+  }
+  .mat-fab{
+    margin: 0;
+    float: left;
+  }
+  #leave_short{
+    display: block;
+  }
+  #leave{
+    display: none;
+  }
 }
 
 /*chat shit*/
@@ -95,7 +117,6 @@ p.video-description{
 .messagebox{
   width: 100%;
   overflow-y: auto;
-  padding-top: 0!important;
 }
 
 .messagesSEND{
