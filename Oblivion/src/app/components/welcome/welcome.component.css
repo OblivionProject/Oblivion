@@ -26,8 +26,8 @@
 
 .welcome_button {
   width: 24vw;
-  height: 16vmin;
-  font-size: 12vmin;
+  height: 30px;
+  font-size: 20px;
   font-weight: 90;
   border-radius: 10px !important;
   margin: 10px !important;
@@ -35,7 +35,7 @@
 
 .an-1 {
   background-color: inherit;
-  font-size: 18vmin;
+  font-size: 18px;
   font-family: "Times New Roman", Times, serif;
   margin: 0 auto;
   position: fixed;
