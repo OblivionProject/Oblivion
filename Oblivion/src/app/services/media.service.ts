@@ -137,7 +137,7 @@ export class MediaService {
 
       // Handle the RMI response
     } else if (signal.rmi && !this.user) {
-      this.user = new User(signal.name, signal.userId, User.ROLE(signal.userRole));
+      this.user = new User(this.sharedService.userName, signal.userId, User.ROLE(signal.userRole));
       Peer.setUser(this.user);
       this.meetingInfo = new MeetingInfo(signal.meetingID, signal.name, this.user, signal.password);
 
@@ -175,19 +175,33 @@ export class MediaService {
     return this.webSocket.send(message);
   }
 
+  public getStateService(): MeetingStateService{
+    return this.sharedService;
+  }
+
   public async loadLocalStream(): Promise<void> {
+    this.localstream = new MediaStream();
+
     try {
-      this.localstream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
-      });
-      this.localstream.getTracks().forEach(track => {
-        track.enabled = true;
+      const videoStream: MediaStream = await navigator.mediaDevices.getUserMedia({video: true});
+      videoStream.getVideoTracks().forEach((videoTrack: MediaStreamTrack) => {
+        videoTrack.enabled = this.sharedService.video;
+        this.localstream.addTrack(videoTrack);
       });
 
-    } catch (e) {
-      console.log(e);
-      this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
+    } catch (error) {
+      console.log('Unable to get video device');  // TODO: Add more robust catching
+    }
+
+    try {
+      const audioStream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+      audioStream.getAudioTracks().forEach((audioTrack: MediaStreamTrack) => {
+        audioTrack.enabled = this.sharedService.audio;
+        this.localstream.addTrack(audioTrack);
+      });
+
+    } catch (error) {
+      console.log('Unable to get audio device');  // TODO: Add more robust catching
     }
   }
 

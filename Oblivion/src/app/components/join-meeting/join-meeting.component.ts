@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {MeetingStateService} from "../../services/meeting-state.service";
+import {MatDialog} from "@angular/material/dialog";
+import {UserEnterMeetingSettingsComponent} from "../user-enter-meeting-settings/user-enter-meeting-settings.component";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -30,7 +32,11 @@ export class JoinMeetingComponent {
   matcher = new MyErrorStateMatcher();
 
   // Initializes the WebSocket from the WebsocketService and joins the meeting
-  constructor(websocketService: WebsocketService, private router: Router, private fb: FormBuilder, private sharedService: MeetingStateService) {
+  constructor(websocketService: WebsocketService,
+              private router: Router,
+              private fb: FormBuilder,
+              private sharedService: MeetingStateService,
+              public dialog: MatDialog) {
     this.webSocket = websocketService.getWebSocket();
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedValidationFromServer(message);
     this.meeting = new Meeting(MEETING_TYPE.JOIN);
@@ -89,12 +95,35 @@ export class JoinMeetingComponent {
       //this.webSocket.send(JSON.stringify(this.meeting));
       this.sharedService.meetingID = signal.meetingID;
       await this.webSocket.close(); // wait for this to close before routing
-      this.router.navigate(['meeting']);
+      this.openDialog();
     }
   }
 
   displayIssues(value: string): void {
     this.doneTyping = true;
+  }
+
+  public openDialog(): void {
+    const dialogRef = this.dialog.open(UserEnterMeetingSettingsComponent, {
+      disableClose: true,
+      position: {
+        top: '4rem'
+      },
+      data: {
+        userName: this.sharedService.userName,
+        audio: this.sharedService.audio,
+        video: this.sharedService.video,
+        cancel: this.sharedService.cancel
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result.cancel){
+        this.sharedService.userName = result.userName;
+        this.sharedService.video = result.video;
+        this.sharedService.audio = result.audio;
+        this.router.navigate(['meeting']);
+      }
+    });
   }
 
 }

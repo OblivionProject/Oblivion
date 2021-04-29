@@ -4,15 +4,17 @@
       <mat-drawer class="chatbox" mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
         <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
           <mat-list-item dense *ngFor="let message of this.mediaService.getMessageLog()" role="listitem">
-            <div matLine>
-              <mat-card class ="messagesSEND" *ngIf="message.senderId === this.getUserId()">
+            <div matLine *ngIf="message.senderId === this.getUserId()" class = "messageSendDiv" style="border-bottom-right-radius: 0!important;">
+              <mat-card class ="messagesSEND">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_made</mat-icon>
                   <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
                   <mat-card-content>{{message.data}}</mat-card-content>
                 </mat-card-header>
               </mat-card>
-              <mat-card class ="messagesRECIVE" *ngIf="message.senderId !== this.getUserId()">
+            </div>
+            <div matLine *ngIf="message.senderId !== this.getUserId()" class = "messageReceiveDiv" style="border-bottom-left-radius: 0!important;">
+              <mat-card class="messagesRECIVE">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_received</mat-icon>
                   <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
@@ -26,7 +28,7 @@
           <mat-form-field id = "message-input">
             <mat-label>Message</mat-label>
             <textarea matInput #message  (keyup)="autoGrowTextZone($event)" (keydown)="textAreaTrigger($event,message.value)"placeholder="Type Message..." maxlength="256" autocomplete="off"></textarea>
-            <mat-hint align="end" >{{message.value.length}} / 256</mat-hint>
+            <mat-hint id = "message-hint" align="end" >{{message.value.length}} / 256</mat-hint>
             <button class="sendbutton" matSuffix mat-button color="primary" (click)="sendChat(message.value)" >
               <mat-icon>send</mat-icon>
             </button>
@@ -42,20 +44,19 @@
           <mat-icon>arrow_back_ios_new</mat-icon>
         </button>
 
-
-          <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
-            <mat-grid-tile *ngFor="let vid of getStreams()"
-                           [colspan]="this.tile.cols"
-                           [rowspan]="this.tile.rows"
-                           class="tile">
-              <p class="video video-description">Other</p>
-              <video [srcObject]="vid"
-                     [autoplay]="true"
-                     [muted]="vid===localStream"
-                     [style.height.px]="video_height"
-                     class="video"></video>
-            </mat-grid-tile>
-          </mat-grid-list>
+        <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
+          <mat-grid-tile *ngFor="let vid of getStreams()"
+                         [colspan]="this.tile.cols"
+                         [rowspan]="this.tile.rows"
+                         class="tile">
+            <p class="video video-description">Other</p>
+            <video [srcObject]="vid"
+                   [autoplay]="true"
+                   [muted]="vid===localStream"
+                   [style.height.px]="video_height"
+                   class="video"></video>
+          </mat-grid-tile>
+        </mat-grid-list>
       </mat-drawer-content>
     </mat-drawer-container>
 

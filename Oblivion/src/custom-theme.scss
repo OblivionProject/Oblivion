@@ -23,12 +23,24 @@
       background: -o-linear-gradient(top left, $background 0%, $background2 100%);
       background: linear-gradient(to bottom right, $background 0%, $background2 100%);
     }
-    .mat-form-field-empty.mat-form-field-label {
-      color:$text;
+
+    .mat-input-element {
+      color: $text !important;
       font-family: "Times New Roman", Times, serif;
     }
+
+    .mat-form-field-ripple {
+      color:$text !important;
+      background-color: $text !important;
+    }
+
+    .mat-focused .mat-form-field-label {
+      color:$text !important;
+      font-family: "Times New Roman", Times, serif;
+    }
+
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
-      color: $text;
+      color: $text !important;
       font-family: "Times New Roman", Times, serif;
     }
 
@@ -37,12 +49,20 @@
       color: $button_text;
       opacity: 0.9;
       font-family: "Times New Roman", Times, serif;
-      font-size: 50px;
       border-radius: 5px;
       font-weight: lighter;
     }
+
+    .mat-raised-button .mat-ripple-element {
+      background-color: $button_text !important;
+      opacity: 0.2 !important;
+    }
+
+    mat-form-field {
+      font-size: 4vh !important;
+    }
+
     .mat-flat-button{
-      font-size: 30px;
       font-family: "Times New Roman", Times, serif;
       color: $button_cancel;
     }
@@ -54,6 +74,7 @@
       color: $text;
       font-family: "Times New Roman", Times, serif;
     }
+
     .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar{
       background-color: #607d8b;
     }
@@ -62,6 +83,26 @@
     }
     .mat-slide-toggle-label{
       color: #50a3a2;
+    }
+
+    .chatInput .mat-form-field-underline {
+      background-color: white !important;
+    }
+
+    .chatInput .mat-form-field-ripple {
+      background-color: #53e3a6 !important;
+    }
+
+    //Make label white for message input
+    .chatInput .mat-focused .mat-form-field-label {
+      color: white !important;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    //change the color of the input to white
+    .chatInput .mat-input-element {
+      color: white !important;
+      font-family: "Times New Roman", Times, serif;
     }
   }
 }

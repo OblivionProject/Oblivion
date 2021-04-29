@@ -1,5 +1,5 @@
 import {Message, MESSAGE_TYPE, verifyMessageFormat} from "./message";
-import {User} from "./user";
+import {User, USER_ROLE} from "./user";
 
 export class Peer {
 
@@ -8,7 +8,7 @@ export class Peer {
   private remoteStream: MediaStream;
   private dataChannel!: RTCDataChannel;
   private messageLog: Message[];
-  private peerId: number;
+  private peerUser!: User;
   private peerConnectionConfig: RTCConfiguration = {  // TODO: Verify the ice servers we want to use, add turn servers?
     iceServers: [
       {urls: 'stun:stun.stunprotocol.org:3478'},
@@ -28,7 +28,8 @@ export class Peer {
     //   // TODO: Do something here
     // }
 
-    this.peerId = peerID;
+    this.peerUser = new User('Guest', peerID, USER_ROLE.guest);
+
     this.remoteStream = new MediaStream();
     this.messageLog = [];
 
@@ -43,11 +44,11 @@ export class Peer {
 
     // Only create the data channel if we are initializing it.
     if (initSeq) {
-      const dataChannelLabel = Peer.user.getUserID() + '-' + this.peerId;
+      const dataChannelLabel = Peer.user.getUserID() + '-' + this.peerUser.getUserID();//this.peerId;
       this.dataChannel = this.peer.createDataChannel(dataChannelLabel);
       this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
       this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
-      this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event, receivedMessageNotify);
+      this.dataChannel.onmessage = (event: MessageEvent) => this.receivedMessage(event, receivedMessageNotify);
 
     } else {
       this.peer.ondatachannel = (event: RTCDataChannelEvent) => this.receiveChannelCallback(event, receivedMessageNotify);
@@ -56,6 +57,10 @@ export class Peer {
 
   public static setUser(user: User): void {
     this.user = user;
+  }
+
+  public getPeerUser(): User {
+    return this.peerUser;
   }
 
   // TODO: Add a return type of boolean to make sure it sends or add error checking?
@@ -112,7 +117,7 @@ export class Peer {
       {
         sdp: this.peer.localDescription,
         userId: Peer.user.getUserID(),
-        recipientID: this.peerId
+        recipientID: this.peerUser.getUserID()//this.peerId
       });
     webSocket.send(message);
   }
@@ -127,7 +132,7 @@ export class Peer {
           {
             ice: event.candidate,
             userId: Peer.user.getUserID(),
-            recipientID: this.peerId
+            recipientID: this.peerUser.getUserID()//this.peerId
           }));
     }
   }
@@ -172,26 +177,59 @@ export class Peer {
 
     if (state === 'open') {
       // TODO: Unblock the sending of messages
+      const timestamp = '';
+      const data = {
+        setPeerUser: true,
+        name: Peer.user.getName(),
+        role: Peer.user.getRole(),
+        userID: Peer.user.getUserID()
+      };
+      const message: Message = {
+        type: MESSAGE_TYPE.info,
+        timestamp: timestamp,
+        data: JSON.stringify(data),
+        broadcast: false,
+        senderId: Peer.user.getUserID(),
+        recipientId: -1
+      };
+      this.sendMessage(message);
     }
   }
 
   private receiveChannelCallback(event: RTCDataChannelEvent, receiveMessageNotify: (message: Message) => void): void {
     this.dataChannel = event.channel;
-    this.dataChannel.onmessage = (event: MessageEvent) => this.receivedChat(event, receiveMessageNotify);
+    this.dataChannel.onmessage = (event: MessageEvent) => this.receivedMessage(event, receiveMessageNotify);
     this.dataChannel.onopen = (event: Event) => this.handleDataChannelStatusChange(event);
     this.dataChannel.onclose = (event: Event) => this.handleDataChannelStatusChange(event);
   }
 
-  private receivedChat(event: MessageEvent, notify: (message: Message) => void): void {
+  private receivedMessage(event: MessageEvent, notify: (message: Message) => void): void {
     const data = JSON.parse(event.data);
 
     if (verifyMessageFormat(data)) {
       const message = <Message>data;
-      notify(message);
       this.logMessage(message);
+
+      switch (message.type) {
+        case MESSAGE_TYPE.info:
+          this.infoHandler(message);
+          break;
+        case MESSAGE_TYPE.chat:
+          notify(message);
+      }
 
     } else {
       this.logMessageError('Invalid message format by data. data: ' + data);
+    }
+  }
+
+  private infoHandler(message: Message): void {
+    if (message.type === MESSAGE_TYPE.info) {
+      const data = JSON.parse(message.data);
+      if (data.setPeerUser) {
+        this.peerUser.setName(data.name);
+        this.peerUser.setRole(data.role);
+      }
     }
   }
 

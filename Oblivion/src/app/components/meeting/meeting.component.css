@@ -2,7 +2,7 @@
   height: 4rem;
   width: 100%;
   bottom: 0;
-  position: fixed;
+  position: absolute;
 }
 
 .move_video_buttons{
@@ -36,6 +36,8 @@ p.video-description{
   position: absolute;
   top: 0px;
   left: 10px;
+  color: #53e3a6;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .mat-fab {
@@ -52,7 +54,7 @@ p.video-description{
   width: 100%;
   z-index: 2;
   overflow: hidden;
-  position: fixed;
+  position: relative;
 }
 
 #footer{
@@ -69,12 +71,18 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
+  font-size: 6vh;
 }
 #leave_short{
   display: none;
   position: absolute;
   right:0;
   margin-right: 4px;
+  font-size: 6vh;
+}
+
+#message-hint{
+  color: white!important;
 }
 
 @media (max-width: 1200px) {
