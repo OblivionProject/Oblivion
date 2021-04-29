@@ -12,6 +12,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   color: white;
 }
 
+#submit_button .mat-ripple-element {
+  background-color: #53e3a6 !important;
+  opacity: 0.3;
+}
+
 #user_name_field .mat-form-field-underline {
   /*change color of underline*/
   background-color: #53e3a6;
