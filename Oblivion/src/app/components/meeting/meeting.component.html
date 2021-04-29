@@ -4,14 +4,16 @@
       <mat-drawer class="chatbox" mode="side" [(opened)]="chat" (opened)="chat=true" (closed)="chat=false" [style.width.px]="messageWidth" [style.height.px]="height">
         <mat-list class="messagebox" role="list" [style.height.px]="messageHeight">
           <mat-list-item dense *ngFor="let message of this.mediaService.getMessageLog()" role="listitem">
-            <div matLine>
-              <mat-card class ="messagesSEND" *ngIf="message.senderId === this.getUserId()">
+            <div matLine *ngIf="message.senderId === this.getUserId()" class = "messageSendDiv" style="border-bottom-right-radius: 0!important;">
+              <mat-card class ="messagesSEND">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_made</mat-icon>
                   <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
                   <mat-card-content>{{message.data}}</mat-card-content>
                 </mat-card-header>
               </mat-card>
+            </div>
+            <div matLine *ngIf="message.senderId === this.getUserId()" class = "messageReceiveDiv" style="border-bottom-left-radius: 0!important;">
               <mat-card class ="messagesRECIVE" *ngIf="message.senderId !== this.getUserId()">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_received</mat-icon>
