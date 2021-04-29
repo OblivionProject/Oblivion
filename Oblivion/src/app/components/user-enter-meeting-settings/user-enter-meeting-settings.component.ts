@@ -21,9 +21,9 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     console.log("Destroyed");
-    // this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
-    //   track.stop();
-    // });
+    this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
+      track.stop();
+    });
   }
 
   public async loadLocalStream(): Promise<void> {
@@ -54,7 +54,6 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
     }
 
     this.data.mediaStream = this.localstream;
-
   }
 
   public getLocalStream(): MediaStream{
@@ -78,7 +77,7 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
       'video': this.data.video,
       'cancel': this.data.cancel,
       'userName': this.data.userName,
-      'mediaStream': this.data.mediaStream,
+      'mediaStream': this.localstream,
       'videoFound': this.data.videoFound,
       'audioFound': this.data.audioFound
     }

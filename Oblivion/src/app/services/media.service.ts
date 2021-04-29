@@ -180,33 +180,30 @@ export class MediaService {
   }
 
   public async loadLocalStream(): Promise<void> {
-    this.localstream = this.sharedService.mediaStream;
+    this.localstream = new MediaStream();
+
+    try {
+      const videoStream: MediaStream = await navigator.mediaDevices.getUserMedia({video: true});
+      videoStream.getVideoTracks().forEach((videoTrack: MediaStreamTrack) => {
+        videoTrack.enabled = this.sharedService.video;
+        this.localstream.addTrack(videoTrack);
+      });
+
+    } catch (error) {
+      console.log('Unable to get video device');  // TODO: Add more robust catching
+    }
+
+    try {
+      const audioStream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+      audioStream.getAudioTracks().forEach((audioTrack: MediaStreamTrack) => {
+        audioTrack.enabled = this.sharedService.audio;
+        this.localstream.addTrack(audioTrack);
+      });
+
+    } catch (error) {
+      console.log('Unable to get audio device');  // TODO: Add more robust catching
+    }
   }
-  // public async loadLocalStream(): Promise<void> {
-  //   this.localstream = new MediaStream();
-  //
-  //   try {
-  //     const videoStream: MediaStream = await navigator.mediaDevices.getUserMedia({video: true});
-  //     videoStream.getVideoTracks().forEach((videoTrack: MediaStreamTrack) => {
-  //       videoTrack.enabled = this.sharedService.video;
-  //       this.localstream.addTrack(videoTrack);
-  //     });
-  //
-  //   } catch (error) {
-  //     console.log('Unable to get video device');  // TODO: Add more robust catching
-  //   }
-  //
-  //   try {
-  //     const audioStream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
-  //     audioStream.getAudioTracks().forEach((audioTrack: MediaStreamTrack) => {
-  //       audioTrack.enabled = this.sharedService.audio;
-  //       this.localstream.addTrack(audioTrack);
-  //     });
-  //
-  //   } catch (error) {
-  //     console.log('Unable to get audio device');  // TODO: Add more robust catching
-  //   }
-  // }
 
   public getLocalStream(): MediaStream {
     return this.localstream;
