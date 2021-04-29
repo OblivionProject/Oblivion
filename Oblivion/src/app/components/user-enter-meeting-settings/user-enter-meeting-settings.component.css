@@ -47,21 +47,6 @@
   }
 }
 
-#cancel_button{
-  color: #c62828;
-  float: right;
-  background-color: #333333;
-  margin-right: 0 !important;
-  padding-right: 0 !important;
-  margin-bottom: 1vh;
-  margin-left: 0!important;
-  padding-left: 0!important;
-}
-
-#cancel_button_div{
-  width: 100%;
-}
-
 #user_enter_meeting_header{
   margin-top: 1vh;
   margin-bottom: 2vh;
@@ -114,6 +99,7 @@
 
 #form-field-icon{
   color: #53e3a6;
+  margin-right: 5px;
 }
 
 #submit_button{
