@@ -137,7 +137,7 @@ export class MediaService {
 
       // Handle the RMI response
     } else if (signal.rmi && !this.user) {
-      this.user = new User(signal.name, signal.userId, User.ROLE(signal.userRole));
+      this.user = new User(this.sharedService.userName, signal.userId, User.ROLE(signal.userRole));
       Peer.setUser(this.user);
       this.meetingInfo = new MeetingInfo(signal.meetingID, signal.name, this.user, signal.password);
 
@@ -175,14 +175,21 @@ export class MediaService {
     return this.webSocket.send(message);
   }
 
+  public getStateService(): MeetingStateService{
+    return this.sharedService;
+  }
+
   public async loadLocalStream(): Promise<void> {
     try {
       this.localstream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true
       });
-      this.localstream.getTracks().forEach(track => {
-        track.enabled = true;
+      this.localstream.getVideoTracks().forEach(videoTrack => {
+        videoTrack.enabled = this.sharedService.video;
+      });
+      this.localstream.getAudioTracks().forEach(audioTrack => {
+        audioTrack.enabled = this.sharedService.audio;
       });
 
     } catch (e) {
