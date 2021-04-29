@@ -95,7 +95,7 @@ export class JoinMeetingComponent {
       //this.webSocket.send(JSON.stringify(this.meeting));
       this.sharedService.meetingID = signal.meetingID;
       await this.webSocket.close(); // wait for this to close before routing
-      this.router.navigate(['meeting']);
+      this.openDialog();
     }
   }
 
@@ -121,7 +121,7 @@ export class JoinMeetingComponent {
         this.sharedService.userName = result.userName;
         this.sharedService.video = result.video;
         this.sharedService.audio = result.audio;
-        this.joinMeeting();
+        this.router.navigate(['meeting']);
       }
     });
   }

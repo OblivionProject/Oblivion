@@ -78,7 +78,7 @@ export class CreateMeetingComponent {
       this.sharedService.meetingID = signal.meeting;
       console.log(this.sharedService.meetingID);
       await this.webSocket.close();
-      await this.router.navigate(['meeting']);
+      this.openDialog();
     }
   }
 
@@ -220,9 +220,8 @@ export class CreateMeetingComponent {
         this.sharedService.video = result.video;
         this.sharedService.audio = result.audio;
         this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
-        this.createMeeting();
+        this.router.navigate(['meeting']);
       }
     });
   }
 }
-
