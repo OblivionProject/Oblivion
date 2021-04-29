@@ -19,27 +19,14 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
     await this.loadLocalStream();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     console.log("Destroyed");
-    this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
-      track.stop();
-    });
+    // this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
+    //   track.stop();
+    // });
   }
 
   public async loadLocalStream(): Promise<void> {
-    // try {
-    //   this.localstream = await navigator.mediaDevices.getUserMedia({
-    //     audio: true,
-    //     video: true
-    //   });
-    //   this.localstream.getTracks().forEach(track => {
-    //     track.enabled = true;
-    //   });
-    //
-    // } catch (e) {
-    //   console.log(e);
-    //   this.localstream = new MediaStream();  // TODO: Replace this blank MediaStream w/ a static image + name?
-    // }
     this.localstream = new MediaStream();
 
     try {
@@ -48,6 +35,7 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
         videoTrack.enabled = true;
         this.localstream.addTrack(videoTrack);
       });
+      this.data.videoFound = true;
 
     } catch (error) {
       console.log('Unable to get video device');  // TODO: Add more robust catching
@@ -59,10 +47,14 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
         audioTrack.enabled = true;
         this.localstream.addTrack(audioTrack);
       });
+      this.data.audioFound = true;
 
     } catch (error) {
       console.log('Unable to get audio device');  // TODO: Add more robust catching
     }
+
+    this.data.mediaStream = this.localstream;
+
   }
 
   public getLocalStream(): MediaStream{
@@ -85,7 +77,10 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
       'audio': this.data.audio,
       'video': this.data.video,
       'cancel': this.data.cancel,
-      'userName': this.data.userName
+      'userName': this.data.userName,
+      'mediaStream': this.data.mediaStream,
+      'videoFound': this.data.videoFound,
+      'audioFound': this.data.audioFound
     }
   }
 

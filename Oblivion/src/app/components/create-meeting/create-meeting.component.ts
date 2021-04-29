@@ -74,11 +74,11 @@ export class CreateMeetingComponent {
 
   async receivedCreateMeetingSuccess(message: MessageEvent) {
     const signal = JSON.parse(message.data);
-    if (signal.success){
+    if (signal.success) {
       this.sharedService.meetingID = signal.meeting;
       console.log(this.sharedService.meetingID);
       await this.webSocket.close();
-      this.router.navigate(['meeting']);
+      await this.router.navigate(['meeting']);
     }
   }
 
@@ -207,14 +207,19 @@ export class CreateMeetingComponent {
         userName: this.sharedService.userName,
         audio: this.sharedService.audio,
         video: this.sharedService.video,
-        cancel: this.sharedService.cancel
+        cancel: this.sharedService.cancel,
+        mediaStream: this.sharedService.mediaStream,
+        videoFound: this.sharedService.videoFound,
+        audioFound: this.sharedService.audioFound
       }
     });
     dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
       if(!result.cancel){
         this.sharedService.userName = result.userName;
         this.sharedService.video = result.video;
         this.sharedService.audio = result.audio;
+        this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
         this.createMeeting();
       }
     });
