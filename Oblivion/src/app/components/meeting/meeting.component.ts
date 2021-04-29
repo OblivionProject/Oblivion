@@ -57,8 +57,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
               private cdref: ChangeDetectorRef
   ) {
     MeetingComponent.appendWebRTCAdapterScript();
-    this.video = true;
-    this.audio = true;
+    this.video = this.mediaService.getStateService().video;
+    this.audio = this.mediaService.getStateService().audio;
     this.chat = false;
     this.remoteStreams = {};
     this.overrideGuard = false;

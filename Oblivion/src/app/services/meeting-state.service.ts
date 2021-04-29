@@ -5,13 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class MeetingStateService {
   public meetingID: number | undefined;
-  public userName: string | undefined;
+  public userName: string;
   public audio: boolean;
   public video: boolean;
   public cancel:boolean;
 
   constructor() {
-    this.userName = '';
+    this.userName = 'Guest';
     this.audio = true;
     this.video = true;
     this.cancel = false;
