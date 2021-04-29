@@ -13,8 +13,8 @@
                 </mat-card-header>
               </mat-card>
             </div>
-            <div matLine *ngIf="message.senderId === this.getUserId()" class = "messageReceiveDiv" style="border-bottom-left-radius: 0!important;">
-              <mat-card class ="messagesRECIVE" *ngIf="message.senderId !== this.getUserId()">
+            <div matLine *ngIf="message.senderId !== this.getUserId()" class = "messageReceiveDiv" style="border-bottom-left-radius: 0!important;">
+              <mat-card class="messagesRECIVE">
                 <mat-card-header>
                   <mat-icon mat-card-avatar>call_received</mat-icon>
                   <mat-card-subtitle>{{this.printSubtitle(message)}}</mat-card-subtitle>
