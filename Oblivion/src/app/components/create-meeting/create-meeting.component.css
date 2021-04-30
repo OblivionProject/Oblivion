@@ -95,7 +95,23 @@
   }
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 356px) {
+  #create_meeting_submit{
+    font-size: 8vh;
+    height: 14vh;
+  }
+  .sidenav-button{
+    height: 35%!important;
+  }
+  #create_meeting_header {
+    font-size: 10vh;
+    margin-bottom: 6vh;
+    margin-top: 6vh;
+  }
+}
+
+
+@media only screen and (min-width: 356px) and (max-width: 640px) {
   .sidenav-cont {
     width: 80%;
   }

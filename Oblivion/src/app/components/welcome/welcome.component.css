@@ -4,7 +4,7 @@
 }
 
 .row{
-  margin-top: calc(40vh - 20vmin);
+  margin-top: 10%!important;
 }
 
 .row:after{
@@ -48,6 +48,18 @@
 @media (max-height: 480px) {
   .row{
     margin-top: 10vh!important;
+  }
+}
+
+@media (max-height: 256px) {
+  .row{
+    margin-top: 1vh!important;
+  }
+}
+
+@media (max-width: 256px) {
+  .welcome_button_short {
+    width: 80%!important;
   }
 }
 
