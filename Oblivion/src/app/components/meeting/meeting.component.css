@@ -71,14 +71,14 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 6vh;
+  font-size: 30px;
 }
 #leave_short{
   display: none;
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 6vh;
+  font-size: 30px;
 }
 
 #message-hint{
