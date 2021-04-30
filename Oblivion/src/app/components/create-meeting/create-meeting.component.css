@@ -13,7 +13,7 @@
 }
 
 #create_meeting_header{
-  font-size: 70px;
+  font-size: 75px;
   margin-top: 8vh!important;
   font-family: "Times New Roman", Times, serif;
   font-weight: lighter;
@@ -73,9 +73,44 @@
   }
 }
 
-@media (max-width: 756px) {
+@media only screen and (min-height: 1024px) {
+  #create_meeting_submit{
+    font-size: 10vh;
+    height: 18vh;
+  }
+  mat-form-field{
+    font-size: 7vh!important;
+  }
   #create_meeting_header {
-    font-size: 50px;
+    font-size: 16vh !important;
+    margin-bottom: 10vh !important;
+    margin-top: 10vh !important;
+  }
+  .sidenav-button{
+    height: 40% !important;
+  }
+  #testID{
+    margin-bottom: 6vh!important;
+    margin-top: 4vh!important;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .sidenav-cont {
+    width: 80%;
+  }
+  .sidenav-button {
+    width: 80%;
+    left: 10%;
+  }
+  #create_meeting_header {
+    font-size: 55px;
+  }
+}
+
+@media only screen and (min-width: 640px) and (max-width: 1024px) {
+  #create_meeting_header {
+    font-size: 70px;
   }
   .sidenav-cont {
     width: 70%;

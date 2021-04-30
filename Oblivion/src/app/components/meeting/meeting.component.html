@@ -59,7 +59,13 @@
         </mat-grid-list>
       </mat-drawer-content>
     </mat-drawer-container>
-
+    <mat-list id = "meeting-updates">
+      <mat-list-item *ngFor = "let update of getMeetingUpdates()" class="update-message">
+        <div matLine>
+          {{update.message}}
+        </div>
+      </mat-list-item>
+    </mat-list>
   </mat-sidenav-container>
 
   <div *ngFor="let audio of getAudioStreams()">

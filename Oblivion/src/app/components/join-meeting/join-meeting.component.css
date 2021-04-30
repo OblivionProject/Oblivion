@@ -13,7 +13,7 @@
 }
 
 #join_meeting_header{
-  font-size: 70px;
+  font-size: 75px;
   font-family: "Times New Roman", Times, serif;
   font-weight: lighter;
   margin-top: 8vh!important;
@@ -50,10 +50,26 @@
 .icons{
   margin-right: 2vw;
 }
-
-@media (max-width: 756px) {
+@media only screen and (max-width: 640px) {
+  .sidenav-cont {
+    width: 80%;
+  }
+  .sidenav-button {
+    width: 80%;
+    left: 10%;
+  }
   #join_meeting_header {
     font-size: 55px;
+  }
+}
+
+@media only screen and (min-width: 640px) and (max-width: 1024px) {
+  .mat-form-field-prefix{
+    margin-right: 4vw!important;
+  }
+
+  #join_meeting_header {
+    font-size: 70px;
   }
   .sidenav-cont {
     width: 70%;
@@ -61,6 +77,24 @@
   .sidenav-button{
     width: 70%;
     left: 15%;
+  }
+}
+
+@media only screen and (min-height: 1024px) {
+  #join_meeting_submit{
+    font-size: 10vh;
+    height: 18vh;
+  }
+  mat-form-field{
+    font-size: 7vh!important;
+  }
+  #join_meeting_header {
+    font-size: 16vh !important;
+    margin-bottom: 10vh !important;
+    margin-top: 10vh !important;
+  }
+  .sidenav-button{
+    height: 40% !important;
   }
 }
 

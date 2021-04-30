@@ -107,6 +107,28 @@ p.video-description{
   padding-bottom: 0 !important;
 }
 
+#meeting-updates{
+  position: absolute;
+  top: 0!important;
+  margin-right: 1px;
+  right: 0;
+  z-index: 4;
+  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.update-message{
+  opacity: 0.4;
+  color: #53e3a6 !important;
+  width: 100%;
+  font-size: 3vh!important;
+}
+
+.messageReceiveDiv{
+  border-radius: 0 !important;
+}
+
 ::ng-deep  .mat-list .mat-list-item{
   height:initial!important;
   overflow:auto !important;

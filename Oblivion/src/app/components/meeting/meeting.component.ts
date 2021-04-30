@@ -6,7 +6,7 @@ import {
   OnInit,
   ChangeDetectorRef,
   HostListener,
-  AfterViewChecked
+  AfterViewChecked, OnDestroy
 } from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
@@ -17,6 +17,7 @@ import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
 import {Message} from "../../../../modules/message";
 import {VideoOrderingService} from "../../services/video-ordering.service";
+import {TimeInterval} from "rxjs";
 
 
 @Component({
@@ -26,7 +27,7 @@ import {VideoOrderingService} from "../../services/video-ordering.service";
   providers: [MediaService, WebsocketService, VideoOrderingService]
 })
 
-export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked {
+export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked, OnDestroy {
 
   public localStream: MediaStream | undefined;
   private remoteStreams: {[key: number]: MediaStream};
@@ -41,12 +42,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
   public overall_height: any;
-  //public video_width: any;
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
   public messageWidth: any;
   public messageHeight: any;
+  public meetingUpdates: any[];
+  public timer!: any;
 
   constructor(public mediaService: MediaService,
               public dialog: MatDialog,
@@ -67,6 +69,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.tile = new TitleModel(2,1);
     this.show_right = false
     this.show_left = false;
+    this.meetingUpdates = [];
   }
 
  // TODO: Move this function. needed for the cleanup of message objects
@@ -107,6 +110,22 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.mediaService.messageSubject.subscribe( value => {
       this.cdref.detectChanges();
     });
+    this.mediaService.messageUpdateSubject.subscribe(value => {
+      this.meetingUpdates.push(value);
+      console.log(this.meetingUpdates);
+      this.cdref.detectChanges();
+    })
+    this.timer = setInterval(() => { this.clearUpdateMessages(); }, 1000);
+  }
+
+  public ngOnDestroy() {
+    clearInterval(this.timer);
+  }
+
+  public clearUpdateMessages():void{
+    const currentTime = Date.now();
+    this.meetingUpdates = this.meetingUpdates.filter(message => message.timeStamp + 3000 >= currentTime);
+    this.cdref.detectChanges();
   }
 
   public ngAfterViewChecked(): void {
@@ -227,6 +246,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public async getLocalVideo(): Promise<void> {
     await this.mediaService.loadLocalStream();
     this.localStream = await this.mediaService.getLocalStream();
+  }
+
+  public getMeetingUpdates(): any[]{
+    return this.meetingUpdates;
   }
 
   // Toggles the video between off and on
