@@ -6,13 +6,10 @@
   text-align:center;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 90px)
+  min-height: calc(100vh - 90px);
 }
 
-.video{
-  width: 100%;
-}
-
+/*containers*/
 .row:after {
   content: "";
   display: table;
@@ -26,34 +23,138 @@
   align-items: center;
   justify-content: center;
 }
+/*-----------*/
+
+/*video & audio container*/
+.video{
+  width: 90%;
+  margin: 0 auto;
+  height: calc(50vh - 90px);
+}
+
+#video-audio-card{
+  background: -webkit-linear-gradient(bottom left, #50a3a2 0%, #53e3a6 100%);
+  border-radius: 10px;
+}
+
+#video-audio-card-header{
+  text-align: center !important;
+  font-family: "Times New Roman", Times, serif !important;
+  color: #333333;
+  font-size: 3vh;
+  margin-top: 2vh;
+}
+
+#audio-button{
+  margin-right: 10%;
+}
+
+#video-button{
+  margin-left: 10%;
+}
+
+.settings-button{
+  color: #50a3a2;
+  background-color: #333333;
+}
+
+#video-buttons{
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
+/*-----------*/
+
+@media screen and (max-width: 480px) {
+  .icons{
+    margin-right: 5vh!important;
+  }
+}
+
+@media screen and (max-height: 480px) and (max-width: 640px) {
+  .row{
+    min-height: calc(75vh - 90px) !important;;
+  }
+
+  #submit_buttons ::ng-deep .mat-raised-button{
+    font-size: 4vh!important;
+    line-height: 4vh!important;
+  }
+  .video{
+    display: none;
+  }
+  #user_enter_meeting_dialog{
+    min-height: calc(40vh - 90px) !important;
+  }
+
+  #video-buttons ::ng-deep .mat-raised-button{
+    font-size: 5vh!important;
+    line-height: 5vh!important;
+  }
+}
+
+@media screen and (max-width: 480px){
+  #user_name_field ::ng-deep .mat-form-field-prefix{
+    margin-right: 4vw!important;
+  }
+}
 
 @media screen and (max-width: 640px) {
+  #audio-button{
+    margin-right: 5%;
+  }
+
+  #video-button{
+    margin-left: 5%;
+  }
   .column {
     width: 100%;
   }
   #user_enter_meeting_header{
     font-size: 4vh !important;
+    margin-bottom: 0!important;
+    margin-top: 0!important;
   }
   #input-data{
     padding-top: 0 !important;
   }
-  .video{
-    height: 120px!important;
-  }
   #video-audio-card{
-    width: 72.5%!important;
+    width: 80%!important;
     margin-left: 10%!important;
     clear: both!important;
-    height: 50vh!important;
+  }
+  .video{
+    height: calc(40vh - 90px) !important;
+  }
+  #user_name_field{
+    font-size: 3vh !important;
+  }
+  #meeting_info_form_divider{
+    display: none;
+  }
+  #user_enter_meeting_dialog{
+    min-height: calc(95vh - 90px);
+  }
+  #submit_button{
+    font-size: 6vh;
+    padding-bottom: 2vh;
+  }
+  #submit_buttons ::ng-deep .mat-raised-button{
+    font-size: 5vh;
+    line-height: 5vh;
+  }
+
+  #video-buttons ::ng-deep .mat-raised-button{
+    font-size: 5vh;
+    line-height: 5vh;
   }
 }
 
 #user_enter_meeting_header{
-  margin-top: 1vh;
+  margin-top: 2vh;
   margin-bottom: 2vh;
   text-align: center;
   font-family: "Times New Roman", Times, serif;
-  font-size: 3vw;
+  font-size: 8vh;
 }
 
 #meeting_info_divider{
@@ -71,23 +172,6 @@
   margin-left: 5%;
   clear: both;
   width: 90%;
-}
-
-#video-audio-card{
-  background: -webkit-linear-gradient(bottom left, #50a3a2 0%, #53e3a6 100%);
-  border-radius: 10px;
-}
-
-#video-audio-card-header-container{
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-}
-
-#video-audio-card-header{
-  text-align: center !important;
-  font-family: "Times New Roman", Times, serif !important;
-  color: #333333;
 }
 
 .form-field{
@@ -109,8 +193,4 @@
   padding-bottom: 2vh!important;
   font-family: "Times New Roman", Times, serif !important;
   width: 80%;
-}
-
-#buttons{
-  display: inline-block;
 }

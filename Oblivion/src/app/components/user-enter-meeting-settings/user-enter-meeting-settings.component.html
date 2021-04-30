@@ -2,25 +2,20 @@
   <h1 id = "user_enter_meeting_header">Confirm Settings</h1>
   <mat-divider id = "meeting_info_divider"></mat-divider>
   <div class = "row">
-    <div class ="column">
-      <mat-card id="video-audio-card">
-        <mat-card-header id="video-audio-card-header-container">
-          <mat-card-title id="video-audio-card-header">Video & Audio Settings</mat-card-title>
-        </mat-card-header>
+    <div class ="column" id="video-audio-card">
+        <h3 id="video-audio-card-header">Video & Audio Settings</h3>
         <video [srcObject]="getLocalStream()"
                [autoplay]="true"
                [muted]="true"
-               [style.height.px]="220"
                class="video"></video>
-        <mat-card-actions>
-          <button mat-fab color="primary" (click)="changeAudio()" id = "audio_button">
+        <div id="video-buttons">
+          <button mat-raised-button (click)="changeAudio()" class="settings-button" id="audio-button">
             <mat-icon>{{data.audio ? 'volume_up' : 'volume_off'}}</mat-icon>
           </button>
-          <button mat-fab color="primary" (click)="changeVideo()" id = "video_button">
+          <button mat-raised-button (click)="changeVideo()" class="settings-button" id="video-button">
             <mat-icon>{{data.video ? 'videocam' : 'videocam_off'}}</mat-icon>
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
     </div>
 
     <div class ="column" id="input-data">

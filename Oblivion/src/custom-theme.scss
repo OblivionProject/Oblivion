@@ -59,7 +59,13 @@
     }
 
     mat-form-field {
-      font-size: 4vh !important;
+      font-size: 4vh;
+    }
+
+    @media only screen and (max-width: 640px) {
+      .mat-form-field-prefix{
+        margin-right: 4vw!important;
+      }
     }
 
     .mat-flat-button{
