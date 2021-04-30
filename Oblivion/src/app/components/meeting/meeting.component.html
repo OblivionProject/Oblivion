@@ -66,6 +66,9 @@
         </div>
       </mat-list-item>
     </mat-list>
+    <div id="role-update-message-div">
+      <p *ngIf="this.getRoleUpdateMessage()!== undefined" id="role-update-message">{{this.getRoleUpdateMessage().message}}</p>
+    </div>
   </mat-sidenav-container>
 
   <div *ngFor="let audio of getAudioStreams()">

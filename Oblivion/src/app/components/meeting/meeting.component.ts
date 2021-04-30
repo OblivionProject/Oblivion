@@ -17,7 +17,6 @@ import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
 import {Message} from "../../../../modules/message";
 import {VideoOrderingService} from "../../services/video-ordering.service";
-import {TimeInterval} from "rxjs";
 
 
 @Component({
@@ -48,6 +47,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public messageWidth: any;
   public messageHeight: any;
   public meetingUpdates: any[];
+  public roleUpdateMessage: any;
   public timer!: any;
 
   constructor(public mediaService: MediaService,
@@ -112,9 +112,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     });
     this.mediaService.messageUpdateSubject.subscribe(value => {
       this.meetingUpdates.push(value);
-      console.log(this.meetingUpdates);
       this.cdref.detectChanges();
-    })
+    });
+    this.mediaService.roleChangeSubject.subscribe(value => {
+      this.roleUpdateMessage = value;
+      this.cdref.detectChanges();
+    });
     this.timer = setInterval(() => { this.clearUpdateMessages(); }, 1000);
   }
 
@@ -124,8 +127,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public clearUpdateMessages():void{
     const currentTime = Date.now();
+    console.log(currentTime);
     this.meetingUpdates = this.meetingUpdates.filter(message => message.timeStamp + 3000 >= currentTime);
-    this.cdref.detectChanges();
+    if(this.roleUpdateMessage !== undefined){
+      if(currentTime > this.roleUpdateMessage.timeStamp + 4000){
+        this.roleUpdateMessage = undefined;
+      }
+    }
   }
 
   public ngAfterViewChecked(): void {
@@ -250,6 +258,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public getMeetingUpdates(): any[]{
     return this.meetingUpdates;
+  }
+
+  public getRoleUpdateMessage(): any{
+    return this.roleUpdateMessage;
   }
 
   // Toggles the video between off and on

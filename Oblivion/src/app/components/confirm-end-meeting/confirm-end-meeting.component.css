@@ -1,19 +1,21 @@
 #confirm_end_meeting{
   z-index: 3;
-  background-color: #333333;
-  box-shadow: 0 0 10px #50a3a2;
+  background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
   border-radius: 16px;
   margin-bottom: 4px;
 }
 
 #headerdialog{
   text-align: center;
-  color: white;
+  color: #333333;
+  font-family: "Times New Roman", Times, serif;
 }
 
 #content{
-  margin-top: 20px !important;
+  margin-top: 5vh !important;
   color: #c62828;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 3vh!important;
 }
 
 .dialog{
@@ -22,7 +24,7 @@
 }
 
 .mat-divider{
-  color: grey;
+  color: #333333;
 }
 
 #confirm_leave_button{
@@ -47,6 +49,7 @@
   color: #50a3a2;
   font-size: 24px;
   font-weight: lighter;
+  background-color: #333333;
 }
 
 .end_button{

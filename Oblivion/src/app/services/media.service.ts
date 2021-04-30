@@ -22,6 +22,7 @@ export class MediaService {
   public mySubject : Subject<any> = new Subject<any>();
   public destroy : boolean = false;
   public messageUpdateSubject : Subject<any> = new Subject<any>();
+  public roleChangeSubject : Subject<any> = new Subject<any>();
 
   constructor(private sharedService: MeetingStateService) {
     this.peers = {};
@@ -173,6 +174,11 @@ export class MediaService {
     else if (signal.role_change) {
       this.user.setRole(User.ROLE(signal.role));
       this.meetingInfo.setPassword(signal.password);
+      this.roleChangeSubject.next({
+        'message': "Your are now the owner of the meeting",
+        'timeStamp': Date.now()
+      });
+
     }
   }
 
