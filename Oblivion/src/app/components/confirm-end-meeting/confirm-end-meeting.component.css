@@ -1,6 +1,6 @@
 #confirm_end_meeting{
   z-index: 3;
-  background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+  background: #50a3a2;
   border-radius: 16px;
   margin-bottom: 4px;
 }
@@ -9,13 +9,16 @@
   text-align: center;
   color: #333333;
   font-family: "Times New Roman", Times, serif;
+  margin-bottom: 2px !important;
 }
 
 #content{
-  margin-top: 5vh !important;
-  color: #c62828;
+  margin-top: 16px !important;
+  color: #333333;
   font-family: "Times New Roman", Times, serif;
-  font-size: 3vh!important;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .dialog{
@@ -46,8 +49,7 @@
 }
 
 #confirm_cancel_button{
-  color: #50a3a2;
-  font-size: 24px;
+  color: #53e3a6;
   font-weight: lighter;
   background-color: #333333;
 }

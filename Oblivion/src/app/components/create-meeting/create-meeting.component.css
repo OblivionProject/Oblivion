@@ -59,6 +59,9 @@
   mat-form-field{
     font-size: 3vh!important;
   }
+  #test{
+    font-size: 3vh!important;
+  }
   #create_meeting_header {
     font-size: 40px !important;
     margin-bottom: 4vh !important;
@@ -77,6 +80,9 @@
   mat-form-field{
     font-size: 3vh!important;
   }
+  #test{
+    font-size: 3vh!important;
+  }
   #create_meeting_submit{
     font-size: 10vh;
     height: 12vh;
@@ -89,6 +95,9 @@
     height: 10vh;
   }
   mat-form-field{
+    font-size: 6vh!important;
+  }
+  #test{
     font-size: 6vh!important;
   }
   .icons{
@@ -126,6 +135,9 @@
   mat-form-field{
     font-size: 4vmin!important;
   }
+  #test{
+    font-size: 4vmin!important;
+  }
   .sidenav-cont {
     width: 90%;
   }
@@ -145,6 +157,10 @@
   }
   mat-form-field{
     font-size: 4vmin!important;
+  }
+  #test{
+    font-size: 4vmin!important;
+    margin-left: 3vw !important;
   }
 }
 
@@ -169,5 +185,5 @@
 #test{
   font-family: "Times New Roman", Times, serif;
   font-size: 4vh;
-  margin-left: 2vw;
+  margin-left: 1vw;
 }
