@@ -2,12 +2,10 @@
   background-color: inherit;
   text-align:center;
   z-index: 2;
-  align-items: center;
-  justify-content: center;
 }
 
 .sidenav-cont{
-  width: 40%;
+  width: 45%;
   background-color: inherit;
   display: block;
   margin-left: auto;
@@ -29,11 +27,11 @@
 }
 
 .sidenav-button{
-  width: 40%;
+  width: 45%;
   height: 20%;
   background-color: inherit;
   margin-top: 2%;
-  left: 30%;
+  left: 27.5%;
 }
 
 .icons{
@@ -53,6 +51,28 @@
   font-family: "Times New Roman", Times, serif;
 }
 
+@media (max-height: 480px) {
+  #create_meeting_submit{
+    font-size: 6vh;
+    height: 14vh;
+  }
+  mat-form-field{
+    font-size: 3vh!important;
+  }
+  #create_meeting_header {
+    font-size: 40px !important;
+    margin-bottom: 2vh !important;
+    margin-top: 2vh !important;
+  }
+  .sidenav-button{
+    height: 30% !important;
+  }
+  #testID{
+    margin-bottom: 2vh!important;
+    margin-top: 1vh!important;
+  }
+}
+
 @media (max-width: 756px) {
   #create_meeting_header {
     font-size: 50px;
@@ -66,15 +86,9 @@
   }
 }
 
-@media (max-height: 756px) {
-  .sidenav-button{
-    height: 30%;
-  }
-}
-
 #testID{
   margin-bottom: 3vh;
-  margin-top: 3vh;
+  margin-top: 2vh;
 }
 
 #test{

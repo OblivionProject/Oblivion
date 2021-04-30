@@ -1,10 +1,14 @@
 <mat-sidenav-container class = "sidenav-cont-cont">
   <h3 class="an-1">Welcome.</h3>
 
-  <div class = "sidenav-cont">
-    <button mat-raised-button color="primary" routerLink="../create-meeting" class= "welcome_button" id ="create_meeting">Create Meeting</button>
-    <button mat-raised-button color="primary" routerLink="../create-meeting" class= "welcome_button_short" id ="create_meeting_short">Create</button>
-    <button mat-raised-button color="primary" routerLink="../join-meeting" class= "welcome_button" id ="join_meeting">Join Meeting</button>
-    <button mat-raised-button color="primary" routerLink="../join-meeting" class= "welcome_button_short" id ="join_meeting_short">Join</button>
+  <div class="row">
+    <div class="column">
+      <button mat-raised-button color="primary" routerLink="../create-meeting" class= "welcome_button" id ="create_meeting">Create Meeting</button>
+      <button mat-raised-button color="primary" routerLink="../create-meeting" class= "welcome_button_short" id ="create_meeting_short">Create</button>
+    </div>
+    <div class="column">
+      <button mat-raised-button color="primary" routerLink="../join-meeting" class= "welcome_button" id ="join_meeting">Join Meeting</button>
+      <button mat-raised-button color="primary" routerLink="../join-meeting" class= "welcome_button_short" id ="join_meeting_short">Join</button>
+    </div>
   </div>
 </mat-sidenav-container>
