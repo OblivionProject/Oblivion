@@ -27,3 +27,11 @@
   float: left !important;
   padding-left: 10px;
 }
+
+.content-copy-icon{
+  font-size: 10px !important;
+}
+
+.copy-button{
+  background: inherit;
+}

@@ -36,6 +36,7 @@ import {WebsocketService} from './services/websocket.service';
 import {MediaService} from './services/media.service';
 import { UserEnterMeetingSettingsComponent } from './components/user-enter-meeting-settings/user-enter-meeting-settings.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import { ClipboardModule } from '@angular/cdk/clipboard'
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         MatOptionModule,
         MatBadgeModule,
         MatSelectModule,
-        DragDropModule
+        DragDropModule,
+        ClipboardModule
     ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],
