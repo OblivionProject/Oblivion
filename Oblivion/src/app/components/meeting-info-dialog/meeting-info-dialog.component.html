@@ -1,4 +1,8 @@
-<div mat-dialog-content id = "meeting_info_dialog">
+<div cdkDrag
+     cdkDragRootElement=".cdk-overlay-pane"
+     cdkDragBoundary=".cdk-overlay-container"
+     cdkDragHandle
+     mat-dialog-content id = "meeting_info_dialog">
   <h3 id = "meeting_info_header">Meeting Information</h3>
   <mat-divider id = "meeting_info_divider"></mat-divider>
   <ul id="meeting_info_list">

@@ -325,6 +325,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '250px',
       height: '200px',
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      hasBackdrop: true,
       position: {
         left: '0px',
         bottom: '2em'

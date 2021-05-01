@@ -35,6 +35,7 @@ import { ConfirmEndMeetingComponent } from './components/confirm-end-meeting/con
 import {WebsocketService} from './services/websocket.service';
 import {MediaService} from './services/media.service';
 import { UserEnterMeetingSettingsComponent } from './components/user-enter-meeting-settings/user-enter-meeting-settings.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { UserEnterMeetingSettingsComponent } from './components/user-enter-meeti
         MatListModule,
         MatOptionModule,
         MatBadgeModule,
-        MatSelectModule
+        MatSelectModule,
+        DragDropModule
     ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],
