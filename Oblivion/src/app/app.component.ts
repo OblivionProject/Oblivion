@@ -2,6 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import {Globals} from './global';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {ThemeHelperService} from "./services/theme-helper.service";
 
 @Component({
   selector: 'app-root',
@@ -11,15 +12,13 @@ import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 })
 export class AppComponent {
   title = 'Oblivion';
-  globals: Globals;
 
-  constructor(private overlayContainer: OverlayContainer, globals: Globals) {
-    this.globals = globals;
+  constructor(private overlayContainer: OverlayContainer, public themeService: ThemeHelperService) {
   }
 
   @HostBinding('class') componentCssClass: any;
 
   setValue($event: MatSlideToggleChange): void {
-    this.globals.darkMode = $event.checked;
+    this.themeService.darkmode = $event.checked;
   }
 }

@@ -26,22 +26,17 @@
   float: right;
 }
 
+#toggle ::ng-deep .mat-slide-toggle-label .mat-slide-toggle-content{
+  font-family: "Times New Roman", Times, serif;
+}
+
 .example-spacer {
   flex: 1 1 auto;
 }
 
-#toggle_short{
-  display: none;
-}
-
 @media (max-width: 1200px) {
-  #toggle_short {
-    display: block;
-    float: right;
-    font-family: "Times New Roman", Times, serif;
-  }
-  #toggle{
-    display: none;
+  #toggle ::ng-deep .mat-slide-toggle-label .mat-slide-toggle-content{
+    display: none !important;
   }
 }
 
@@ -78,9 +73,6 @@
 }
 
 .header{
-  background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   font-family: "Times New Roman", Times, serif;
   z-index: 2;
   font-size: 46px;

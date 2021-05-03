@@ -21,7 +21,7 @@
 }
 
 #meeting_info_list{
-  color: #53e3a6 !important;
+  color: #53e3a6;
   list-style-type: none;
   padding-top: 4px;
   float: left !important;

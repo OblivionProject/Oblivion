@@ -76,8 +76,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
         MatOptionModule,
         MatBadgeModule,
         MatSelectModule,
-        DragDropModule,
-        ClipboardModule
+        DragDropModule
     ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],

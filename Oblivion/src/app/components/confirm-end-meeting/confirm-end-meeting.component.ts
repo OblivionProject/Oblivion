@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
+import {ThemeHelperService} from "../../services/theme-helper.service";
 
 export enum END_MEETING_TYPE {
   END = 'END',
@@ -19,8 +20,15 @@ export class ConfirmEndMeetingComponent{
   public type: END_MEETING_TYPE;
 
   constructor(private dialogRef: MatDialogRef<ConfirmEndMeetingComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              public themeService: ThemeHelperService) {
     this.type = END_MEETING_TYPE.CANCEL;
+  }
+  public ngAfterViewInit():void {
+    if (!this.themeService.darkmode) {
+      // @ts-ignore
+      document.getElementById("confirm_cancel_button").style.color = "#53e3a6";
+    }
   }
 
   public endMeetingResponse() {

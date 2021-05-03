@@ -8,7 +8,6 @@
 .move_video_buttons{
   opacity: 0.3;
   background: inherit !important;
-  color: #53e3a6!important;
   z-index: 3;
 }
 
@@ -29,21 +28,15 @@
 .move_video_buttons:hover{
   opacity: 0.9;
   background: inherit!important;
-  color: #53e3a6;
 }
 
 p.video-description{
   position: absolute;
   top: 0px;
   left: 10px;
-  color: #53e3a6;
+  font-size: 4vh;
   font-family: "Times New Roman", Times, serif;
 }
-
-.mat-fab {
-  margin: 1em;
-}
-
 
 .sidenav-cont{
   width: 100%;
@@ -54,6 +47,7 @@ p.video-description{
   z-index: 2;
   overflow: hidden;
   position: relative;
+  background: #333333;
 }
 
 .meeting_buttons{
@@ -263,7 +257,6 @@ p.video-description{
   width: 95%;
   word-break: break-word !important;
   hyphens: auto !important;
-  background-color: #53e3a6 !important;
 }
 
 .messagesRECIVE{
@@ -288,11 +281,6 @@ p.video-description{
   width: 95%;
   padding-left: 1rem;
 }
-
-.sendbutton{
-  color: #53e3a6 !important;
-}
-
 
 /* width */
 ::-webkit-scrollbar {

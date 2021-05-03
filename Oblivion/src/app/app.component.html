@@ -7,16 +7,13 @@
 <!-- * * * * * * * to get started with your project! * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
-<mat-sidenav-container class="output" [ngClass]="{'dark-theme-mode':globals.darkMode, 'light-theme-mode':!globals.darkMode}">
+<mat-sidenav-container class="output" [ngClass]="{'dark-theme-mode':themeService.darkmode, 'light-theme-mode':!themeService.darkmode}">
     <mat-toolbar id="header">
       <button mat-flat-button class="header" routerLink="/welcome">Oblivion</button>
       <span class="example-spacer"></span>
       <mat-slide-toggle id="toggle"
         (change) = "setValue($event)">
         Dark Mode
-      </mat-slide-toggle>
-      <mat-slide-toggle id="toggle_short"
-        (change) = "setValue($event)">
       </mat-slide-toggle>
     </mat-toolbar>
 
