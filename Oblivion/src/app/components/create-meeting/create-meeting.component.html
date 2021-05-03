@@ -4,7 +4,7 @@
   <div class="form-component-row">
     <mat-form-field appearance="fill" class="form-field">
       <mat-icon matPrefix class="icons">fingerprint</mat-icon>
-      <mat-label id="meeting_name_label">Enter Meeting Name</mat-label>
+      <mat-label id="meeting_name_label">Meeting Name</mat-label>
       <input matInput placeholder="Meeting Name" (keyup)="test($event)" [(ngModel)]="meeting.name" [errorStateMatcher]="matcher" formControlName="meetingName"  id="meeting_name_input">
       <mat-error *ngIf="createMeetingForm.controls['meetingName'].invalid">{{getMeetingNameErrorMessage()}}</mat-error>
     </mat-form-field>
@@ -19,7 +19,7 @@
   <div class="form-component-row">
     <mat-form-field appearance="fill" class="form-field" *ngIf="advanceOption">
       <mat-icon matPrefix class="icons">lock</mat-icon>
-      <mat-label id="meeting_password1_label">Enter Meeting Password</mat-label>
+      <mat-label id="meeting_password1_label">Meeting Password</mat-label>
       <input matInput [type]="hide ? 'password' : 'text'" (keyup)="test($event)" [(ngModel)]="meeting.password" [errorStateMatcher]="matcher" formControlName="password"  id="meeting_password1_input">
       <mat-error align="start" *ngIf="createMeetingForm.controls['password'].invalid">
         {{getPasswordErrorMessage()}}
@@ -35,7 +35,7 @@
   <div class="form-component-row">
     <mat-form-field appearance="fill" class="form-field" *ngIf="advanceOption">
       <mat-icon matPrefix class="icons">lock</mat-icon>
-      <mat-label id="meeting_password2_label" >Confirm Meeting Password</mat-label>
+      <mat-label id="meeting_password2_label" >Confirm Password</mat-label>
       <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.passwordConfirm" formControlName="confirmPassword" id="meeting_password2_input">
       <mat-error *ngIf="createMeetingForm.controls['confirmPassword'].invalid">{{getPasswordMatchErrorMessage()}}</mat-error>
       <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
