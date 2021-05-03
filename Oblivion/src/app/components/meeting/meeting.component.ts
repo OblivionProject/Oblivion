@@ -49,6 +49,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public meetingUpdates: any[];
   public roleUpdateMessage: any;
   public timer!: any;
+  public footer_height: any;
 
   constructor(public mediaService: MediaService,
               public dialog: MatDialog,
@@ -157,10 +158,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public adjustWindowSizing(): void {
     //Window Sizing
-    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-    this.height = window.innerHeight - sizing*2;
-    this.overall_height = window.innerHeight - sizing;
-    this.overall_height = window.innerHeight - sizing;
+    //const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = (8*window.innerHeight)/10;
+    this.overall_height = (89*window.innerHeight)/100;
+    this.footer_height = (window.innerHeight)/10;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
@@ -177,9 +178,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.remoteStreams = this.mediaService.getRemoteStreams();
 
     //Window Sizing
-    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-    this.height = window.innerHeight - sizing*2;
-    this.overall_height = window.innerHeight - sizing;
+    //const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = (8*window.innerHeight)/10;
+    this.overall_height = (89*window.innerHeight)/100;
+    this.footer_height = (window.innerHeight)/10;
     this.videoOrderingService.setVideosSizing(window.innerWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
@@ -295,6 +297,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
+    console.log("STERAM ASDFSADFA SDFASDFASDf");
     if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
       this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
       this.videoOrderingService.setVideosSizing(window.innerWidth);

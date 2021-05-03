@@ -32,9 +32,11 @@
 
 .welcome_button{
   width: 60%;
-  height: 16vmin;
+  min-width: calc(40vw);
+  min-height: calc(9vw);
   margin-left: 2.5%;
-  font-size: 8vh;
+  font-size: calc(36px + 1.5vw);
+  opacity: 0.9;
 }
 
 #create_meeting{
@@ -43,6 +45,14 @@
 
 #join_meeting{
   float: left;
+}
+
+@media (min-height: 1024px) {
+  .welcome_button{
+    font-size: 5vw!important;
+    width: 80% !important;
+    height: 18vmin!important;
+  }
 }
 
 @media (max-height: 480px) {
@@ -54,6 +64,7 @@
 @media (max-height: 264px) {
   .row{
     margin-top: 1vh!important;
+    height: 100% !important;
   }
 }
 
@@ -81,9 +92,11 @@
 
 .an-1 {
   background-color: inherit;
-  font-size: 20vmin;
-  line-height: 30vh;
+  font-size: 10vmax;
+  line-height: 10vmax;
   font-family: "Times New Roman", Times, serif;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
   text-align: center;
 }

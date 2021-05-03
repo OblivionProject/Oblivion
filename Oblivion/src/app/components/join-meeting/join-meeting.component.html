@@ -1,37 +1,30 @@
-<mat-sidenav-container class = "sidenav-cont-cont">
-  <h1 class="mat-display-1" id="join_meeting_header">Join Meeting</h1>
-  <mat-sidenav-container class = "sidenav-cont">
-    <form [formGroup]="joinMeetingForm" autocomplete="off">
-      <section>
-        <div class="form-component-row">
-          <mat-form-field appearance="fill" class="form-field" color="primary">
-            <mat-icon matPrefix class="icons">fingerprint</mat-icon>
-            <mat-label id="join_meeting_meeting_id_label">Enter Meeting ID</mat-label>
-            <input matInput placeholder="Meeting ID" [(ngModel)]="meeting.meetingID" (keyup)="test($event)" [errorStateMatcher]="matcher" formControlName="meetingID" id="join_meeting_meeting_id_input">
-            <mat-error *ngIf="joinMeetingForm.controls['meetingID'].invalid">{{getMeetingIDErrorMessage()}}</mat-error>
-          </mat-form-field>
-        </div>
-      </section>
-      <section>
-        <div class="form-component-row">
-          <mat-form-field appearance="fill" class="form-field" color="primary">
-            <mat-icon matPrefix class="icons">lock</mat-icon>
-            <mat-label id="join_meeting_meeting_password_label">Enter Meeting Password</mat-label>
-            <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" formControlName="password" id="join_meeting_meeting_password_input">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                    [attr.aria-pressed]="hide"
-                    id="join_meeting_meeting_password_hide">
-              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-error *ngIf="joinMeetingForm.controls['password'].invalid">{{getMeetingPasswordErrorMessage()}}</mat-error>
-          </mat-form-field>
-        </div>
-      </section>
-    </form>
-    <mat-divider></mat-divider>
-  </mat-sidenav-container>
-  <mat-sidenav-container class = "sidenav-button">
-    <button mat-raised-button color="primary" [disabled]="joinMeetingForm.controls['meetingID'].invalid" (click)="joinMeeting()" id="join_meeting_submit">Join</button>
-  </mat-sidenav-container>
-</mat-sidenav-container>
-
+<h1 class="mat-display-1" id="join_meeting_header">Join Meeting</h1>
+<form [formGroup]="joinMeetingForm" autocomplete="off" id="join_meeting_form">
+  <section>
+    <div class="form-component-row">
+      <mat-form-field appearance="fill" class="form-field" color="primary">
+        <mat-icon matPrefix class="icons">fingerprint</mat-icon>
+        <mat-label id="join_meeting_meeting_id_label">Enter Meeting ID</mat-label>
+        <input matInput placeholder="Meeting ID" [(ngModel)]="meeting.meetingID" (keyup)="test($event)" [errorStateMatcher]="matcher" formControlName="meetingID" id="join_meeting_meeting_id_input">
+        <mat-error *ngIf="joinMeetingForm.controls['meetingID'].invalid">{{getMeetingIDErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+  </section>
+  <section>
+    <div class="form-component-row">
+      <mat-form-field appearance="fill" class="form-field" color="primary">
+        <mat-icon matPrefix class="icons">lock</mat-icon>
+        <mat-label id="join_meeting_meeting_password_label">Enter Meeting Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="meeting.password" formControlName="password" id="join_meeting_meeting_password_input">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide"
+                id="join_meeting_meeting_password_hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="joinMeetingForm.controls['password'].invalid">{{getMeetingPasswordErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+  </section>
+</form>
+<mat-divider id="join_meeting_divider"></mat-divider>
+<button mat-raised-button color="primary" [disabled]="joinMeetingForm.controls['meetingID'].invalid" (click)="joinMeeting()" id="join_meeting_submit">Join</button>

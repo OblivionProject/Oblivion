@@ -6,7 +6,7 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
-@mixin html-theme($theme,$background,$background2, $text,$button_text,$button_background,$button_cancel) {
+@mixin html-theme($theme,$background,$background2, $text,$button_text,$button_background,$button_cancel, $button_footer) {
   & {
     background: $background;
     background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
@@ -16,12 +16,32 @@
     #test{
       color: $text;
     }
-    #footer{
+    #sticky_footer{
       background: $background;
       background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
       background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
       background: -o-linear-gradient(top left, $background 0%, $background2 100%);
       background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+    }
+
+    #sticky_footer .mat-flat-button{
+      color: $button_background;
+      background-color: transparent;
+    }
+
+    #sticky_footer #leave{
+      height: 80%;
+      background: $button_background !important;
+      color: $button_text!important;
+    }
+    #sticky_footer #leave_short{
+      height: 80%;
+      background: $button_background !important;
+      color: $button_text!important;
+    }
+
+    #sticky_footer .mat-flat-button:hover{
+      background-color: $button_cancel!important;
     }
 
     .mat-input-element {
@@ -56,16 +76,6 @@
     .mat-raised-button .mat-ripple-element {
       background-color: $button_text !important;
       opacity: 0.2 !important;
-    }
-
-    mat-form-field {
-      font-size: 4vh;
-    }
-
-    @media only screen and (max-width: 640px) {
-      .mat-form-field-prefix{
-        margin-right: 4vw!important;
-      }
     }
 
     .mat-flat-button{
@@ -140,6 +150,7 @@ $light-app-theme-background2: #53e3a6;
 $light-app-theme-button_text: #53e3a6;
 $light-app-theme-button_background: white;
 $light-app-theme-button_cancel: #50a3a2;
+$light-app-theme-button_footer: white;
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -170,6 +181,7 @@ $dark-app-theme-background2: #333333;
 $dark-app-theme-button_text: #50a3a2;
 $dark-app-theme-button_background: #333333;
 $dark-app-theme-button_cancel: #333333;
+$dark-app-theme-button_footer: #53e3a6;
 
 
 .dark-theme-mode {
@@ -181,7 +193,8 @@ $dark-app-theme-button_cancel: #333333;
     $dark-app-theme-text,
     $dark-app-theme-button_text,
     $dark-app-theme-button_background,
-    $dark-app-theme-button_cancel);
+    $dark-app-theme-button_cancel,
+    $dark-app-theme-button_footer);
 }
 
 
@@ -197,6 +210,7 @@ $dark-app-theme-button_cancel: #333333;
     $light-app-theme-text,
     $light-app-theme-button_text,
     $light-app-theme-button_background,
-    $light-app-theme-button_cancel
+    $light-app-theme-button_cancel,
+    $light-app-theme-button_footer
   );
 }

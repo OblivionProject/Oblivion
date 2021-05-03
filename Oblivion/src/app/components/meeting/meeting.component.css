@@ -1,8 +1,8 @@
 #sticky_footer{
-  height: 4rem;
   width: 100%;
   bottom: 0;
   position: absolute;
+  z-index: 3;
 }
 
 .move_video_buttons{
@@ -50,20 +50,14 @@ p.video-description{
 }
 
 .sidenav-cont-cont{
-  height:89%;
   width: 100%;
   z-index: 2;
   overflow: hidden;
   position: relative;
 }
 
-#footer{
-  height: 100%;
-  width: 100%;
-}
-
 .meeting_buttons{
-  padding-bottom: 0;
+  height: 100%;
 }
 
 #leave{
@@ -71,30 +65,95 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 30px;
 }
 #leave_short{
   display: none;
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 30px;
 }
 
 #message-hint{
   color: white!important;
 }
 
-@media (max-width: 1200px) {
-  .sidenav-cont {
-    width: 100%;
+@media (max-width: 340px){
+  .meeting_buttons{
+    min-width: 8%;
   }
-  .mat-fab{
-    margin: 0;
-    float: left;
+  #sticky_footer .mat-icon{
+    font-size: 5vh!important;
+    height: 5vh!important;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh!important;
+  }
+}
+
+@media (max-width: 640px) {
+  .meeting_buttons{
+    min-width: 4%!important;
+  }
+  #sticky_footer .mat-icon{
+    font-size: 5vh;
+    height: 5vh;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh;
+  }
+}
+
+@media (min-width: 1200px) {
+  /*.button_helpers{*/
+  /*  font-size: 1vh;*/
+  /*}*/
+
+  #leave{
+    font-size: 36px;
+  }
+  .meeting_buttons{
+    min-width: 8%;
+  }
+  #sticky_footer .mat-icon{
+    font-size: 4vh;
+    height: 4vh;
+    min-width: 30px;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh;
+  }
+}
+
+@media (max-height: 480px){
+  #sticky_footer .mat-flat-button .button_helpers{
+    display: none
+  }
+  #sticky_footer .mat-icon{
+    font-size: 8vh!important;
+    height: 8vh!important;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 8vh!important;
+  }
+
+}
+
+@media (max-width: 1200px) {
+  #sticky_footer .mat-flat-button{
+    line-height: 4vh;
+  }
+  #sticky_footer .mat-flat-button .mat-icon{
+    font-size: 4vh;
+    height: 4vh;
+    min-width: 30px;
+  }
+  #sticky_footer .mat-flat-button .button_helpers{
+    height: 1vh;
+    font-size: 2vh;
   }
   #leave_short{
     display: block;
+    font-size: 5vh;
   }
   #leave{
     display: none;
