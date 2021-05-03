@@ -45,8 +45,9 @@
   #join_meeting_submit {
     width: 65%;
     left: 17.5%;
-    font-size: 10vh;
-    height: 16vh;
+    font-size: 8vh;
+    height: 10vh;
+    line-height: 8vh;
   }
   #join_meeting_form{
     width: 65%;
@@ -59,24 +60,24 @@
 
 @media (min-height: 1024px) {
   mat-form-field{
-    font-size: 2vh!important;
+    font-size: 3vh!important;
   }
 }
 
 @media (max-height: 480px) {
   mat-form-field{
-    font-size: 3vh!important;
+    font-size: 4vh!important;
   }
   #join_meeting_header{
     margin-top: 1%!important;
     margin-bottom: 1%!important;
   }
   .icons{
-    margin-right: 0 !important;
+    margin-right: 2vw !important;
   }
 }
 
-@media only screen and (min-height: 480px) and (max-width: 640px){
+@media only screen and (min-height: 480px) and (max-width: 480px){
   .icons{
     margin-right: 8vw !important;
   }
@@ -98,6 +99,7 @@
     left: 10%;
     height: 10vh;
     font-size: 8vh;
+    line-height: 8vh;
   }
   #join_meeting_header{
     margin-top: 20%;

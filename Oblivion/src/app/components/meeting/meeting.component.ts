@@ -41,6 +41,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
   public overall_height: any;
+  public video_width: any = undefined;
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
@@ -97,6 +98,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
       this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
+      if(this.tile.rows ===2){
+        this.video_width = 3*(window.innerWidth/2)/5;
+      }
+      else{
+        this.video_width = undefined;
+      }
       //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });

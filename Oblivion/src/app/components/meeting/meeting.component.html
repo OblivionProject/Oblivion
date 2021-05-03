@@ -50,7 +50,15 @@
                          [rowspan]="this.tile.rows"
                          class="tile">
             <p class="video video-description">Other</p>
-            <video [srcObject]="vid"
+            <video *ngIf="video_width!==undefined"
+                   [srcObject]="vid"
+                   [autoplay]="true"
+                   [muted]="vid===localStream"
+                   [style.height.px]="video_height"
+                   [style.width.px]="video_width"
+                   class="video_width"></video>
+            <video *ngIf="video_width===undefined"
+                   [srcObject]="vid"
                    [autoplay]="true"
                    [muted]="vid===localStream"
                    [style.height.px]="video_height"
@@ -85,7 +93,7 @@
   </button>
   <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
     <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
-    <div class="button_helpers">{{video ? 'Show Video' : 'Hide Video'}}</div>
+    <div class="button_helpers">{{video ? 'Show' : 'Hide'}}</div>
   </button>
   <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" class = "meeting_buttons">
     <mat-icon> chat</mat-icon>
@@ -93,9 +101,9 @@
   </button>
   <button mat-flat-button color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons">
     <mat-icon>info</mat-icon>
-    <div class="button_helpers">Meeting Info</div>
+    <div class="button_helpers">Info</div>
   </button>
-<!--  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>-->
-<!--  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave_short">Leave</button>-->
+  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>
+  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave_short">Leave</button>
 </mat-toolbar>
 

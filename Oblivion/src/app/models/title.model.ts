@@ -23,6 +23,6 @@ export class TitleModel {
 
   public setLarge(){
     this.cols = 1;
-    this.rows = 1;
+    this.rows = 2;
   }
 }
