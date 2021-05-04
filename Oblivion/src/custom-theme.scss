@@ -113,14 +113,16 @@
 
     .header {
       @if $theme == $light-app-theme {
-        background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #50a3a2;
+        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+        //-webkit-background-clip: text;
+        //-webkit-text-fill-color: transparent;
       }
       @else{
-        background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #50a3a2;
+        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
+        //-webkit-background-clip: text;
+        //-webkit-text-fill-color: transparent;
       }
     }
 

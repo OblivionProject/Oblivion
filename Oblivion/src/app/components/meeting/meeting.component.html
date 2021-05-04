@@ -50,13 +50,6 @@
                          [rowspan]="this.tile.rows"
                          class="tile">
             <p class="video video-description">Other</p>
-            <video *ngIf="video_width!==undefined"
-                   [srcObject]="vid"
-                   [autoplay]="true"
-                   [muted]="vid===localStream"
-                   [style.height.px]="video_height"
-                   [style.width.px]="video_width"
-                   class="video_width"></video>
             <video *ngIf="video_width===undefined"
                    [srcObject]="vid"
                    [autoplay]="true"
