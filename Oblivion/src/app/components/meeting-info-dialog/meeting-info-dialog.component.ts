@@ -21,4 +21,8 @@ export class MeetingInfoDialogComponent{
       document.getElementById("meeting_info_list").style.color = "#50a3a2";
     }
   }
+
+  public toString(value: number){
+    return String(value);
+  }
 }

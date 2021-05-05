@@ -17,6 +17,8 @@ import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
 import {Message} from "../../../../modules/message";
 import {VideoOrderingService} from "../../services/video-ordering.service";
+import {Peer} from "../../../../modules/peer";
+import {ParticipantsListDialogComponent} from "../participants-list-dialog/participants-list-dialog.component";
 
 
 @Component({
@@ -135,7 +137,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public clearUpdateMessages():void{
     const currentTime = Date.now();
-    console.log(currentTime);
     this.meetingUpdates = this.meetingUpdates.filter(message => message.timeStamp + 3000 >= currentTime);
     if(this.roleUpdateMessage !== undefined){
       if(currentTime > this.roleUpdateMessage.timeStamp + 4000){
@@ -304,7 +305,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
-    console.log("STERAM ASDFSADFA SDFASDFASDf");
     if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
       this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
       this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
@@ -317,12 +317,34 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     }
   }
 
+  private getRemotePeers(): Peer[] {
+    return Object.values(this.mediaService.getPeers());
+  }
+
+  public getPeers(): Peer[] {
+    if (this.videoOrderingService.videos_count!=this.getRemotePeers().length+1) {
+      this.videoOrderingService.videos_count = this.getRemotePeers().length+1;
+      this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
+      this.videoOrderingService.setTiles();
+    }
+    if (this.localStream != undefined) {
+      return ([this.mediaService.pseudoPeer].concat(this.getRemotePeers()).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index));
+    } else {
+      return [];
+    }
+  }
+
+  public getParticipants(): Peer[] {
+    return [this.mediaService.pseudoPeer].concat(this.getRemotePeers());
+  }
+
   public getAudioStreams(): MediaStream[] {
     return this.getRemoteStreams().filter((stream: MediaStream) => !this.getStreams().includes(stream));
   }
 
   public setMeetingInfo(): MeetingInfo {
     this.meetingInfo = this.mediaService.getMeetingInfo();
+    console.log(this.meetingInfo.password);
     return this.meetingInfo;
   }
 
@@ -332,7 +354,22 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public openDialog(): void {
     this.setMeetingInfo();
+    console.log()
     this.dialog.open(MeetingInfoDialogComponent, {
+      width: '250px',
+      height: '250px',
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      hasBackdrop: true,
+      position: {
+        left: '0px',
+        bottom: '2em'
+      },
+      data: this.meetingInfo
+    });
+  }
+
+  public openParticipantsList(): void {
+    this.dialog.open(ParticipantsListDialogComponent, {
       width: '250px',
       height: '200px',
       backdropClass: 'cdk-overlay-transparent-backdrop',
@@ -341,7 +378,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
         left: '0px',
         bottom: '2em'
       },
-      data: this.meetingInfo
+      data: this.getParticipants()
     });
   }
 

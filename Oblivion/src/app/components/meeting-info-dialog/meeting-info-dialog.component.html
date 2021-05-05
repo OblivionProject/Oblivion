@@ -14,9 +14,11 @@
     </li>
     <li *ngIf="data.meeting_id">
       <span>Meeting ID: </span><span [innerHTML]='data.meeting_id'></span>
+        <mat-icon [cdkCopyToClipboard]="toString(data.meeting_id)" class="copy-icon">content_copy</mat-icon>
     </li>
     <li *ngIf="data.password">
-      <span>Password: </span><span [innerHTML]='data.password'></span>
+      <span class="password-span">Password: </span><span [innerHTML]='data.password' class="password-span"></span>
+      <mat-icon [cdkCopyToClipboard]="data.password" class="copy-icon">content_copy</mat-icon>
     </li>
   </ul>
 </div>

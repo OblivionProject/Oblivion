@@ -1,0 +1,18 @@
+<div cdkDrag
+     cdkDragRootElement=".cdk-overlay-pane"
+     cdkDragBoundary=".cdk-overlay-container"
+     cdkDragHandle
+     mat-dialog-content id = "meeting_info_dialog">
+  <h3 id = "meeting_info_header">Participants</h3>
+  <mat-divider id = "meeting_info_divider"></mat-divider>
+  <ul id="meeting_info_list">
+    <li *ngFor="let peer of peers">
+      <div class="peer-container">
+        <span class="peer-text">{{peer.getPeerUser().getName()}}</span>
+        <span class="peer-text">{{(peer.getPeerUser().getRole() === 'Admin') ? ' [Host]' : ''}}</span>
+        <mat-icon class="copy-icon">{{peer.audio ? 'volume_up' : 'volume_off'}}</mat-icon>
+        <mat-icon class="copy-icon">{{peer.video ? 'videocam' : 'videocam_off'}}</mat-icon>
+      </div>
+    </li>
+  </ul>
+</div>

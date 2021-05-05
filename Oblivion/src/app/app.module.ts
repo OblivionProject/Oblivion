@@ -36,7 +36,8 @@ import {WebsocketService} from './services/websocket.service';
 import {MediaService} from './services/media.service';
 import { UserEnterMeetingSettingsComponent } from './components/user-enter-meeting-settings/user-enter-meeting-settings.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import { ClipboardModule } from '@angular/cdk/clipboard'
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ParticipantsListDialogComponent } from './components/participants-list-dialog/participants-list-dialog.component'
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
     PageNotFoundComponent,
     MeetingInfoDialogComponent,
     ConfirmEndMeetingComponent,
-    UserEnterMeetingSettingsComponent
+    UserEnterMeetingSettingsComponent,
+    ParticipantsListDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -76,7 +78,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
         MatOptionModule,
         MatBadgeModule,
         MatSelectModule,
-        DragDropModule
+        DragDropModule,
+        ClipboardModule
     ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],

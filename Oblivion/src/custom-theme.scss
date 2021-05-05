@@ -57,12 +57,14 @@
 
     #sticky_footer .mat-flat-button:hover{
       @if $theme == $light-app-theme {
-        background-color: $button_background!important;
-        color: #333333!important;
+        background-color: #333333!important;
+        color: #53e3a6!important;
+        opacity: 0.9;
       }
       @else{
         color: #add8e6 !important;
         background-color: $button_cancel!important;
+        opacity: 0.9;
       }
     }
     p.video-description{
@@ -111,18 +113,38 @@
       }
     }
 
-    .header {
+    .asterisk {
       @if $theme == $light-app-theme {
-        color: #50a3a2;
-        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-        //-webkit-background-clip: text;
-        //-webkit-text-fill-color: transparent;
+        color:$text !important;
       }
       @else{
-        color: #50a3a2;
-        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
-        //-webkit-background-clip: text;
-        //-webkit-text-fill-color: transparent;
+        color: #add8e6 !important;
+      }
+    }
+
+    .asterisk-message {
+      @if $theme == $light-app-theme {
+        color:#333333 !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
+    }
+
+    .mat-form-field-subscript-wrapper{
+      margin-top: 0.5em!important;
+    }
+
+    .header {
+      @if $theme == $light-app-theme {
+        background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      @else{
+        background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
     }
 
@@ -135,6 +157,15 @@
       }
 
       font-family: "Times New Roman", Times, serif;
+    }
+
+    .video-icon{
+      @if $theme == $light-app-theme {
+        color:grey !important;
+      }
+      @else{
+        color: #50a3a2 !important;
+      }
     }
 
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
@@ -172,6 +203,12 @@
     }
 
     .an-1{
+      color: $text;
+    }
+    #page-not-found-header{
+        color: $text;
+    }
+    #page-not-found-text{
       color: $text;
     }
     .mat-display-1{

@@ -15,14 +15,15 @@
   font-size: 20px;
 }
 
-.password-span{
-  font-size: 17px!important;
-}
-
 #meeting_info_divider{
   color: white;
   margin-top: 0!important;
   padding-top: 0!important;
+}
+
+.peer-text{
+  float: left;
+  margin-right: 4px;
 }
 
 #meeting_info_list{
@@ -36,9 +37,10 @@
 }
 
 .copy-icon{
-  margin-left: 8px!important;
-  font-size: 16px !important;
+  float:left;
+  margin-left: 2px!important;
+  font-size: 18px !important;
   background-color: transparent!important;
   color: white;
-  cursor: pointer;
+  padding-top: 1px!important;
 }
