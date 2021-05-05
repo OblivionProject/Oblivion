@@ -45,15 +45,15 @@
         </button>
 
         <mat-grid-list class="videoGrid" cols="2" rowHeight="fit" [style.height.px]="height">
-          <mat-grid-tile *ngFor="let vid of getStreams()"
+          <mat-grid-tile *ngFor="let peer of getPeers()"
                          [colspan]="this.tile.cols"
                          [rowspan]="this.tile.rows"
                          class="tile">
-            <p class="video video-description">Other</p>
+            <p class="video video-description">{{peer.getPeerUser().getName()}}</p>
             <video *ngIf="video_width===undefined"
-                   [srcObject]="vid"
+                   [srcObject]="peer.getRemoteStream()"
                    [autoplay]="true"
-                   [muted]="vid===localStream"
+                   [muted]="peer.getRemoteStream()===localStream"
                    [style.height.px]="video_height"
                    class="video"></video>
           </mat-grid-tile>

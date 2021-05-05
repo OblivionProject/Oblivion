@@ -59,6 +59,14 @@ export class Peer {
     this.user = user;
   }
 
+  public setRemoteStream(stream: MediaStream): void {
+    this.remoteStream = stream;
+  }
+
+  public setPeerUser(peerUser: User): void {
+    this.peerUser = peerUser;
+  }
+
   public getPeerUser(): User {
     return this.peerUser;
   }

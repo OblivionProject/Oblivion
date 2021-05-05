@@ -17,6 +17,7 @@ import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
 import {Message} from "../../../../modules/message";
 import {VideoOrderingService} from "../../services/video-ordering.service";
+import {Peer} from "../../../../modules/peer";
 
 
 @Component({
@@ -304,7 +305,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
-    console.log("STERAM ASDFSADFA SDFASDFASDf");
+    // console.log("STERAM ASDFSADFA SDFASDFASDf");
     if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
       this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
       this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
@@ -312,6 +313,23 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     }
     if (this.localStream != undefined) {
       return ([this.localStream].concat(this.getRemoteStreams()).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index));
+    } else {
+      return [];
+    }
+  }
+
+  private getRemotePeers(): Peer[] {
+    return Object.values(this.mediaService.getPeers());
+  }
+
+  public getPeers(): Peer[] {
+    if (this.videoOrderingService.videos_count!=this.getRemotePeers().length+1) {
+      this.videoOrderingService.videos_count = this.getRemotePeers().length+1;
+      this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
+      this.videoOrderingService.setTiles();
+    }
+    if (this.localStream != undefined) {
+      return ([this.mediaService.pseudoPeer].concat(this.getRemotePeers()).slice(this.videoOrderingService.video_start_index, this.videoOrderingService.video_end_index));
     } else {
       return [];
     }

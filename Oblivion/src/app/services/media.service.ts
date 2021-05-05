@@ -23,12 +23,16 @@ export class MediaService {
   public destroy : boolean = false;
   public messageUpdateSubject : Subject<any> = new Subject<any>();
   public roleChangeSubject : Subject<any> = new Subject<any>();
+  public pseudoPeer!: Peer;
 
   constructor(private sharedService: MeetingStateService) {
     this.peers = {};
     this.messageLog = new Array<Message>();
 
     this.unreadMessageCount = 0;
+
+    this.pseudoPeer = new Peer(-1, false, new MediaStream(), this.webSocket, () => {});
+    //this.pseudoPeer.setRemoteStream(this.localstream);
   }
 
   // TODO: Should we get rid of this? Needed for the printSubtitle [change subtitle?]
@@ -56,7 +60,7 @@ export class MediaService {
       userID,
       initSeq,
       this.localstream,
-      <WebSocket>this.webSocket,
+      this.webSocket,
       (message: Message) => this.receivedMessage(message)
     );
     this.peers[userID] = peer;
@@ -134,7 +138,7 @@ export class MediaService {
       currentPeer.setRemoteDescription(
         new RTCSessionDescription(signal.sdp),
       signal.sdp.type == 'offer',
-        this.webSocket  // TODO: Look at this
+        this.webSocket
       );
 
       // Handle the ICE server information
@@ -146,6 +150,7 @@ export class MediaService {
     } else if (signal.rmi && !this.user) {
       this.user = new User(this.sharedService.userName, signal.userId, User.ROLE(signal.userRole));
       Peer.setUser(this.user);
+      this.pseudoPeer.setPeerUser(this.user);
       this.meetingInfo = new MeetingInfo(signal.meetingID, signal.name, this.user, signal.password);
 
       // Create new peer connection offers for each of the peers currently in the meeting
@@ -221,6 +226,8 @@ export class MediaService {
     } catch (error) {
       console.log('Unable to get audio device');  // TODO: Add more robust catching
     }
+
+    this.pseudoPeer.setRemoteStream(this.localstream);
   }
 
   public getLocalStream(): MediaStream {
@@ -235,6 +242,10 @@ export class MediaService {
     });
 
     return remote;
+  }
+
+  public getPeers(): {[key: number]: Peer} {
+    return this.peers;
   }
 
   public muteLocalVideo(): void {
