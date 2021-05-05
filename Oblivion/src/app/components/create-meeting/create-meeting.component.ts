@@ -212,35 +212,33 @@ export class CreateMeetingComponent {
   }
 
   public openDialog(): void {
-    this.webSocket.close();
-    this.router.navigate(['meeting']);
-    // const dialogRef = this.dialog.open(UserEnterMeetingSettingsComponent, {
-    //   disableClose: true,
-    //   position: {
-    //     top: '4rem'
-    //   },
-    //   data: {
-    //     userName: this.sharedService.userName,
-    //     audio: this.sharedService.audio,
-    //     video: this.sharedService.video,
-    //     cancel: this.sharedService.cancel,
-    //     mediaStream: this.sharedService.mediaStream,
-    //     videoFound: this.sharedService.videoFound,
-    //     audioFound: this.sharedService.audioFound
-    //   }
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if(result === undefined){
-    //     this.terminate();
-    //   }
-    //   else if(!result.cancel){
-    //     this.sharedService.userName = result.userName;
-    //     this.sharedService.video = result.video;
-    //     this.sharedService.audio = result.audio;
-    //     this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
-    //     this.webSocket.close();
-    //     this.router.navigate(['meeting']);
-    //   }
-    // });
+    const dialogRef = this.dialog.open(UserEnterMeetingSettingsComponent, {
+      disableClose: true,
+      position: {
+        top: '4rem'
+      },
+      data: {
+        userName: this.sharedService.userName,
+        audio: this.sharedService.audio,
+        video: this.sharedService.video,
+        cancel: this.sharedService.cancel,
+        mediaStream: this.sharedService.mediaStream,
+        videoFound: this.sharedService.videoFound,
+        audioFound: this.sharedService.audioFound
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === undefined){
+        this.terminate();
+      }
+      else if(!result.cancel){
+        this.sharedService.userName = result.userName;
+        this.sharedService.video = result.video;
+        this.sharedService.audio = result.audio;
+        this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
+        this.webSocket.close();
+        this.router.navigate(['meeting']);
+      }
+    });
   }
 }

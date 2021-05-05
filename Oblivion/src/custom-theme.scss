@@ -111,18 +111,30 @@
       }
     }
 
-    .header {
+    .form-field-hint {
       @if $theme == $light-app-theme {
-        color: #50a3a2;
-        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-        //-webkit-background-clip: text;
-        //-webkit-text-fill-color: transparent;
+        opacity: 0.9;
+        color:#333333 !important;
       }
       @else{
-        color: #50a3a2;
-        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
-        //-webkit-background-clip: text;
-        //-webkit-text-fill-color: transparent;
+        color: #add8e6 !important;
+      }
+    }
+
+    ::ng-deep .mat-form-field-subscript-wrapper{
+      margin-top: 0.5em!important;
+    }
+
+    .header {
+      @if $theme == $light-app-theme {
+        background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      @else{
+        background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
     }
 

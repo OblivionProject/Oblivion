@@ -9,7 +9,7 @@ import {ThemeHelperService} from "../../services/theme-helper.service";
   templateUrl: './user-enter-meeting-settings.component.html',
   styleUrls: ['./user-enter-meeting-settings.component.css']
 })
-export class UserEnterMeetingSettingsComponent implements OnInit {
+export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
 
   private localstream!: MediaStream;
 
@@ -17,8 +17,11 @@ export class UserEnterMeetingSettingsComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: MeetingStateService,
               public themeService: ThemeHelperService) { }
 
-  async ngAfterViewInit():Promise<void>{
+  async ngOnInit(): Promise<void> {
     await this.loadLocalStream();
+  }
+
+  public ngAfterViewInit():void{
     if(this.themeService.darkmode){
       // @ts-ignore
       document.getElementById("form-field-icon").style.color = "#50a3a2";
@@ -51,7 +54,7 @@ export class UserEnterMeetingSettingsComponent implements OnInit {
   }
 
 
-  public terminate(): void {
+  public ngOnDestroy(): void {
     console.log("Destroyed");
     this.localstream.getTracks().forEach(function(track: MediaStreamTrack) {
       track.stop();
@@ -120,13 +123,9 @@ export class UserEnterMeetingSettingsComponent implements OnInit {
     this.dialogRef.close(this.jsonifyContent());
   }
 
-  async onYesClick():Promise<void>{
+  public onYesClick():void{
     this.data.cancel = false;
-    await this.terminate();
     this.dialogRef.close(this.jsonifyContent());
-  }
-
-  ngOnInit(): void {
   }
 
 }
