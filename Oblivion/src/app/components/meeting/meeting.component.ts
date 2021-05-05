@@ -146,6 +146,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     await this.mediaService.setUpWebSocket(this.websocketService);
     await this.getLocalVideo();
     while (this.websocketService.getWebSocket().readyState !== 1);  // Ensure that the websocket is open before moving on... TODO: improve
+    console.log("MATT WE GOOD");
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
 
