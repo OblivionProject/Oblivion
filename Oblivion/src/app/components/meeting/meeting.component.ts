@@ -229,13 +229,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   // TODO: Look at this
   public getChatLog(): Array<Message> {
     const MessageLog = <Array<Message>>this.mediaService.getMessageLog();
-    // if (this.chat) {
-    //   this.readMessageCount = MessageLog.length;
-    //   this.unReadMessageCount = 0;
-    //
-    // } else {
-    //   this.unReadMessageCount = MessageLog.length - this.readMessageCount;
-    // }
     return MessageLog;
   }
 
