@@ -2,6 +2,7 @@ import {AfterViewInit, Component, Inject, OnDestroy, OnInit} from '@angular/core
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {MeetingStateService} from "../../services/meeting-state.service";
 import {Globals} from "../../global";
+import {ThemeHelperService} from "../../services/theme-helper.service";
 
 @Component({
   selector: 'app-user-enter-meeting-settings',
@@ -13,11 +14,45 @@ export class UserEnterMeetingSettingsComponent implements OnInit, OnDestroy {
   private localstream!: MediaStream;
 
   constructor(public dialogRef: MatDialogRef<UserEnterMeetingSettingsComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: MeetingStateService) { }
+              @Inject(MAT_DIALOG_DATA) public data: MeetingStateService,
+              public themeService: ThemeHelperService) { }
 
   async ngOnInit(): Promise<void> {
     await this.loadLocalStream();
   }
+
+  public ngAfterViewInit():void{
+    if(this.themeService.darkmode){
+      // @ts-ignore
+      document.getElementById("form-field-icon").style.color = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("submit_button").style.color = "#333333";
+      // @ts-ignore
+      document.getElementById("audio-button").style.color = "#add8e6";
+      // @ts-ignore
+      document.getElementById("video-button").style.color = "#add8e6";
+      // @ts-ignore
+      document.getElementById("submit_button").style.backgroundColor = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("user_enter_meeting_header").style.color = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("meeting_info_divider").style.color = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("meeting_info_form_divider").style.color = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("video-audio-card").style.background = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("user_name_field").getElementsByClassName("mat-form-field-ripple")[0].style.backgroundColor = "#50a3a2";
+      // @ts-ignore
+      document.getElementById("user_name_field").getElementsByClassName("mat-form-field-flex")[0].style.borderBottomColor = "#add8e6";
+      // @ts-ignore
+      document.getElementById("user_name_field").getElementsByTagName("mat-label")[0].style.color = "#add8e6";
+      // @ts-ignore
+      document.getElementById("user_name_field").getElementsByTagName("input")[0].style.color = "#add8e6";
+    }
+
+  }
+
 
   public ngOnDestroy(): void {
     console.log("Destroyed");

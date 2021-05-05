@@ -1,14 +1,13 @@
 #sticky_footer{
-  height: 4rem;
   width: 100%;
   bottom: 0;
   position: absolute;
+  z-index: 3;
 }
 
 .move_video_buttons{
   opacity: 0.3;
   background: inherit !important;
-  color: #53e3a6!important;
   z-index: 3;
 }
 
@@ -29,41 +28,30 @@
 .move_video_buttons:hover{
   opacity: 0.9;
   background: inherit!important;
-  color: #53e3a6;
 }
 
 p.video-description{
   position: absolute;
   top: 0px;
   left: 10px;
-  color: #53e3a6;
+  font-size: 4vh;
   font-family: "Times New Roman", Times, serif;
 }
-
-.mat-fab {
-  margin: 1em;
-}
-
 
 .sidenav-cont{
   width: 100%;
 }
 
 .sidenav-cont-cont{
-  height:89%;
   width: 100%;
   z-index: 2;
   overflow: hidden;
   position: relative;
-}
-
-#footer{
-  height: 100%;
-  width: 100%;
+  background: #333333;
 }
 
 .meeting_buttons{
-  padding-bottom: 0;
+  height: 100%;
 }
 
 #leave{
@@ -71,30 +59,125 @@ p.video-description{
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 6vh;
 }
 #leave_short{
   display: none;
   position: absolute;
   right:0;
   margin-right: 4px;
-  font-size: 6vh;
 }
 
 #message-hint{
   color: white!important;
 }
 
-@media (max-width: 1200px) {
-  .sidenav-cont {
-    width: 100%;
+@media screen and (max-width: 380px){
+  .meeting_buttons{
+    min-width: 2%!important;
+    margin: 0!important;
   }
-  .mat-fab{
-    margin: 0;
-    float: left;
+  #sticky_footer .mat-icon{
+    font-size: 5vh!important;
+    height: 5vh!important;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh!important;
+  }
+  ::ng-deep mat-toolbar{
+    padding-left: 1px!important;
+    padding-right: 1px!important;
+  }
+  #leave_short{
+    padding-right: 0!important;
+  }
+  .meeting_buttons{
+    margin-right: 0!important;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .meeting_buttons{
+    min-width: 1%!important;
+  }
+  #sticky_footer .mat-icon{
+    font-size: 5vh;
+    height: 5vh;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh;
+  }
+  #sticky_footer .mat-flat-button .button_helpers{
+    display: none
+  }
+}
+
+@media screen and (min-width: 1720px) {
+  #sticky_footer .mat-flat-button .button_helpers{
+    margin-left: 1vw;
+  }
+}
+
+@media screen and (min-width: 3012px) {
+  #sticky_footer .mat-flat-button .button_helpers{
+    margin-left: 2vw;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  #leave{
+    font-size: 36px;
+  }
+  .meeting_buttons{
+    min-width: 8%;
+  }
+  #sticky_footer .mat-icon{
+    font-size: 5vh;
+    height: 4vh;
+    min-width: 30px;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 5vh;
+  }
+  #sticky_footer .mat-flat-button .button_helpers{
+    font-size: 3vh;
+  }
+}
+
+@media screen and (max-height: 480px){
+  #sticky_footer .mat-flat-button .button_helpers{
+    display: none
+  }
+  #sticky_footer .mat-icon{
+    font-size: 8vh!important;
+    height: 8vh!important;
+  }
+  #sticky_footer .mat-flat-button{
+    line-height: 8vh!important;
+  }
+  #leave_short{
+    font-size: 4vh;
+    line-height: 4vh;
+  }
+
+}
+
+@media screen and (max-width: 1200px) {
+  #sticky_footer .mat-flat-button{
+    line-height: 4vh;
+  }
+  #sticky_footer .mat-flat-button .mat-icon{
+    font-size: 4vh;
+    height: 4vh;
+    min-width: 30px;
+  }
+  #sticky_footer .mat-flat-button .button_helpers{
+    height: 1vh;
+    font-size: 2vh;
   }
   #leave_short{
     display: block;
+    font-size: 5vh;
+    line-height: 5vh;
   }
   #leave{
     display: none;
@@ -105,6 +188,45 @@ p.video-description{
 .chatbox{
   background:  #333333;
   padding-bottom: 0 !important;
+}
+
+#meeting-updates{
+  position: absolute;
+  top: 0!important;
+  margin-right: 1px;
+  right: 0;
+  z-index: 3;
+  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.update-message{
+  opacity: 0.4;
+  color: #53e3a6 !important;
+  width: 100%;
+  font-size: 3vh!important;
+}
+
+#role-update-message{
+  font-family: "Times New Roman", Times, serif;
+  color: #50a3a2;
+  font-size: 4vh!important;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#role-update-message-div{
+  z-index: 3;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 0!important;
+  margin-bottom: 1px;
+}
+
+.messageReceiveDiv{
+  border-radius: 0 !important;
 }
 
 ::ng-deep  .mat-list .mat-list-item{
@@ -131,7 +253,6 @@ p.video-description{
   width: 95%;
   word-break: break-word !important;
   hyphens: auto !important;
-  background-color: #53e3a6 !important;
 }
 
 .messagesRECIVE{
@@ -156,11 +277,6 @@ p.video-description{
   width: 95%;
   padding-left: 1rem;
 }
-
-.sendbutton{
-  color: #53e3a6 !important;
-}
-
 
 /* width */
 ::-webkit-scrollbar {

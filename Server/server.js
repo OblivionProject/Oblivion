@@ -131,6 +131,13 @@ function connection(ws, req) {
                 }
             }
         }
+        else if(data.close) {
+            const meetingID = data.meetingID;
+            if(meetingID in meetings) {
+                delete meetings[meetingID];
+            }
+            console.log(meetings);
+        }
     });
 }
 

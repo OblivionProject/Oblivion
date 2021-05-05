@@ -29,9 +29,7 @@ export class MeetingGuardService implements CanDeactivate<MeetingComponent> {
       disableClose: true,
       data: {
         userRole: component.meetingInfo.user.getRole()
-      },
-      height: '500px',
-      width: '450px',
+      }
     });
     this.confirmDlg.componentInstance.subject = subject;
 

@@ -21,6 +21,8 @@ export class MediaService {
   private webSocket!: WebSocket; // Signalling server for connecting peers
   public mySubject : Subject<any> = new Subject<any>();
   public destroy : boolean = false;
+  public messageUpdateSubject : Subject<any> = new Subject<any>();
+  public roleChangeSubject : Subject<any> = new Subject<any>();
 
   constructor(private sharedService: MeetingStateService) {
     this.peers = {};
@@ -58,6 +60,11 @@ export class MediaService {
       (message: Message) => this.receivedMessage(message)
     );
     this.peers[userID] = peer;
+    const date = Date.now();
+    this.messageUpdateSubject.next({
+        'message': this.peers[userID].getPeerUser().getName()+ " has joined the meeting!",
+        'timeStamp': date
+      });
     return peer;
   }
 
@@ -153,6 +160,12 @@ export class MediaService {
       if (signal.left){
         console.log(this.peers[signal.userID]);
         this.peers[signal.userID].close();
+        this.messageUpdateSubject.next(
+          {
+                  'message': this.peers[signal.userID].getPeerUser().getName()+ " has left the meeting!",
+                  'timeStamp': Date.now()
+          }
+        );
         delete this.peers[signal.userID];
       }
     }
@@ -160,6 +173,11 @@ export class MediaService {
     else if (signal.role_change) {
       this.user.setRole(User.ROLE(signal.role));
       this.meetingInfo.setPassword(signal.password);
+      this.roleChangeSubject.next({
+        'message': "Your are now the owner of the meeting",
+        'timeStamp': Date.now()
+      });
+
     }
   }
 

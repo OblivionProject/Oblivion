@@ -1,13 +1,16 @@
 #meeting_info_dialog{
-  z-index: 3;
   background-color: #333333;
   color: white;
   opacity: 0.6 !important;
   border-radius: 10px;
+  border-style: groove;
+  border-color: white;
+  font-family: "Times New Roman", Times, serif;
 }
 
 #meeting_info_header{
   margin-bottom: 2px;
+  font-family: "Times New Roman", Times, serif;
   text-align: center;
 }
 
@@ -18,9 +21,17 @@
 }
 
 #meeting_info_list{
-  color: #53e3a6 !important;
+  color: #53e3a6;
   list-style-type: none;
   padding-top: 4px;
   float: left !important;
   padding-left: 10px;
+}
+
+.content-copy-icon{
+  font-size: 10px !important;
+}
+
+.copy-button{
+  background: inherit;
 }

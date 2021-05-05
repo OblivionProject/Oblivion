@@ -50,7 +50,8 @@
                          [rowspan]="this.tile.rows"
                          class="tile">
             <p class="video video-description">Other</p>
-            <video [srcObject]="vid"
+            <video *ngIf="video_width===undefined"
+                   [srcObject]="vid"
                    [autoplay]="true"
                    [muted]="vid===localStream"
                    [style.height.px]="video_height"
@@ -59,7 +60,16 @@
         </mat-grid-list>
       </mat-drawer-content>
     </mat-drawer-container>
-
+    <mat-list id = "meeting-updates">
+      <mat-list-item *ngFor = "let update of getMeetingUpdates()" class="update-message">
+        <div matLine>
+          {{update.message}}
+        </div>
+      </mat-list-item>
+    </mat-list>
+    <div id="role-update-message-div">
+      <p *ngIf="this.getRoleUpdateMessage()!== undefined" id="role-update-message">{{this.getRoleUpdateMessage().message}}</p>
+    </div>
   </mat-sidenav-container>
 
   <div *ngFor="let audio of getAudioStreams()">
@@ -67,20 +77,26 @@
   </div>
 
   <!-- This template displays the overlay content and is connected to the button -->
-
-  <mat-sidenav-container class = "meeting_container" id = "sticky_footer">
-    <mat-toolbar id = "footer">
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" class = "meeting_buttons">
-        <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
-      </button>
-      <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
-        <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
-      </button>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" ><mat-icon matBadge="{{unReadMessageCount}}"  matBadgeSize="medium" matBadgeColor="warn" [matBadgeHidden]="displayUnReadchat()"  matBadgeOverlap="false"> chat</mat-icon></button>
-      <button mat-fab color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons"><mat-icon>info</mat-icon></button>
-      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave" class = "meeting_buttons">Leave Meeting</button>
-      <button mat-flat-button color="warn" (click)="endMeeting()" id="leave_short" class = "meeting_buttons">Leave</button>
-    </mat-toolbar>
-  </mat-sidenav-container>
 </mat-sidenav-container>
+
+<mat-toolbar id = "sticky_footer" [style.height.px]="footer_height">
+  <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleAudio()" class = "meeting_buttons">
+    <mat-icon>{{audio ? 'volume_up' : 'volume_off'}}</mat-icon>
+    <div class="button_helpers">{{audio ? 'Mute' : 'Unmute'}}</div>
+  </button>
+  <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
+    <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
+    <div class="button_helpers">{{video ? 'Show' : 'Hide'}}</div>
+  </button>
+  <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" class = "meeting_buttons">
+    <mat-icon> chat</mat-icon>
+    <div class="button_helpers">Chat</div>
+  </button>
+  <button mat-flat-button color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons">
+    <mat-icon>info</mat-icon>
+    <div class="button_helpers">Info</div>
+  </button>
+  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>
+  <button mat-raised-button color="warn" (click)="endMeeting()" id="leave_short">Leave</button>
+</mat-toolbar>
 

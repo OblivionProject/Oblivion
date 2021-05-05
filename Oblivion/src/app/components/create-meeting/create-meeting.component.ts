@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {Meeting, MEETING_TYPE} from '../../models/meeting.model';
 import {WebsocketService} from '../../services/websocket.service';
 import {FormBuilder, FormControl, FormGroup, Validators, FormGroupDirective, NgForm} from '@angular/forms';
@@ -72,12 +72,26 @@ export class CreateMeetingComponent {
     this.websocketService.getWebSocket().send(JSON.stringify(this.meeting));
   }
 
+  @HostListener('window:beforeunload')
+  async beforeUnloadHandler(){
+    if(this.sharedService.meetingID != undefined){
+      await this.terminate();
+    }
+  }
+
+  public async terminate(): Promise<void>{
+    const data={
+      'close': true,
+      'meetingID': this.sharedService.meetingID
+    }
+    await this.websocketService.getWebSocket().send(JSON.stringify(data));
+  }
+
   async receivedCreateMeetingSuccess(message: MessageEvent) {
     const signal = JSON.parse(message.data);
     if (signal.success) {
       this.sharedService.meetingID = signal.meeting;
       console.log(this.sharedService.meetingID);
-      await this.webSocket.close();
       this.openDialog();
     }
   }
@@ -213,14 +227,17 @@ export class CreateMeetingComponent {
         audioFound: this.sharedService.audioFound
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      if(!result.cancel){
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if(result === undefined){
+        await this.terminate();
+      }
+      else if(!result.cancel){
         this.sharedService.userName = result.userName;
         this.sharedService.video = result.video;
         this.sharedService.audio = result.audio;
         this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
-        this.router.navigate(['meeting']);
+        this.webSocket.close();
+        await this.router.navigate(['meeting']);
       }
     });
   }

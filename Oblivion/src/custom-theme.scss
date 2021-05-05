@@ -6,7 +6,7 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
-@mixin html-theme($theme,$background,$background2, $text,$button_text,$button_background,$button_cancel) {
+@mixin html-theme($theme,$background,$background2, $text,$button_text,$button_background,$button_cancel, $button_footer) {
   & {
     background: $background;
     background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
@@ -16,50 +16,154 @@
     #test{
       color: $text;
     }
-    #footer{
-      background: $background;
-      background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
-      background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
-      background: -o-linear-gradient(top left, $background 0%, $background2 100%);
-      background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+    #sticky_footer{
+      @if $theme == $light-app-theme {
+        background: $background;
+        background: -webkit-linear-gradient(top left, $background 0%, $background2 100%);
+        background: -moz-linear-gradient(top left, $background 0%, $background2 100%);
+        background: -o-linear-gradient(top left, $background 0%, $background2 100%);
+        background: linear-gradient(to bottom right, $background 0%, $background2 100%);
+      }
+      @else{
+        background: #50a3a2;
+      }
+    }
+
+    #sticky_footer .mat-flat-button{
+      color: $button_background;
+      background-color: transparent;
+    }
+
+    #sticky_footer #leave{
+      height: 80%;
+      background: $button_background !important;
+      @if $theme == $light-app-theme {
+        color:$button_text;
+      }
+      @else{
+        color: #add8e6;
+      }
+    }
+    #sticky_footer #leave_short{
+      height: 80%;
+      background: $button_background !important;
+      @if $theme == $light-app-theme {
+        color:$button_text;
+      }
+      @else{
+        color: #add8e6;
+      }
+    }
+
+    #sticky_footer .mat-flat-button:hover{
+      @if $theme == $light-app-theme {
+        background-color: $button_background!important;
+        color: #333333!important;
+      }
+      @else{
+        color: #add8e6 !important;
+        background-color: $button_cancel!important;
+      }
+    }
+    p.video-description{
+      @if $theme == $light-app-theme {
+        color: #53e3a6!important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
+    }
+
+    .messagesSEND{
+      @if $theme == $light-app-theme {
+        background-color: #53e3a6!important;
+      }
+      @else{
+        background-color: #add8e6 !important;
+      }
+    }
+
+    .move_video_buttons{
+      @if $theme == $light-app-theme {
+        color: #53e3a6!important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
     }
 
     .mat-input-element {
-      color: $text !important;
+      @if $theme == $light-app-theme {
+        color:$text !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
       font-family: "Times New Roman", Times, serif;
     }
 
     .mat-form-field-ripple {
-      color:$text !important;
-      background-color: $text !important;
+      @if $theme == $light-app-theme {
+        background-color:$text !important;
+      }
+      @else{
+        background-color: #add8e6 !important;
+      }
+    }
+
+    .header {
+      @if $theme == $light-app-theme {
+        color: #50a3a2;
+        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+        //-webkit-background-clip: text;
+        //-webkit-text-fill-color: transparent;
+      }
+      @else{
+        color: #50a3a2;
+        //background: -webkit-linear-gradient(top left, #50a3a2 0%, #add8e6 100%);
+        //-webkit-background-clip: text;
+        //-webkit-text-fill-color: transparent;
+      }
     }
 
     .mat-focused .mat-form-field-label {
-      color:$text !important;
+      @if $theme == $light-app-theme {
+        color:$text !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
+
       font-family: "Times New Roman", Times, serif;
     }
 
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
-      color: $text !important;
+      @if $theme == $light-app-theme {
+        color:$text !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
       font-family: "Times New Roman", Times, serif;
     }
 
     .mat-raised-button{
       background: $button_background;
-      color: $button_text;
+      @if $theme == $light-app-theme {
+        color:$button_text;
+      }
+      @else{
+        color: #add8e6;
+      }
       opacity: 0.9;
       font-family: "Times New Roman", Times, serif;
-      border-radius: 5px;
+      border-radius: 10px;
       font-weight: lighter;
     }
 
     .mat-raised-button .mat-ripple-element {
       background-color: $button_text !important;
       opacity: 0.2 !important;
-    }
-
-    mat-form-field {
-      font-size: 4vh !important;
     }
 
     .mat-flat-button{
@@ -85,12 +189,48 @@
       color: #50a3a2;
     }
 
+    #testID.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar{
+      background-color: #333333 !important;
+      @if $theme == $light-app-theme {
+        opacity: 0.7;
+      }
+    }
+    #testID.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb{
+      @if $theme == $light-app-theme {
+        background-color:#50a3a2 !important;
+      }
+      @else{
+        background-color: #add8e6 !important;
+      }
+    }
+
+    #testID.mat-checked:not(.mat-disabled) #test{
+      @if $theme == $light-app-theme {
+        color:$text !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
+    }
+    #test{
+      color: #333333!important;
+      opacity: 0.9;
+    }
+    .chatInput mat-form-field{
+      font-size: 3vh!important;
+    }
+
     .chatInput .mat-form-field-underline {
       background-color: white !important;
     }
 
     .chatInput .mat-form-field-ripple {
-      background-color: #53e3a6 !important;
+      @if $theme == $light-app-theme {
+        background-color: #53e3a6!important;
+      }
+      @else{
+        background-color: #add8e6 !important;
+      }
     }
 
     //Make label white for message input
@@ -99,10 +239,23 @@
       font-family: "Times New Roman", Times, serif;
     }
 
+    .chatInput mat-label {
+      color: white !important;
+      font-family: "Times New Roman", Times, serif;
+    }
+
     //change the color of the input to white
     .chatInput .mat-input-element {
       color: white !important;
       font-family: "Times New Roman", Times, serif;
+    }
+    .sendbutton{
+      @if $theme == $light-app-theme {
+        color:#53e3a6 !important;
+      }
+      @else{
+        color: #add8e6 !important;
+      }
     }
   }
 }
@@ -114,7 +267,7 @@
 // -------------- light theme -------------- //
 $light-app-primary: mat-palette($mat-grey, 50);
 $light-app-accent:  mat-palette($mat-blue-grey, 600, 500, 400);
-$light-app-warn:    mat-palette($mat-grey,A900);
+$light-app-warn:    mat-palette($mat-red,500);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
@@ -131,6 +284,7 @@ $light-app-theme-background2: #53e3a6;
 $light-app-theme-button_text: #53e3a6;
 $light-app-theme-button_background: white;
 $light-app-theme-button_cancel: #50a3a2;
+$light-app-theme-button_footer: white;
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -144,7 +298,7 @@ $light-app-theme-button_cancel: #50a3a2;
 
 $dark-app-primary: mat-palette($mat-blue-gray, 500);
 $dark-app-accent:  mat-palette($mat-cyan, 200);
-$dark-app-warn: mat-palette($mat-red,900);
+$dark-app-warn: mat-palette($mat-red,500);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
@@ -161,6 +315,7 @@ $dark-app-theme-background2: #333333;
 $dark-app-theme-button_text: #50a3a2;
 $dark-app-theme-button_background: #333333;
 $dark-app-theme-button_cancel: #333333;
+$dark-app-theme-button_footer: #53e3a6;
 
 
 .dark-theme-mode {
@@ -172,7 +327,8 @@ $dark-app-theme-button_cancel: #333333;
     $dark-app-theme-text,
     $dark-app-theme-button_text,
     $dark-app-theme-button_background,
-    $dark-app-theme-button_cancel);
+    $dark-app-theme-button_cancel,
+    $dark-app-theme-button_footer);
 }
 
 
@@ -188,6 +344,7 @@ $dark-app-theme-button_cancel: #333333;
     $light-app-theme-text,
     $light-app-theme-button_text,
     $light-app-theme-button_background,
-    $light-app-theme-button_cancel
+    $light-app-theme-button_cancel,
+    $light-app-theme-button_footer
   );
 }

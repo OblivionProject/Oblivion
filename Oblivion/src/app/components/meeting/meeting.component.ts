@@ -6,7 +6,7 @@ import {
   OnInit,
   ChangeDetectorRef,
   HostListener,
-  AfterViewChecked
+  AfterViewChecked, OnDestroy
 } from '@angular/core';
 import {TitleModel} from '../../models/title.model';
 import {MediaService} from '../../services/media.service';
@@ -26,7 +26,7 @@ import {VideoOrderingService} from "../../services/video-ordering.service";
   providers: [MediaService, WebsocketService, VideoOrderingService]
 })
 
-export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked {
+export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked, OnDestroy {
 
   public localStream: MediaStream | undefined;
   private remoteStreams: {[key: number]: MediaStream};
@@ -41,12 +41,16 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
   public overall_height: any;
-  //public video_width: any;
+  public video_width: any = undefined;
   public video_height: any;
   public show_right:boolean;
   public show_left: boolean;
   public messageWidth: any;
   public messageHeight: any;
+  public meetingUpdates: any[];
+  public roleUpdateMessage: any;
+  public timer!: any;
+  public footer_height: any;
 
   constructor(public mediaService: MediaService,
               public dialog: MatDialog,
@@ -67,6 +71,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.tile = new TitleModel(2,1);
     this.show_right = false
     this.show_left = false;
+    this.meetingUpdates = [];
   }
 
  // TODO: Move this function. needed for the cleanup of message objects
@@ -93,6 +98,12 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.videoOrderingService.isTileChange.subscribe( value => {
       this.tile = value;
       this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
+      if(this.tile.rows ===2){
+        this.video_width = 3*(document.documentElement.clientWidth/2)/5;
+      }
+      else{
+        this.video_width = undefined;
+      }
       //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
       this.cdref.detectChanges();
     });
@@ -107,6 +118,30 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.mediaService.messageSubject.subscribe( value => {
       this.cdref.detectChanges();
     });
+    this.mediaService.messageUpdateSubject.subscribe(value => {
+      this.meetingUpdates.push(value);
+      this.cdref.detectChanges();
+    });
+    this.mediaService.roleChangeSubject.subscribe(value => {
+      this.roleUpdateMessage = value;
+      this.cdref.detectChanges();
+    });
+    this.timer = setInterval(() => { this.clearUpdateMessages(); }, 1000);
+  }
+
+  public ngOnDestroy() {
+    clearInterval(this.timer);
+  }
+
+  public clearUpdateMessages():void{
+    const currentTime = Date.now();
+    console.log(currentTime);
+    this.meetingUpdates = this.meetingUpdates.filter(message => message.timeStamp + 3000 >= currentTime);
+    if(this.roleUpdateMessage !== undefined){
+      if(currentTime > this.roleUpdateMessage.timeStamp + 4000){
+        this.roleUpdateMessage = undefined;
+      }
+    }
   }
 
   public ngAfterViewChecked(): void {
@@ -130,16 +165,16 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public adjustWindowSizing(): void {
     //Window Sizing
-    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-    this.height = window.innerHeight - sizing*2;
-    this.overall_height = window.innerHeight - sizing;
-    this.overall_height = window.innerHeight - sizing;
-    this.videoOrderingService.setVideosSizing(window.innerWidth);
+    //const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = (8*document.documentElement.clientHeight)/10;
+    this.overall_height = (89*document.documentElement.clientHeight)/100;
+    this.footer_height = (document.documentElement.clientHeight)/10;
+    this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
     //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
-    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
+    this.messageWidth = this.videoOrderingService.setMessageWidth(document.documentElement.clientWidth);
   }
 
   public async ngAfterViewInit(): Promise<void> {
@@ -150,15 +185,16 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.remoteStreams = this.mediaService.getRemoteStreams();
 
     //Window Sizing
-    const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
-    this.height = window.innerHeight - sizing*2;
-    this.overall_height = window.innerHeight - sizing;
-    this.videoOrderingService.setVideosSizing(window.innerWidth);
+    //const sizing = this.elem.nativeElement.querySelectorAll('.meeting_container')[0].offsetHeight;
+    this.height = (8*document.documentElement.clientHeight)/10;
+    this.overall_height = (89*document.documentElement.clientHeight)/100;
+    this.footer_height = (document.documentElement.clientHeight)/10;
+    this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
     this.videoOrderingService.setTiles();
     this.video_height = this.videoOrderingService.dynamicHeightSizer(this.height);
     //this.video_width = this.videoOrderingService.dynamicWidthSizer(this.video_height);
     this.messageHeight = this.height - this.elem.nativeElement.querySelectorAll('.chatInput')[0].offsetHeight;
-    this.messageWidth = this.videoOrderingService.setMessageWidth(window.innerWidth);
+    this.messageWidth = this.videoOrderingService.setMessageWidth(document.documentElement.clientWidth);
   }
 
   @HostListener('window:resize')
@@ -229,6 +265,14 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.localStream = await this.mediaService.getLocalStream();
   }
 
+  public getMeetingUpdates(): any[]{
+    return this.meetingUpdates;
+  }
+
+  public getRoleUpdateMessage(): any{
+    return this.roleUpdateMessage;
+  }
+
   // Toggles the video between off and on
   public toggleVideo(): void {
     this.video = !this.video;
@@ -260,9 +304,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
+    console.log("STERAM ASDFSADFA SDFASDFASDf");
     if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
       this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
-      this.videoOrderingService.setVideosSizing(window.innerWidth);
+      this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
       this.videoOrderingService.setTiles();
     }
     if (this.localStream != undefined) {
@@ -290,6 +335,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '250px',
       height: '200px',
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      hasBackdrop: true,
       position: {
         left: '0px',
         bottom: '2em'

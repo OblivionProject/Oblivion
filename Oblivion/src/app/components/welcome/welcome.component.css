@@ -3,12 +3,23 @@
   z-index: 2;
 }
 
-.sidenav-cont{
+.row{
+  margin-top: 10%!important;
+}
+
+.row:after{
+  content: "";
+  display: table;
+  clear: both;
   background-color: inherit;
-  width: 80%;
-  margin-top: 10vh;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  text-align:center;
+  align-items: center;
+  justify-content: center;
 }
 
 .welcome_button_short {
@@ -20,30 +31,72 @@
 }
 
 .welcome_button{
-  width: 45%;
-  height: 16vmin;
+  width: 60%;
+  min-width: calc(40vw);
+  min-height: calc(9vw);
   margin-left: 2.5%;
-  font-size: 8vh;
+  font-size: calc(36px + 1.5vw);
+  opacity: 0.9;
+}
+
+#create_meeting{
+  float: right;
+}
+
+#join_meeting{
+  float: left;
+}
+
+@media (min-height: 1024px) {
+  .welcome_button{
+    font-size: 5vw!important;
+    width: 80% !important;
+    height: 18vmin!important;
+  }
+}
+
+@media (max-height: 480px) {
+  .row{
+    margin-top: 10vh!important;
+  }
+}
+
+@media (max-height: 264px) {
+  .row{
+    margin-top: 1vh!important;
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 256px) {
+  .welcome_button_short {
+    width: 80%!important;
+  }
 }
 
 @media (max-width: 1024px) {
   .welcome_button_short {
     display: inline-block;
-    width: 80%;
-    margin-left: 10%;
+    width: 60%;
     margin-top: 2vh;
   }
   .welcome_button {
     display: none;
   }
+  .column{
+    width: 100%;
+    display: flex !important;
+    justify-content: center!important;
+  }
 }
 
 .an-1 {
   background-color: inherit;
-  font-size: 20vmin;
-  line-height: 30vh;
+  font-size: 10vmax;
+  line-height: 10vmax;
   font-family: "Times New Roman", Times, serif;
-  width: 50%;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
   text-align: center;
 }

@@ -1,84 +1,133 @@
-.sidenav-cont-cont{
-  background-color: inherit;
-  text-align:center;
-  z-index: 2;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidenav-cont{
-  width: 40%;
-  background-color: inherit;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #create_meeting_header{
-  font-size: 70px;
-  margin-top: 8vh!important;
+  font-size: 12vmin;
+  margin-top: 5%;
   font-family: "Times New Roman", Times, serif;
   font-weight: lighter;
-  margin-bottom: 8vh !important;
+  margin-bottom: 8vh;
+  text-align: center;
 }
 
 .mat-divider{
   background: #333333!important;
   opacity: 0.8;
-  margin-top: 1%;
-}
-
-.sidenav-button{
-  width: 40%;
-  height: 20%;
-  background-color: inherit;
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 2%;
-  left: 30%;
+  margin-bottom: 2%;
 }
 
 .icons{
   margin-right: 2vw;
 }
 
+.form{
+  width: 50%;
+  margin: 0 auto!important;
+}
+
 #create_meeting_submit{
-  width: 100%;
-  height: 11vmin;
+  width: 50%;
+  height: 14vh;
   bottom: 0;
   float: left;
   font-size: 8vh;
+  left: 25%;
 }
 
 .form-field{
   width:100%;
   font-family: "Times New Roman", Times, serif;
+  font-size: 4vmin;
 }
 
-@media (max-width: 756px) {
-  #create_meeting_header {
-    font-size: 50px;
+@media (max-width: 1024px) {
+  #create_meeting_submit {
+    width: 65%;
+    left: 17.5%;
+    font-size: 8vh;
+    height: 10vh;
+    line-height: 8vh;
   }
-  .sidenav-cont {
-    width: 70%;
+  .form{
+    width: 65%;
   }
-  .sidenav-button{
-    width: 70%;
-    left: 15%;
+  mat-divider{
+    width: 65%!important;
+  }
+
+  .icons{
+    margin-right: 4vw;
   }
 }
 
-@media (max-height: 756px) {
-  .sidenav-button{
-    height: 30%;
+
+@media (min-height: 1024px) {
+  mat-form-field{
+    font-size: 3vh!important;
+  }
+}
+
+@media (max-height: 480px) {
+  mat-form-field{
+    font-size: 4vh!important;
+  }
+  #create_meeting_header{
+    margin-top: 1%!important;
+    margin-bottom: 1%!important;
+  }
+  .icons{
+    margin-right: 2vw !important;
+  }
+}
+
+@media only screen and (min-height: 640px) and (max-width: 480px){
+  .icons{
+    margin-right: 8vw !important;
+  }
+
+  mat-form-field{
+    font-size: 3vh !important;
+  }
+
+  .form{
+    width: 80%;
+  }
+
+  mat-divider{
+    width: 90%!important;
+  }
+
+  #create_meeting_submit{
+    width: 80%;
+    left: 10%;
+    height: 10vh;
+    font-size: 8vh;
+    line-height: 8vh;
+  }
+  #create_meeting_header{
+    margin-top: 20%;
+    font-size: 14vmin;
+  }
+}
+
+@media only screen and (min-width: 1560px) {
+  mat-form-field{
+    font-size: 4vmin!important;
+  }
+  .icons{
+    margin-right: 4vw !important;
   }
 }
 
 #testID{
   margin-bottom: 3vh;
-  margin-top: 3vh;
+  margin-top: 2vh;
+  margin-left: 1vw!important;
 }
 
 #test{
   font-family: "Times New Roman", Times, serif;
   font-size: 4vh;
-  margin-left: 2vw;
+  margin-left: 1vw;
 }
