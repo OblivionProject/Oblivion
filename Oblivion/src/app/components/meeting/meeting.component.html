@@ -49,9 +49,11 @@
                          [colspan]="this.tile.cols"
                          [rowspan]="this.tile.rows"
                          class="tile">
-            <p class="video video-description">{{peer.getPeerUser().getName()}}</p>
-            <mat-icon class="video video-icon">{{(!peer.audio) ? 'volume_off' : ''}}</mat-icon>
-            <mat-icon class="video video-icon">{{(!peer.video) ? 'videocam_off' : ''}}</mat-icon>
+            <div class="user-info">
+              <p class="video video-description">{{peer.getPeerUser().getName()}}</p>
+              <mat-icon class="video video-icon">{{(!peer.audio) ? 'volume_off' : 'volume_up'}}</mat-icon>
+              <mat-icon class="video video-icon">{{(!peer.video) ? 'videocam_off' : 'videocam'}}</mat-icon>
+            </div>
             <video *ngIf="video_width===undefined"
                    [srcObject]="peer.getRemoteStream()"
                    [autoplay]="true"
@@ -59,9 +61,9 @@
                    [style.height.px]="video_height"
                    class="video"></video>
             <video *ngIf="video_width!==undefined"
-                   [srcObject]="vid"
+                   [srcObject]="peer.getRemoteStream()"
                    [autoplay]="true"
-                   [muted]="vid===localStream"
+                   [muted]="peer.getRemoteStream()===localStream"
                    [style.height.px]="video_height"
                    [style.width.px]="video_width"
                    ></video>
@@ -106,8 +108,8 @@
     <div class="button_helpers">Info</div>
   </button>
   <button mat-flat-button color="primary" aria-label="Informational Icon" (click)="openParticipantsList()" class = "meeting_buttons">
-    <mat-icon>info</mat-icon>
-    <div class="button_helpers">Participants</div>
+    <mat-icon>people</mat-icon>
+    <div class="button_helpers">Users</div>
   </button>
   <button mat-raised-button color="warn" (click)="endMeeting()" id="leave">Leave Meeting</button>
   <button mat-raised-button color="warn" (click)="endMeeting()" id="leave_short">Leave</button>

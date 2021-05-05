@@ -31,19 +31,23 @@
 }
 
 p.video-description{
+  float:left;
+  font-size: 4vh;
+  font-family: "Times New Roman", Times, serif;
+  margin-right: 8px;
+}
+
+.user-info{
   position: absolute;
   top: 0px;
   margin-top: 1vmin!important;
   left: 10px;
-  font-size: 4vh;
-  font-family: "Times New Roman", Times, serif;
 }
 
 .video-icon{
-  /*position: absolute;*/
-  /*bottom: 0px;*/
-  /*left: 10px;*/
-  /*font-size: 4vh;*/
+  float:left;
+  font-size: 4vh;
+  margin-right: 6px;
 }
 
 .sidenav-cont{

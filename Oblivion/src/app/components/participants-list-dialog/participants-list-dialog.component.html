@@ -7,10 +7,12 @@
   <mat-divider id = "meeting_info_divider"></mat-divider>
   <ul id="meeting_info_list">
     <li *ngFor="let peer of peers">
-      <span>{{peer.getPeerUser().getName()}}</span>
-      <span>{{(peer.getPeerUser().getRole() === 'Admin') ? '[Host]' : ''}}</span>
-      <span><mat-icon>{{peer.audio ? 'volume_up' : 'volume_off'}}</mat-icon></span>
-      <span><mat-icon>{{peer.video ? 'videocam' : 'videocam_off'}}</mat-icon></span>
+      <div class="peer-container">
+        <span class="peer-text">{{peer.getPeerUser().getName()}}</span>
+        <span class="peer-text">{{(peer.getPeerUser().getRole() === 'Admin') ? ' [Host]' : ''}}</span>
+        <mat-icon class="copy-icon">{{peer.audio ? 'volume_up' : 'volume_off'}}</mat-icon>
+        <mat-icon class="copy-icon">{{peer.video ? 'videocam' : 'videocam_off'}}</mat-icon>
+      </div>
     </li>
   </ul>
 </div>

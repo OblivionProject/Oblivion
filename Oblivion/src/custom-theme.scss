@@ -159,6 +159,15 @@
       font-family: "Times New Roman", Times, serif;
     }
 
+    .video-icon{
+      @if $theme == $light-app-theme {
+        color:grey !important;
+      }
+      @else{
+        color: #50a3a2 !important;
+      }
+    }
+
     .mat-form-field-appearance-fill, .mat-form-field-outline-fill, .mat-form-field-underline{
       @if $theme == $light-app-theme {
         color:$text !important;
