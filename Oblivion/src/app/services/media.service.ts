@@ -16,12 +16,13 @@ export class MediaService {
   private localstream!: MediaStream;  // Local video
   private messageLog: Message[];
   public messageSubject : Subject<any> = new Subject<any>();
-  private unreadMessageCount: number;
+  // private unreadMessageCount: number;
   // TODO: Why is this or undefined? Doesn't seem right... We should also get rid of all @ts-ignore
   private webSocket!: WebSocket; // Signalling server for connecting peers
   public mySubject : Subject<any> = new Subject<any>();
   public destroy : boolean = false;
   public messageUpdateSubject : Subject<any> = new Subject<any>();
+  public unreadMessageCount: number;
   public roleChangeSubject : Subject<any> = new Subject<any>();
   public pseudoPeer!: Peer;
 
@@ -33,6 +34,7 @@ export class MediaService {
 
     this.pseudoPeer = new Peer(-1, false, new MediaStream(), this.webSocket, () => {});
     //this.pseudoPeer.setRemoteStream(this.localstream);
+    this.unreadMessageCount = 0;
   }
 
   // TODO: Should we get rid of this? Needed for the printSubtitle [change subtitle?]
@@ -85,6 +87,7 @@ export class MediaService {
   }
 
   public receivedMessage(message: Message) {
+    this.unreadMessageCount++;
     this.messageLog.push(message);
     this.messageSubject.next(message);
   }
@@ -119,7 +122,7 @@ export class MediaService {
 
   // TODO: Change function name
   private logAndDisplayChat(data: Message): void {
-    console.log(data); // TODO: Remove the log
+    //console.log(data); // TODO: Remove the log
     this.messageLog.push(data);  // Add the message data to the log
   }
 

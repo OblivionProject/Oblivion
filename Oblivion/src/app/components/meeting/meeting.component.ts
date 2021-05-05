@@ -37,8 +37,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo!: MeetingInfo;
   public overrideGuard: boolean;
-  public unReadMessageCount: number;
-  public readMessageCount: number;
+  // public unReadMessageCount: number;
+  // public readMessageCount: number;
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
@@ -68,8 +68,8 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.chat = false;
     this.remoteStreams = {};
     this.overrideGuard = false;
-    this.unReadMessageCount = 0;
-    this.readMessageCount = 0;
+    // this.unReadMessageCount = 0;
+    // this.readMessageCount = 0;
     this.tile = new TitleModel(2,1);
     this.show_right = false
     this.show_left = false;
@@ -213,6 +213,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.chat = !this.chat;
     this.videoOrderingService.showChat = this.chat;
     this.adjustWindowSizing();
+    this.mediaService.unreadMessageCount = 0;
   }
 
 
@@ -228,13 +229,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   // TODO: Look at this
   public getChatLog(): Array<Message> {
     const MessageLog = <Array<Message>>this.mediaService.getMessageLog();
-    if (this.chat) {
-      this.readMessageCount = MessageLog.length;
-      this.unReadMessageCount = 0;
-
-    } else {
-      this.unReadMessageCount = MessageLog.length - this.readMessageCount;
-    }
+    // if (this.chat) {
+    //   this.readMessageCount = MessageLog.length;
+    //   this.unReadMessageCount = 0;
+    //
+    // } else {
+    //   this.unReadMessageCount = MessageLog.length - this.readMessageCount;
+    // }
     return MessageLog;
   }
 
@@ -254,11 +255,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     if (e.key === 'Enter') {
       this.sendChat(input);
     }
-  }
-
-  // TODO add input parameter based on chats
-  public displayUnReadchat(): boolean {
-    return this.unReadMessageCount !== 0;
   }
 
   public async getLocalVideo(): Promise<void> {
@@ -348,9 +344,9 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     return this.meetingInfo;
   }
 
-  public incrementUnreadMessageCount(): void {
-    this.unReadMessageCount = this.unReadMessageCount + 1;
-  }
+  // public incrementUnreadMessageCount(): void {
+  //   this.unreadMessageCount = this.unreadMessageCount + 1;
+  // }
 
   public openDialog(): void {
     this.setMeetingInfo();
