@@ -6,8 +6,8 @@ export class Peer {
   private static user: User;  // This user shared by all peers
   private peer: RTCPeerConnection;
   private remoteStream: MediaStream;
-  private audio: boolean;  // MediaStream Audio is disabled or enabled
-  private video: boolean;  // MediaStream Video is disabled or enabled
+  public audio: boolean;  // MediaStream Audio is disabled or enabled
+  public video: boolean;  // MediaStream Video is disabled or enabled
   private dataChannel!: RTCDataChannel;
   private messageLog: Message[];
   private peerUser!: User;
@@ -73,14 +73,6 @@ export class Peer {
 
   public getPeerUser(): User {
     return this.peerUser;
-  }
-
-  public getAudio(): boolean {
-    return this.audio;
-  }
-
-  public getVideo(): boolean {
-    return this.video;
   }
 
   // TODO: Add a return type of boolean to make sure it sends or add error checking?

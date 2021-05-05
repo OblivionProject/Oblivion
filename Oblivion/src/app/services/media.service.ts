@@ -265,6 +265,7 @@ export class MediaService {
     for (let peersKey in this.peers) {
       this.peers[peersKey].sendMessage(message);
     }
+    this.pseudoPeer.video = false;
   }
 
   public unmuteLocalVideo(): void {
@@ -284,6 +285,7 @@ export class MediaService {
     for (let peersKey in this.peers) {
       this.peers[peersKey].sendMessage(message);
     }
+    this.pseudoPeer.video = true;
   }
 
   public muteLocalAudio(): void {
@@ -303,6 +305,7 @@ export class MediaService {
     for (let peersKey in this.peers) {
       this.peers[peersKey].sendMessage(message);
     }
+    this.pseudoPeer.audio = false;
   }
 
   public unmuteLocalAudio(): void {
@@ -322,6 +325,7 @@ export class MediaService {
     for (let peersKey in this.peers) {
       this.peers[peersKey].sendMessage(message);
     }
+    this.pseudoPeer.audio = true;
   }
 
   public endMeetingForAll(): void {

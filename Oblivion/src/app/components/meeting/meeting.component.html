@@ -50,10 +50,8 @@
                          [rowspan]="this.tile.rows"
                          class="tile">
             <p class="video video-description">{{peer.getPeerUser().getName()}}</p>
-<!--            <mat-icon class="video video-icon">{{(peer.getRemoteStream().getAudioTracks().length == 0 || peer.getRemoteStream().getAudioTracks()[0].enabled === false) ? 'volume_off' : ''}}</mat-icon>-->
-<!--            <mat-icon class="video video-icon">{{(peer.getRemoteStream().getVideoTracks().length == 0 || peer.getRemoteStream().getVideoTracks()[0].enabled === false) ? 'videocam_off' : ''}}</mat-icon>-->
-            <mat-icon class="video video-icon">{{(!peer.getAudio()) ? 'volume_off' : ''}}</mat-icon>
-            <mat-icon class="video video-icon">{{(!peer.getVideo()) ? 'videocam_off' : ''}}</mat-icon>
+            <mat-icon class="video video-icon">{{(!peer.audio) ? 'volume_off' : ''}}</mat-icon>
+            <mat-icon class="video video-icon">{{(!peer.video) ? 'videocam_off' : ''}}</mat-icon>
             <video *ngIf="video_width===undefined"
                    [srcObject]="peer.getRemoteStream()"
                    [autoplay]="true"
@@ -90,7 +88,7 @@
   </button>
   <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleVideo()" class = "meeting_buttons">
     <mat-icon>{{video ? 'videocam' : 'videocam_off'}}</mat-icon>
-    <div class="button_helpers">{{video ? 'Show' : 'Hide'}}</div>
+    <div class="button_helpers">{{video ? 'Hide' : 'Show'}}</div>
   </button>
   <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" class = "meeting_buttons">
     <mat-icon> chat</mat-icon>
