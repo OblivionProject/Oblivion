@@ -323,6 +323,13 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   }
 
   public getPeers(): Peer[] {
+    this.getRemotePeers().forEach((peer: Peer) => {
+      const stream: MediaStream = peer.getRemoteStream();
+      console.log(stream.getAudioTracks());
+      console.log(stream.getAudioTracks()[0]);
+      console.log(stream.getVideoTracks());
+      console.log(stream.getVideoTracks()[0]);
+    });
     if (this.videoOrderingService.videos_count!=this.getRemotePeers().length+1) {
       this.videoOrderingService.videos_count = this.getRemotePeers().length+1;
       this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);

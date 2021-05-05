@@ -6,6 +6,8 @@ export class Peer {
   private static user: User;  // This user shared by all peers
   private peer: RTCPeerConnection;
   private remoteStream: MediaStream;
+  private audio: boolean;  // MediaStream Audio is disabled or enabled
+  private video: boolean;  // MediaStream Video is disabled or enabled
   private dataChannel!: RTCDataChannel;
   private messageLog: Message[];
   private peerUser!: User;
@@ -28,9 +30,11 @@ export class Peer {
     //   // TODO: Do something here
     // }
 
-    this.peerUser = new User('Guest', peerID, USER_ROLE.guest);
+    this.peerUser = new User('', peerID, USER_ROLE.guest);
 
     this.remoteStream = new MediaStream();
+    this.audio = true;
+    this.video = true;
     this.messageLog = [];
 
     this.peer = new RTCPeerConnection(this.peerConnectionConfig);
@@ -69,6 +73,14 @@ export class Peer {
 
   public getPeerUser(): User {
     return this.peerUser;
+  }
+
+  public getAudio(): boolean {
+    return this.audio;
+  }
+
+  public getVideo(): boolean {
+    return this.video;
   }
 
   // TODO: Add a return type of boolean to make sure it sends or add error checking?
@@ -237,6 +249,18 @@ export class Peer {
       if (data.setPeerUser) {
         this.peerUser.setName(data.name);
         this.peerUser.setRole(data.role);
+
+      } else if (data.muteAudio) {
+        this.audio = false;
+
+      } else if (data.unmuteAudio) {
+        this.audio = true;
+
+      } else if (data.muteVideo) {
+        this.video = false;
+
+      } else if (data.unmuteVideo) {
+        this.video = true;
       }
     }
   }

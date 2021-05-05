@@ -252,24 +252,76 @@ export class MediaService {
     this.localstream.getVideoTracks().forEach(videoTrack => {
       videoTrack.enabled = false;
     });
+
+    const data = {muteVideo: true};
+    const message: Message = {
+      type: MESSAGE_TYPE.info,
+      timestamp: '',
+      data: JSON.stringify(data),
+      broadcast: true,
+      senderId: this.user.getUserID()
+    }
+
+    for (let peersKey in this.peers) {
+      this.peers[peersKey].sendMessage(message);
+    }
   }
 
   public unmuteLocalVideo(): void {
     this.localstream.getVideoTracks().forEach(videoTrack => {
       videoTrack.enabled = true;
     });
+
+    const data = {unmuteVideo: true};
+    const message: Message = {
+      type: MESSAGE_TYPE.info,
+      timestamp: '',
+      data: JSON.stringify(data),
+      broadcast: true,
+      senderId: this.user.getUserID()
+    }
+
+    for (let peersKey in this.peers) {
+      this.peers[peersKey].sendMessage(message);
+    }
   }
 
   public muteLocalAudio(): void {
     this.localstream.getAudioTracks().forEach(audioTrack => {
       audioTrack.enabled = false;
     });
+
+    const data = {muteAudio: true};
+    const message: Message = {
+      type: MESSAGE_TYPE.info,
+      timestamp: '',
+      data: JSON.stringify(data),
+      broadcast: true,
+      senderId: this.user.getUserID()
+    }
+
+    for (let peersKey in this.peers) {
+      this.peers[peersKey].sendMessage(message);
+    }
   }
 
   public unmuteLocalAudio(): void {
     this.localstream.getAudioTracks().forEach(audioTrack => {
       audioTrack.enabled = true;
     });
+
+    const data = {unmuteAudio: true};
+    const message: Message = {
+      type: MESSAGE_TYPE.info,
+      timestamp: '',
+      data: JSON.stringify(data),
+      broadcast: true,
+      senderId: this.user.getUserID()
+    }
+
+    for (let peersKey in this.peers) {
+      this.peers[peersKey].sendMessage(message);
+    }
   }
 
   public endMeetingForAll(): void {

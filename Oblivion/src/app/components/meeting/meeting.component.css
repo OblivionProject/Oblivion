@@ -38,6 +38,13 @@ p.video-description{
   font-family: "Times New Roman", Times, serif;
 }
 
+.video-icon{
+  /*position: absolute;*/
+  /*bottom: 0px;*/
+  /*left: 10px;*/
+  /*font-size: 4vh;*/
+}
+
 .sidenav-cont{
   width: 100%;
 }

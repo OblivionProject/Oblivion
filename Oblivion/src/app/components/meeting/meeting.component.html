@@ -50,6 +50,10 @@
                          [rowspan]="this.tile.rows"
                          class="tile">
             <p class="video video-description">{{peer.getPeerUser().getName()}}</p>
+<!--            <mat-icon class="video video-icon">{{(peer.getRemoteStream().getAudioTracks().length == 0 || peer.getRemoteStream().getAudioTracks()[0].enabled === false) ? 'volume_off' : ''}}</mat-icon>-->
+<!--            <mat-icon class="video video-icon">{{(peer.getRemoteStream().getVideoTracks().length == 0 || peer.getRemoteStream().getVideoTracks()[0].enabled === false) ? 'videocam_off' : ''}}</mat-icon>-->
+            <mat-icon class="video video-icon">{{(!peer.getAudio()) ? 'volume_off' : ''}}</mat-icon>
+            <mat-icon class="video video-icon">{{(!peer.getVideo()) ? 'videocam_off' : ''}}</mat-icon>
             <video *ngIf="video_width===undefined"
                    [srcObject]="peer.getRemoteStream()"
                    [autoplay]="true"
