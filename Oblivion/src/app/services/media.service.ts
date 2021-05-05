@@ -82,7 +82,6 @@ export class MediaService {
 
   public receivedMessage(message: Message) {
     this.messageLog.push(message);
-    this.messageLog.push(message);
     this.messageSubject.next(message);
   }
 
