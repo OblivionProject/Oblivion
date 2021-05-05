@@ -100,7 +100,7 @@
     <div class="button_helpers">{{video ? 'Hide' : 'Show'}}</div>
   </button>
   <button mat-flat-button color="primary" aria-label="Example icon button with a delete icon" (click)="toggleDrawer()" class = "meeting_buttons">
-    <mat-icon> chat</mat-icon>
+    <mat-icon matBadge="{{mediaService.unreadMessageCount}}" [matBadgeHidden]="mediaService.unreadMessageCount === 0 || chat" matBadgeColor="warn">chat</mat-icon>
     <div class="button_helpers">Chat</div>
   </button>
   <button mat-flat-button color="primary" aria-label="Informational Icon" (click)="openDialog()" class = "meeting_buttons">
