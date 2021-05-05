@@ -227,9 +227,9 @@ export class CreateMeetingComponent {
         audioFound: this.sharedService.audioFound
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if(result === undefined){
-        this.terminate();
+        await this.terminate();
       }
       else if(!result.cancel){
         this.sharedService.userName = result.userName;
@@ -237,7 +237,7 @@ export class CreateMeetingComponent {
         this.sharedService.audio = result.audio;
         this.sharedService.setMediaStream(result.mediaStream, result.videoFound, result.audioFound);
         this.webSocket.close();
-        this.router.navigate(['meeting']);
+        await this.router.navigate(['meeting']);
       }
     });
   }

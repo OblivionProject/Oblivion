@@ -116,12 +116,12 @@ export class JoinMeetingComponent {
         cancel: this.sharedService.cancel
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if(!result.cancel){
         this.sharedService.userName = result.userName;
         this.sharedService.video = result.video;
         this.sharedService.audio = result.audio;
-        this.router.navigate(['meeting']);
+        await this.router.navigate(['meeting']);
       }
     });
   }
