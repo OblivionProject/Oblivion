@@ -37,8 +37,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   public audio: boolean; // Flag for if audio is on or off
   public meetingInfo!: MeetingInfo;
   public overrideGuard: boolean;
-  // public unReadMessageCount: number;
-  // public readMessageCount: number;
   public chat: boolean;  // Flag for if the chat box is open
   public users: string[] = ['everyone', 'test1', 'test2'];
   public height: any;
@@ -68,8 +66,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     this.chat = false;
     this.remoteStreams = {};
     this.overrideGuard = false;
-    // this.unReadMessageCount = 0;
-    // this.readMessageCount = 0;
     this.tile = new TitleModel(2,1);
     this.show_right = false
     this.show_left = false;
@@ -336,10 +332,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
     console.log(this.meetingInfo.password);
     return this.meetingInfo;
   }
-
-  // public incrementUnreadMessageCount(): void {
-  //   this.unreadMessageCount = this.unreadMessageCount + 1;
-  // }
 
   public openDialog(): void {
     this.setMeetingInfo();
