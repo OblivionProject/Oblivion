@@ -77,22 +77,6 @@ p.video-description{
   margin-right: 4px;
 }
 
-@media (max-width: 1200px) {
-  .sidenav-cont {
-    width: 100%;
-  }
-  .mat-fab{
-    margin: 0;
-    float: left;
-  }
-  #leave_short{
-    display: block;
-  }
-  #leave{
-    display: none;
-  }
-}
-
 /*chat shit*/
 .chatbox{
   background:  #333333;
