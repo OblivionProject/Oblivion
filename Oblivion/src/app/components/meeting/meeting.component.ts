@@ -23,7 +23,7 @@ import {VideoOrderingService} from "../../services/video-ordering.service";
   selector: 'app-meeting',
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.css'],
-  providers: [MediaService, WebsocketService, VideoOrderingService]
+  providers: [MediaService, VideoOrderingService]
 })
 
 export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked, OnDestroy {
@@ -55,7 +55,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   constructor(public mediaService: MediaService,
               public dialog: MatDialog,
               private router: Router,
-              private websocketService: WebsocketService,
               private videoOrderingService: VideoOrderingService,
               private elem: ElementRef,
               private cdref: ChangeDetectorRef
@@ -178,9 +177,9 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
   }
 
   public async ngAfterViewInit(): Promise<void> {
-    await this.mediaService.setUpWebSocket(this.websocketService);
+    await this.mediaService.setUpWebSocket();
     await this.getLocalVideo();
-    while (this.websocketService.getWebSocket().readyState !== 1);  // Ensure that the websocket is open before moving on... TODO: improve
+    while (this.mediaService.getWebSocket().readyState !== 1);  // Ensure that the websocket is open before moving on... TODO: improve
     this.mediaService.requestMeetingInformation();
     this.remoteStreams = this.mediaService.getRemoteStreams();
 

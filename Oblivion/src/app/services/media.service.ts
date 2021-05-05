@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {WebsocketService} from "./websocket.service";
+import {WebsocketService, WS_ENDPOINT} from "./websocket.service";
 import {Subject} from "rxjs";
 import {MeetingStateService} from "./meeting-state.service";
 import {Message, MESSAGE_TYPE} from "../../../modules/message";
@@ -36,12 +36,16 @@ export class MediaService {
     return this.user.getUserID();
   }
 
-  public setUpWebSocket(socket: WebsocketService): void {
-    this.webSocket = socket.getWebSocket();
+  public setUpWebSocket(): void {
+    this.webSocket = new WebSocket('wss://oblivionchat.com/websocket/');
     this.webSocket.onmessage = (message: MessageEvent) => this.receivedRequestFromServer(message);
     this.webSocket.onclose = () => this.closedRequestFromServer();
     this.webSocket.onerror = (event: Event) => console.log(event);
     this.webSocket.onopen = () => this.webSocket.send(JSON.stringify({'start': true, 'meetingID': this.sharedService.meetingID}));
+  }
+
+  public getWebSocket(): WebSocket{
+    return this.webSocket;
   }
 
   // This method is called on startup to join the current meeting
@@ -274,7 +278,7 @@ export class MediaService {
     return this.meetingInfo;
   }
 
-  public terminate(): void {
+  public async terminate(): Promise<void> {
     console.log('Destroy Media Service');
 
     // Close Peer Connections
@@ -288,6 +292,6 @@ export class MediaService {
       track.stop();
     });
 
-    this.webSocket.close();
+    await this.webSocket.close();
   }
 }
