@@ -33,6 +33,7 @@
 p.video-description{
   position: absolute;
   top: 0px;
+  margin-top: 1vmin!important;
   left: 10px;
   font-size: 4vh;
   font-family: "Times New Roman", Times, serif;
@@ -121,6 +122,9 @@ p.video-description{
 @media screen and (min-width: 1720px) {
   #sticky_footer .mat-flat-button .button_helpers{
     margin-left: 1vw;
+  }
+  p.video-description{
+    margin-top: 2vmin!important;
   }
 }
 

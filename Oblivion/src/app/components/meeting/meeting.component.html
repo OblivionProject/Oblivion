@@ -58,6 +58,13 @@
                    [muted]="peer.getRemoteStream()===localStream"
                    [style.height.px]="video_height"
                    class="video"></video>
+            <video *ngIf="video_width!==undefined"
+                   [srcObject]="vid"
+                   [autoplay]="true"
+                   [muted]="vid===localStream"
+                   [style.height.px]="video_height"
+                   [style.width.px]="video_width"
+                   ></video>
           </mat-grid-tile>
         </mat-grid-list>
       </mat-drawer-content>

@@ -78,7 +78,8 @@ import { ParticipantsListDialogComponent } from './components/participants-list-
         MatOptionModule,
         MatBadgeModule,
         MatSelectModule,
-        DragDropModule
+        DragDropModule,
+        ClipboardModule
     ],
   providers: [Globals, WebsocketService, MediaService],
   bootstrap: [AppComponent],

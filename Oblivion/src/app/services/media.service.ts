@@ -152,7 +152,9 @@ export class MediaService {
       Peer.setUser(this.user);
       this.pseudoPeer.setPeerUser(this.user);
       this.meetingInfo = new MeetingInfo(signal.meetingID, signal.name, this.user, signal.password);
-
+      if(signal.password !== ('' || undefined)){
+        this.meetingInfo.setPassword(signal.password);
+      }
       // Create new peer connection offers for each of the peers currently in the meeting
       signal.clientIDs.forEach((id: number) => {
         if (id != this.user.getUserID()) {

@@ -137,7 +137,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public clearUpdateMessages():void{
     const currentTime = Date.now();
-    console.log(currentTime);
     this.meetingUpdates = this.meetingUpdates.filter(message => message.timeStamp + 3000 >= currentTime);
     if(this.roleUpdateMessage !== undefined){
       if(currentTime > this.roleUpdateMessage.timeStamp + 4000){
@@ -306,7 +305,6 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   // Returns an array of the remote MediaStreams
   public getStreams(): MediaStream[] {
-    // console.log("STERAM ASDFSADFA SDFASDFASDf");
     if (this.videoOrderingService.videos_count!=this.getRemoteStreams().length+1) {
       this.videoOrderingService.videos_count = this.getRemoteStreams().length+1;
       this.videoOrderingService.setVideosSizing(document.documentElement.clientWidth);
@@ -346,6 +344,7 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public setMeetingInfo(): MeetingInfo {
     this.meetingInfo = this.mediaService.getMeetingInfo();
+    console.log(this.meetingInfo.password);
     return this.meetingInfo;
   }
 
@@ -355,9 +354,10 @@ export class MeetingComponent implements AfterViewInit, OnInit, AfterViewChecked
 
   public openDialog(): void {
     this.setMeetingInfo();
+    console.log()
     this.dialog.open(MeetingInfoDialogComponent, {
       width: '250px',
-      height: '200px',
+      height: '250px',
       backdropClass: 'cdk-overlay-transparent-backdrop',
       hasBackdrop: true,
       position: {

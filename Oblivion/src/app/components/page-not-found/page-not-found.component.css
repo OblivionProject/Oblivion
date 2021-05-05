@@ -1,0 +1,18 @@
+#page-not-found-header{
+  font-size: 10vmax;
+  line-height: 10vmax;
+  margin-top: 8vh!important;
+  font-family: "Times New Roman", Times, serif;
+}
+
+#page-not-found-text{
+  font-size: 4vmax;
+  line-height: 4vmax;
+  margin-top: 10vh!important;
+  font-family: "Times New Roman", Times, serif;
+}
+
+#page-not-found-container{
+  width: 100%;
+  text-align: center;
+}

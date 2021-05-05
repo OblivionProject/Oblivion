@@ -63,6 +63,7 @@
            (matChipInputTokenEnd)="addEmail($event)">
     <mat-error *ngIf="createMeetingForm.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
   </mat-chip-list>
+  <mat-hint *ngIf="!createMeetingForm.controls['email'].invalid"><span class="asterisk">Add multiple email addresses to invite!</span></mat-hint>
 </mat-form-field>
 </section>
 </form>
